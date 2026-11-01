@@ -50,6 +50,7 @@ function GoodWord() {
         <span className="good__o">O</span>
         <span className="good__e">👌</span>
       </span>
+      <span aria-hidden="true">D</span>
     </span>
   )
 }

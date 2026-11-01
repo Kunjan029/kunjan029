@@ -107,12 +107,12 @@
 .good__slot { position: relative; display: inline-block; perspective: 600px; }
 .good__o, .good__e { display: inline-block; transition: transform 0.55s cubic-bezier(.3,1.4,.5,1), opacity 0.25s ease; backface-visibility: hidden; }
 .good__e {
-  position: absolute; inset: 0; display: grid; place-items: center; font-size: 0.72em; letter-spacing: 0; line-height: 1;
+  position: absolute; inset: 0; display: grid; place-items: center; font-size: 0.6em; letter-spacing: 0; line-height: 1;
   font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; -webkit-text-stroke: 0;
   opacity: 0; transform: rotateY(-90deg) scale(0.6);
 }
 .good.is-ok .good__o { opacity: 0; transform: rotateY(90deg) scale(0.6); }
-.good.is-ok .good__e { opacity: 1; transform: rotateY(0) scale(1.15); animation: good-wiggle 0.7s 0.5s ease-in-out both; }
+.good.is-ok .good__e { opacity: 1; transform: rotateY(0) scale(1); animation: good-wiggle 0.7s 0.5s ease-in-out both; }
 @keyframes good-wiggle { 30% { rotate: -10deg; } 65% { rotate: 8deg; } }
 @media (prefers-reduced-motion: reduce) { .good__o, .good__e { transition: none; } .good.is-ok .good__e { animation: none; } }
 
