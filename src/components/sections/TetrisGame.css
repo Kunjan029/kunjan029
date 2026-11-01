@@ -130,3 +130,13 @@
   .tet__overlay { animation: none; }
   .pad, .tool, .tet__board { transition: none; }
 }
+
+/* Close the game: collapses the panel back to the two tabs (the game stops) */
+.tet { position: relative; }
+.tet__close {
+  position: absolute; top: 0; right: 0; z-index: 3; display: grid; place-items: center; width: 44px; height: 44px;
+  border: 1px solid var(--color-border-strong); border-radius: 50%; background: var(--color-bg); color: var(--color-text);
+  transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease;
+}
+@media (hover: hover) { .tet__close:hover { background: var(--color-accent); color: var(--color-on-accent); border-color: var(--color-accent); } }
+.tet__close:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }

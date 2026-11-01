@@ -11,7 +11,7 @@ const MODES = [
 ]
 
 export default function AboutArcade() {
-  const [mode, setMode] = useState('break')
+  const [mode, setMode] = useState('break') // 'break' | 'journey' | null (closed)
   const refs = useRef([])
 
   // Tabs pattern: arrow keys move between the two modes
@@ -36,7 +36,7 @@ export default function AboutArcade() {
             id={`arcade-tab-${id}`}
             aria-selected={mode === id}
             aria-controls="arcade-panel"
-            tabIndex={mode === id ? 0 : -1}
+            tabIndex={mode === id || (mode === null && i === 0) ? 0 : -1}
             className={`arcade__tab${mode === id ? ' is-on' : ''}`}
             onClick={() => setMode(id)}
             onKeyDown={(e) => onKeyDown(e, i)}
@@ -49,9 +49,11 @@ export default function AboutArcade() {
         ))}
       </div>
 
-      <div id="arcade-panel" role="tabpanel" aria-labelledby={`arcade-tab-${mode}`} className="arcade__panel" key={mode}>
-        {mode === 'break' ? <TetrisGame /> : <CreativeArchive />}
-      </div>
+      {mode && (
+        <div id="arcade-panel" role="tabpanel" aria-labelledby={`arcade-tab-${mode}`} className="arcade__panel" key={mode}>
+          {mode === 'break' ? <TetrisGame onClose={() => { setMode(null); refs.current[0]?.focus() }} /> : <CreativeArchive />}
+        </div>
+      )}
     </div>
   )
 }

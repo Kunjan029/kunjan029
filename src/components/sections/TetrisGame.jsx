@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { ArrowDown, ArrowLeft, ArrowRight, ChevronsDown, Pause, Play, RotateCcw, RotateCw } from 'lucide-react'
+import { ArrowDown, ArrowLeft, ArrowRight, ChevronsDown, Pause, Play, RotateCcw, RotateCw, X } from 'lucide-react'
 import Button from '../ui/Button.jsx'
 import Reveal from '../ui/Reveal.jsx'
 import {
@@ -44,7 +44,7 @@ function sizeCanvas(canvas) {
   return { ctx, w, h }
 }
 
-export default function TetrisGame() {
+export default function TetrisGame({ onClose }) {
   const rootRef = useRef(null)
   const layoutRef = useRef(null)
   const wrapRef = useRef(null)
@@ -337,6 +337,11 @@ export default function TetrisGame() {
 
   return (
     <div className="block tet" ref={rootRef}>
+      {onClose && (
+        <button type="button" className="tet__close" onClick={onClose} aria-label="Close game" data-cursor data-cursor-label="CLOSE">
+          <X size={20} aria-hidden="true" />
+        </button>
+      )}
       <div className="tet__intro">
         <p className="tet__label">A LITTLE CREATIVE BREAK</p>
         <h3 className="tet__title">
@@ -405,6 +410,11 @@ export default function TetrisGame() {
             <button type="button" className="tool" onClick={start} disabled={phase === 'ready'} data-cursor>
               <RotateCcw size={18} aria-hidden="true" /> Restart
             </button>
+            {onClose && (
+              <button type="button" className="tool" onClick={onClose} data-cursor>
+                <X size={18} aria-hidden="true" /> Close
+              </button>
+            )}
           </div>
 
           <ul className="tet__keys" aria-label="Keyboard controls">
