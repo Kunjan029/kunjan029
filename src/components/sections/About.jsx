@@ -81,13 +81,9 @@ function VisualsWord() {
   const [on, setOn] = useState(false)
   const [idx, setIdx] = useState(0)
 
-  // While open, flip to a new random cover every ~0.7s (a single still image when motion is reduced)
+  // One random cover per hover: it stays put while hovered and changes only on the next hover
   useEffect(() => {
-    if (!on) return
-    setIdx((i) => pick(i))
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const t = setInterval(() => setIdx((i) => pick(i)), 700)
-    return () => clearInterval(t)
+    if (on) setIdx((i) => pick(i))
   }, [on])
 
   const cur = SLOTS[idx] || SLOTS[0]
