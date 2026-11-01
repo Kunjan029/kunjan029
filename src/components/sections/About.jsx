@@ -102,6 +102,15 @@ function VisualsWord() {
   )
 }
 
+const INDUSTRIES = [
+  'E-commerce & marketplaces',
+  'Skincare & wellness',
+  'Fashion & lifestyle',
+  'Events & entertainment',
+  'Technology & expos',
+  'Travel & tourism',
+]
+
 const MILESTONES = [
   { when: '2011', title: 'Started exploring Photoshop', text: 'The start of a long relationship with pixels.' },
   { when: '2016 onwards', title: 'Developed graphic design skills', text: 'Explored different creative formats and kept experimenting.' },
@@ -276,6 +285,17 @@ export default function About() {
               ))}
             </ol>
           </div>
+        </div>
+
+        {/* ---------- Industries ---------- */}
+        <div className="block ind">
+          <h3 className="block__title">Industries I’ve worked in</h3>
+          <p className="ind__text">
+            Over the years I’ve designed for brands across e-commerce, skincare and wellness, fashion, events and entertainment, technology expos and travel. Every industry speaks to a different audience, so I adapt the look, tone and layout to each one while keeping the message clear and the design bold.
+          </p>
+          <ul className="ind__tags" role="list">
+            {INDUSTRIES.map((t) => <li key={t}>{t}</li>)}
+          </ul>
         </div>
 
         {/* ---------- Block 3: Character stats ---------- */}
