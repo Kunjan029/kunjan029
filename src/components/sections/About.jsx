@@ -105,7 +105,7 @@ function VisualsWord() {
 const INDUSTRIES = [
   'E-commerce & marketplaces',
   'Skincare & wellness',
-  'Fashion & lifestyle',
+  'Fashion & clothing',
   'Perfume & fragrance',
   'Real estate',
   'Events & entertainment',
@@ -293,7 +293,7 @@ export default function About() {
         <div className="block ind">
           <h3 className="block__title">Industries I’ve worked in</h3>
           <p className="ind__text">
-            Over the years I’ve designed for brands across e-commerce, skincare and wellness, fashion, perfume and fragrance, real estate, events and entertainment, technology expos and travel. Every industry speaks to a different audience, so I adapt the look, tone and layout to each one while keeping the message clear and the design bold.
+            Over the years I’ve designed for brands across e-commerce, skincare and wellness, fashion and clothing, perfume and fragrance, real estate, events and entertainment, technology expos and travel. Every industry speaks to a different audience, so I adapt the look, tone and layout to each one while keeping the message clear and the design bold.
           </p>
           <ul className="ind__tags" role="list">
             {INDUSTRIES.map((t) => <li key={t}>{t}</li>)}
