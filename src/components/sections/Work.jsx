@@ -1,4 +1,4 @@
-import { Fragment, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Flip } from 'gsap/Flip'
@@ -19,6 +19,40 @@ const pad = (n) => String(n).padStart(3, '0')
 const used = (key) => (o) => o.id === 'all' || !HAS_REAL_WORK || PROJECTS.some((p) => p[key] === o.id)
 const CATS = CATEGORIES.filter(used('category'))
 const METHS = METHODS.filter(used('method'))
+
+// "GOOD": the second O flips into the 👌 emoji once when the line scrolls in, and again on hover.
+function GoodWord() {
+  const ref = useRef(null)
+  const [ok, setOk] = useState(false)
+  const timer = useRef(0)
+  const play = () => {
+    clearTimeout(timer.current)
+    setOk(true)
+    timer.current = setTimeout(() => setOk(false), 2200)
+  }
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const el = ref.current
+    if (!el || !('IntersectionObserver' in window)) return
+    let t
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return
+      io.disconnect()
+      t = setTimeout(play, 500)
+    }, { threshold: 0.8 })
+    io.observe(el)
+    return () => { io.disconnect(); clearTimeout(t); clearTimeout(timer.current) }
+  }, [])
+  return (
+    <span ref={ref} className={`good${ok ? ' is-ok' : ''}`} onPointerEnter={(e) => e.pointerType === 'mouse' && !ok && play()} aria-label="GOOD">
+      <span aria-hidden="true">GO</span>
+      <span className="good__slot" aria-hidden="true">
+        <span className="good__o">O</span>
+        <span className="good__e">👌</span>
+      </span>
+    </span>
+  )
+}
 
 export default function Work() {
   const rootRef = useRef(null)
@@ -225,7 +259,7 @@ export default function Work() {
                 </article>
                 {p.id === breakAfterId && (
                   <p className="work__break">
-                    <span className="work__break-a">GOOD DESIGN<i>.</i></span>
+                    <span className="work__break-a"><GoodWord /> DESIGN<i>.</i></span>
                     <span className="work__break-b">LOUD IDEAS<i>.</i></span>
                   </p>
                 )}
