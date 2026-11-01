@@ -1,0 +1,102 @@
+/* Lives in the top layer (popover) so it also shows above the project modal. Never intercepts input. */
+.cursor-layer {
+  position: fixed;
+  inset: auto;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+  pointer-events: none;
+  z-index: var(--z-overlay);
+}
+
+.cursor { position: absolute; top: 0; left: 0; pointer-events: none; }
+
+.cursor__ring {
+  --d: 2.25rem;
+  display: grid;
+  place-items: center;
+  width: var(--d);
+  height: var(--d);
+  border: 1.5px solid var(--color-accent);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    width 0.45s var(--ease-out),
+    height 0.45s var(--ease-out),
+    transform var(--duration-base) var(--ease-out),
+    opacity var(--duration-fast) ease,
+    background-color var(--duration-base) ease,
+    border-color var(--duration-base) ease;
+}
+.cursor-layer.is-visible .cursor__ring { opacity: 0.9; transform: scale(1); }
+
+/* Soft: generic interactive surface (cards, tiles, big letters) */
+.cursor-layer[data-mode='soft'] .cursor__ring { --d: 4rem; background-color: rgb(198 255 77 / 0.14); }
+/* Label: buttons, links, projects. Filled lime with dark text */
+.cursor-layer[data-mode='label'] .cursor__ring { --d: 4.5rem; opacity: 1; background-color: var(--color-accent); }
+/* Text fields keep the system I-beam, the ring steps aside */
+.cursor-layer[data-mode='text'] .cursor__ring { opacity: 0; transform: scale(0.4); }
+.cursor-layer.is-down .cursor__ring { transform: scale(0.9); }
+
+.cursor__label {
+  font-family: var(--font-heading);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  color: var(--color-on-accent);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity var(--duration-fast) ease, transform var(--duration-base) var(--ease-out);
+  user-select: none;
+}
+.cursor-layer[data-mode='label'] .cursor__label { opacity: 1; transform: none; transition-delay: 0.08s; }
+
+/* Precise inner dot */
+.cursor__dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  opacity: 0;
+  transition: opacity var(--duration-fast) ease, background-color var(--duration-base) ease;
+}
+.cursor-layer.is-visible:not([data-mode='label']):not([data-mode='text']):not([data-mode='soft']) .cursor__dot { opacity: 1; }
+
+/* Over light surfaces (lime, pastel, off-white) the cursor flips to near-black */
+.cursor-layer[data-tone='light'] .cursor__ring { border-color: var(--color-on-accent); }
+.cursor-layer[data-tone='light'][data-mode='soft'] .cursor__ring { background-color: rgb(11 11 13 / 0.1); }
+.cursor-layer[data-tone='light'][data-mode='label'] .cursor__ring { background-color: var(--color-on-accent); }
+.cursor-layer[data-tone='light'][data-mode='label'] .cursor__label { color: var(--color-text); }
+.cursor-layer[data-tone='light'] .cursor__dot { background: var(--color-on-accent); }
+.cursor-layer[data-tone='light'] .cursor__ripple { border-color: var(--color-on-accent); }
+
+/* Click ripple */
+.cursor__ripple {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3rem;
+  height: 3rem;
+  border: 1.5px solid var(--color-accent);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* The system arrow is hidden only while the custom cursor is active (class set from JS) */
+html.cc, html.cc * { cursor: none !important; }
+html.cc input:not([type='checkbox']):not([type='radio']):not([type='submit']):not([type='button']),
+html.cc textarea { cursor: text !important; }
+html.cc ::backdrop { cursor: none; }
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) { .cursor-layer { display: none !important; } }

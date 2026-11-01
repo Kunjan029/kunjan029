@@ -1,0 +1,24 @@
+.fwa {
+  position: fixed; z-index: 90; /* above page content, below the header (100) and modal overlays */
+  right: calc(1rem + env(safe-area-inset-right, 0px)); bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  display: grid; place-items: center; width: 3.5rem; height: 3.5rem; border-radius: 50%;
+  background: transparent; color: #fff; border: 1.5px solid #fff;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  transition: transform 0.4s var(--ease-out), background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.fwa:focus-visible { outline: 2px solid var(--color-text); outline-offset: 3px; }
+.fwa:active { transform: scale(0.93); }
+@media (hover: hover) { .fwa:hover { transform: translateY(-3px) scale(1.05); background: rgb(255 255 255 / 0.14); } }
+
+.fwa__tip {
+  position: absolute; right: calc(100% + 0.75rem); top: 50%; transform: translate(6px, -50%); opacity: 0; pointer-events: none; white-space: nowrap;
+  padding: 0.45rem 0.8rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius-sm); background: var(--color-card); color: var(--color-text);
+  font-family: var(--font-body); font-size: var(--text-sm); transition: opacity 0.15s ease, transform 0.25s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) { .fwa:hover .fwa__tip { opacity: 1; transform: translate(0, -50%); } }
+.fwa:focus-visible .fwa__tip { opacity: 1; transform: translate(0, -50%); }
+
+/* Keep clear of the page's bottom-edge controls on phones */
+@media (max-width: 767px) { .fwa { width: 3.25rem; height: 3.25rem; right: calc(0.875rem + env(safe-area-inset-right, 0px)); bottom: calc(0.875rem + env(safe-area-inset-bottom, 0px)); } }
+@media (prefers-reduced-motion: reduce) { .fwa, .fwa__tip { transition: none; } }

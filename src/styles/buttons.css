@@ -1,0 +1,59 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 48px; /* comfortable touch target */
+  padding: 0.85rem 1.6rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    background-color var(--duration-fast) ease,
+    color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* Variants */
+.btn--primary {
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.btn--secondary {
+  background-color: transparent;
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+
+.btn--ghost {
+  background-color: transparent;
+  color: var(--color-text);
+  padding-inline: var(--space-3);
+}
+
+/* Sizes */
+.btn--sm { min-height: 40px; padding: 0.6rem 1.15rem; }
+.btn--lg { min-height: 56px; padding: 1.05rem 2rem; font-size: var(--text-base); }
+
+/* Hover only where hover exists, so touch devices don't get stuck states */
+@media (hover: hover) {
+  .btn--primary:hover { background-color: var(--color-text); }
+  .btn--secondary:hover { border-color: var(--color-accent); color: var(--color-accent); }
+  .btn--ghost:hover { color: var(--color-accent); }
+}

@@ -1,0 +1,169 @@
+/* Real-world presentation of the artwork. One consistent frame: 1px #303036, 4px corners, no glow. */
+.px { --frame: #303036; --page: #F4F4F1; --page-line: #E1E1DB; --ghost: #E2E2DC; --ink: #16161a; --view: min(72dvh, 46rem);
+  container-type: inline-size; display: grid; gap: 0; width: 100%; }
+.px__hint { margin-top: 0.85rem; font-size: 0.8rem; text-align: center; color: var(--color-text-muted); }
+
+/* Artwork button: never cropped, never stretched */
+.px-art { display: block; padding: 0; border: 0; background: none; line-height: 0; cursor: zoom-in; max-width: 100%; }
+.px-art img { display: block; width: auto; height: auto; max-width: 100%; max-height: var(--view); object-fit: contain; }
+.px-art:focus-visible, .igc__slide:focus-visible, .igc:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.px-bar { display: block; border-radius: 2px; background: var(--ghost); max-width: 100%; }
+
+.px-pager { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem; margin-top: 0.75rem; }
+.px-pager button { min-width: 2.75rem; height: 2.75rem; padding: 0 0.6rem; border: 1px solid var(--frame); border-radius: 4px; background: transparent; color: var(--color-text-muted); font-family: var(--font-heading); font-size: 0.8rem; font-weight: 700; }
+.px-pager button.is-on { background: var(--color-text); border-color: var(--color-text); color: var(--color-bg); }
+@media (hover: hover) { .px-pager button:not(.is-on):hover { border-color: var(--color-text-muted); color: var(--color-text); } }
+
+/* ---------- Social: Instagram-inspired ---------- */
+.ig { display: grid; grid-template-columns: minmax(0, 1fr); border: 1px solid var(--frame); border-radius: 4px; overflow: hidden; background: #0B0B0D; }
+.ig__media { display: grid; place-items: center; background: #050506; min-width: 0; }
+.ig__art, .ig__art img { width: 100%; } /* phones: the artwork spans the full width at its own ratio */
+.ig__art img { max-height: none; }
+.ig__side { display: flex; flex-direction: column; gap: 0.75rem; padding: 0.85rem 1rem 1rem; border-top: 1px solid var(--frame); }
+.ig__head { display: flex; align-items: center; gap: 0.65rem; }
+.ig__av { display: grid; place-items: center; width: 2rem; height: 2rem; flex: none; border: 1px solid var(--frame); border-radius: 50%; color: var(--color-text-muted); }
+.ig__who { display: grid; line-height: 1.15; font-size: 0.875rem; }
+.ig__who small { font-size: 0.72rem; color: var(--color-text-muted); }
+.ig__actions { display: flex; justify-content: space-between; color: var(--color-text); }
+.ig__actions span { display: inline-flex; gap: 1rem; }
+.ig__caption { margin: 0; font-size: 0.9rem; line-height: 1.45; color: var(--color-text); }
+.ig__caption b { font-weight: 700; }
+@container (min-width: 640px) {
+  .ig { grid-template-columns: auto 20rem; width: fit-content; max-width: 100%; margin-inline: auto; } /* hugs the artwork: no empty black bars beside it */
+  .ig__art { width: auto; }
+  .ig__art img { width: auto; max-height: var(--view); }
+  .ig__side { border-top: 0; border-left: 1px solid var(--frame); padding: 1rem; gap: 1rem; }
+  .ig__head { order: 0; padding-bottom: 0.85rem; border-bottom: 1px solid var(--frame); }
+  .ig__caption { order: 1; flex: 1; overflow: auto; }
+  .ig__actions { order: 2; margin-top: auto; padding-top: 0.85rem; border-top: 1px solid var(--frame); }
+}
+
+/* Carousel */
+.igc { --r: 0.8; position: relative; width: min(100%, calc(var(--view) * var(--r))); aspect-ratio: var(--r); touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.igc__slide { position: absolute; inset: 0; display: grid; place-items: center; padding: 0; border: 0; background: none; cursor: zoom-in; animation: igc-in 0.35s var(--ease-out); }
+.igc__slide img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+@keyframes igc-in { from { opacity: 0; } }
+.igc__count { position: absolute; top: 0.6rem; right: 0.6rem; padding: 0.2rem 0.6rem; border-radius: 4px; background: rgb(11 11 13 / 0.78); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; pointer-events: none; }
+.igc__nav { position: absolute; top: 50%; translate: 0 -50%; display: none; place-items: center; width: 2.25rem; height: 2.25rem; border: 1px solid var(--frame); border-radius: 50%; background: rgb(11 11 13 / 0.78); color: var(--color-text); }
+.igc__nav--prev { left: 0.6rem; } .igc__nav--next { right: 0.6rem; }
+.igc__nav:disabled { opacity: 0; pointer-events: none; }
+@media (hover: hover) and (pointer: fine) { .igc__nav { display: grid; } .igc__nav:not(:disabled):hover { background: var(--color-text); color: var(--color-bg); } }
+.igc__dots { position: absolute; left: 0; right: 0; bottom: 0.6rem; display: flex; justify-content: center; gap: 5px; pointer-events: none; }
+.igc__dots i { width: 6px; height: 6px; border-radius: 50%; background: rgb(242 240 234 / 0.4); }
+.igc__dots i.is-on { background: var(--color-text); }
+@media (prefers-reduced-motion: reduce) { .igc__slide { animation: none; } }
+
+/* ---------- Light web surfaces (e-commerce + website ads) ---------- */
+.ec, .px-browser { color: var(--ink); background: var(--page); border: 1px solid var(--frame); border-radius: 4px; }
+.ec { padding: clamp(0.75rem, 2.5cqw, 1.25rem); }
+.ec-card { display: grid; align-content: start; gap: 0.5rem; padding: 0.6rem; border: 1px solid var(--page-line); border-radius: 4px; background: #fff; }
+.ec-card__img { display: block; aspect-ratio: 1; border-radius: 2px; background: var(--ghost); }
+.ec-card--main { border-color: #b8b8b0; }
+.ec-card__art, .ec-row__art { width: 100%; }
+.ec-card__art img, .ec-row__art img { width: 100%; max-height: none; }
+
+.ec--listing { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; align-items: start; }
+@container (max-width: 559px) { .ec--listing { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ec--listing .ec-card--main { grid-column: 1 / -1; order: -1; } .ec--listing .ec-card--ghost:nth-of-type(4) { display: none; } }
+
+.ec-gal { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.75rem; align-items: start; min-width: 0; }
+.ec-gal:not(:has(.ec-thumbs)) { grid-template-columns: minmax(0, 1fr); }
+.ec-gal__main { justify-self: center; background: #fff; border: 1px solid var(--page-line); border-radius: 4px; }
+.ec-gal__main img { max-height: var(--view); }
+.ec-thumbs { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.ec-thumbs button { display: block; width: 3.5rem; height: 3.5rem; padding: 2px; border: 1px solid var(--page-line); border-radius: 4px; background: #fff; }
+.ec-thumbs button.is-on { border: 2px solid var(--ink); padding: 1px; }
+.ec-thumbs img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.ec--gallery { display: block; }
+.ec--detail { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: clamp(1rem, 4cqw, 2.5rem); }
+.ec-info { display: grid; align-content: start; gap: 0.6rem; padding-top: 0.5rem; }
+.ec-gap { margin-top: 0.6rem; }
+.ec-chips { display: flex; gap: 0.4rem; margin-top: 0.4rem; } .ec-chips i { width: 2.5rem; height: 2.5rem; border: 1px solid var(--page-line); border-radius: 4px; background: #fff; }
+.ec-cta { background: var(--ink); opacity: 0.85; border-radius: 4px; }
+@container (max-width: 639px) {
+  .ec--detail { grid-template-columns: 1fr; }
+  .ec-gal { grid-template-columns: minmax(0, 1fr); }
+  .ec-gal .ec-thumbs { grid-auto-flow: column; grid-auto-columns: 3.5rem; order: 2; overflow-x: auto; }
+}
+
+.ec--ad { display: grid; gap: 0.75rem; }
+.ec-search { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.8rem; border: 1px solid var(--page-line); border-radius: 4px; background: #fff; color: #8a8a84; }
+.ec-card--row { position: relative; grid-template-columns: minmax(0, 1fr); }
+.ec-card--row.ec-card--ghost { grid-template-columns: 7rem minmax(0, 1fr); align-items: center; }
+.ec-lines { display: grid; gap: 0.5rem; }
+.ec-tag { justify-self: start; padding: 0.1rem 0.45rem; border: 1px solid var(--page-line); border-radius: 2px; font-size: 0.7rem; color: #6b6b64; }
+
+/* ---------- Advertising: website placements ---------- */
+.px-browser { overflow: hidden; }
+.px-browser__bar { display: flex; align-items: center; gap: 6px; height: 2.25rem; padding: 0 0.75rem; background: #1b1b1f; border-bottom: 1px solid var(--frame); }
+.px-browser__bar i { width: 9px; height: 9px; border-radius: 50%; background: #4a4a52; }
+.px-browser__bar span { flex: 1; max-width: 22rem; height: 16px; margin-left: 0.75rem; border-radius: 3px; background: #2a2a30; }
+.ad-nav { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 1rem; border-bottom: 1px solid var(--page-line); background: #fff; }
+.ad-nav span { display: flex; gap: 0.9rem; }
+.ad-hero { display: block; width: 100%; }
+.ad-hero img { width: 100%; max-width: 100%; max-height: none; }
+.ad-body { display: grid; gap: 0.9rem; padding: 1rem; align-content: start; }
+.ad-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: 0.75rem; }
+.ad-cards span { display: grid; gap: 0.4rem; }
+.ad-cards i { display: block; aspect-ratio: 4 / 3; border-radius: 2px; background: var(--ghost); }
+.ad-promo { display: block; width: 100%; }
+.ad-promo img { width: 100%; max-height: none; }
+.ad-lines { display: grid; gap: 0.5rem; }
+.ad-slot { display: grid; justify-items: center; gap: 0.3rem; max-width: 100%; }
+.ad-slot__label, .ad-slot__size { font-size: 0.68rem; letter-spacing: 0.04em; color: #8a8a84; }
+.ad-display { max-width: 100%; }
+.ad-display img { max-height: none; } /* original pixel size, only reduced if the slot is narrower */
+.ad-article { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; padding-right: 1rem; align-items: start; }
+.ad-article aside { padding-top: 1rem; max-width: 100%; }
+@container (max-width: 559px) { .ad-article { grid-template-columns: minmax(0, 1fr); padding: 0 1rem 1rem; } .ad-article aside { padding-top: 0; } }
+.ad-poster { display: grid; place-items: center; padding: clamp(0.75rem, 3cqw, 2rem); border: 1px solid var(--frame); border-radius: 4px; background: #0B0B0D; }
+
+/* ---------- Photo editing: before / after ---------- */
+.ba { display: grid; }
+.ba__pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; align-items: start; }
+.ba__side { margin: 0; display: grid; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--frame); border-radius: 4px; background: #0B0B0D; }
+.ba__art { justify-self: center; width: 100%; }
+.ba__art img { width: 100%; max-height: min(70dvh, 44rem); }
+.ba__side figcaption { font-family: var(--font-heading); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-text-muted); text-align: center; }
+.ba__side:last-child figcaption { color: var(--color-accent); }
+.ba-slider { display: none; gap: 0.5rem; }
+.ba-slider__stack { position: relative; border: 1px solid var(--frame); border-radius: 4px; overflow: hidden; background: #0B0B0D; touch-action: pan-y; }
+.ba-slider__stack:focus-within { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.ba-slider__after { display: block; width: 100%; height: auto; max-height: 75dvh; object-fit: contain; }
+.ba-slider__before { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+.ba-slider__line { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 2px; margin-left: -1px; background: var(--color-text); pointer-events: none; }
+.ba-slider__line i { position: absolute; top: 50%; left: 50%; width: 2.25rem; height: 2.25rem; translate: -50% -50%; border: 2px solid var(--color-text); border-radius: 50%; background: rgb(11 11 13 / 0.8); }
+.ba-slider input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; touch-action: pan-y; }
+.ba-label { position: absolute; top: 0.5rem; padding: 0.2rem 0.55rem; border-radius: 2px; background: rgb(11 11 13 / 0.8); font-family: var(--font-heading); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; pointer-events: none; }
+.ba-label--l { left: 0.5rem; } .ba-label--r { right: 0.5rem; color: var(--color-accent); }
+.ba-open { justify-self: center; min-height: 2.75rem; padding: 0 1rem; border: 1px solid var(--frame); border-radius: 4px; background: transparent; color: var(--color-text-muted); font-size: 0.8rem; }
+@container (max-width: 639px) { .ba__pair { display: none; } .ba-slider { display: grid; } }
+
+
+/* Phone preview: the same artwork inside a phone-sized Instagram feed, shown beside the large version (wide layouts only) */
+.ig__phone { display: none; }
+@container (min-width: 640px) {
+  .ig--phone { grid-template-columns: auto 21rem; }
+  .ig--phone .ig__side { display: none; }
+  .ig__phone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; padding: 1rem; border-left: 1px solid var(--frame); background: #0B0B0D; }
+}
+.ig__screen { position: relative; width: 100%; max-width: 19rem; display: flex; flex-direction: column; gap: 0.6rem; padding: 1.1rem 0 1.4rem; border: 1px solid #3a3a42; border-radius: 1.75rem; background: #000; overflow: hidden; }
+.ig__notch { align-self: center; width: 4rem; height: 0.3rem; border-radius: 999px; background: #26262c; margin-bottom: 0.15rem; }
+.ig__head--feed { padding: 0 0.75rem; }
+.ig__feedimg { display: block; width: 100%; height: auto; object-fit: contain; }
+.ig__actions--feed { padding: 0 0.75rem; }
+.ig__caption--feed { padding: 0 0.75rem; font-size: 0.78rem; }
+.ig__home { align-self: center; width: 5rem; height: 0.25rem; margin-top: 0.3rem; border-radius: 999px; background: #3a3a42; }
+.ig__phone-note { margin: 0; font-size: 0.72rem; color: var(--color-text-muted); text-align: center; }
+.ig__screen .ig__head, .ig__screen .ig__actions, .ig__screen .ig__caption { order: 0; margin-top: 0; border: 0; flex: none; }
+.ig__screen .ig__head { padding-bottom: 0.1rem; }
+.ig__screen .ig__actions { padding-top: 0; }
+
+/* ---------- UI/UX: laptop-style frame with an internally scrolling screen ---------- */
+.ux { width: min(100%, 64rem); margin-inline: auto; }
+.ux__lid { display: flex; align-items: center; gap: 6px; height: 1.9rem; padding: 0 0.75rem; border: 1px solid var(--frame); border-bottom: 0; border-radius: 10px 10px 0 0; background: #1c1c21; }
+.ux__lid i { width: 8px; height: 8px; border-radius: 50%; background: #3a3a42; }
+.ux__lid span { flex: 1; max-width: 18rem; height: 10px; margin-left: 0.75rem; border-radius: 3px; background: #2a2a31; }
+.ux__screen { max-height: var(--view); overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--frame); background: #0B0B0D; scrollbar-width: thin; scrollbar-color: #3a3a42 transparent; }
+.ux__screen img { display: block; width: 100%; height: auto; }
+.ux__screen:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.ux__base { width: 108%; max-width: calc(100% + 3rem); height: 0.7rem; margin: 0 auto; translate: 0 0; position: relative; left: 50%; transform: translateX(-50%); border: 1px solid var(--frame); border-radius: 0 0 14px 14px; background: linear-gradient(#222228, #17171b); }

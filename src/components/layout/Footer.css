@@ -1,0 +1,29 @@
+.foot { position: relative; padding-top: clamp(3rem, 7vw, 5rem); overflow: clip; border-top: 1px solid var(--color-border); background: var(--color-bg); }
+.foot__row { display: grid; gap: var(--space-7); align-items: start; }
+.foot__logo { display: flex; align-items: center; gap: var(--space-3); font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: var(--color-text); }
+.foot__kd { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: var(--radius-sm); background: var(--color-accent); color: var(--color-on-accent); font-size: 0.95rem; letter-spacing: 0; transition: transform 0.6s var(--ease-out); }
+.foot__logo:hover .foot__kd { transform: rotate(-12deg) scale(1.08); }
+.foot__loc { margin-top: var(--space-4); font-size: var(--text-sm); }
+
+.foot__social { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+.foot__social a { display: inline-flex; align-items: center; min-height: 44px; font-family: var(--font-heading); font-weight: 600; border-bottom: 1px solid var(--color-border-strong); transition: color var(--duration-fast) ease, border-color var(--duration-fast) ease; }
+@media (hover: hover) { .foot__social a:hover { color: var(--color-accent); border-color: var(--color-accent); } }
+
+.foot__top { justify-self: start; padding: 0; display: inline-flex; align-items: center; gap: var(--space-3); min-height: 48px; font-family: var(--font-heading); font-weight: 600; color: var(--color-text); }
+.foot__top-ic { display: grid; place-items: center; width: 3rem; height: 3rem; border: 1.5px solid var(--color-border-strong); border-radius: 50%; overflow: hidden; transition: background-color var(--duration-base) ease, color var(--duration-base) ease, border-color var(--duration-base) ease; }
+.foot__top-ic svg { transition: transform 0.5s var(--ease-out); }
+.foot__top:hover .foot__top-ic, .foot__top:focus-visible .foot__top-ic { background: var(--color-accent); color: var(--color-on-accent); border-color: var(--color-accent); }
+.foot__top:hover .foot__top-ic svg, .foot__top:focus-visible .foot__top-ic svg { animation: foot-rise 0.7s var(--ease-out); }
+@keyframes foot-rise { 0% { transform: translateY(0); } 45% { transform: translateY(-160%); } 46% { transform: translateY(160%); } 100% { transform: translateY(0); } }
+
+.foot__copy { margin-top: var(--space-8); padding-top: var(--space-5); border-top: 1px solid var(--color-border); font-size: var(--text-xs); max-width: none; }
+
+.foot__mark { margin-top: var(--space-5); padding-inline: var(--gutter); font-family: var(--font-heading); font-size: clamp(3.5rem, 17vw, 17rem); font-weight: 700; line-height: 0.8; letter-spacing: -0.06em; white-space: nowrap; text-align: center; color: transparent; -webkit-text-stroke: 1.5px var(--color-border-strong); user-select: none; pointer-events: none; transform: translateY(8%); }
+
+/* Fixed 3-column grid with explicit placement: Back to top always sits in the last column, with or without social links */
+@media (min-width: 900px) {
+  .foot__row { grid-template-columns: 1.2fr 1fr auto; align-items: center; }
+  .foot__brand { grid-column: 1; }
+  .foot__social { grid-column: 2; justify-content: center; }
+  .foot__top { grid-column: 3; justify-self: end; }
+}
