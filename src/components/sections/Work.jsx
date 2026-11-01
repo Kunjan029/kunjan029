@@ -180,7 +180,7 @@ export default function Work() {
           <p className="work__label">SELECTED WORK / 001</p>
           <h2 className="work__title">
             <span className="line"><Reveal text="LESS TALK." accentDots /></span>
-            <span className="line"><Reveal text="MORE GOOD DESIGN." accentDots /></span>
+            <span className="line"><Reveal text="MORE GOOD DESIGN." accentDots custom={{ GOOD: <GoodWord /> }} /></span>
           </h2>
           <p className="work__lead">A collection of visuals, campaigns and creative experiments designed to make brands stand out.</p>
         </div>
@@ -260,7 +260,7 @@ export default function Work() {
                 </article>
                 {p.id === breakAfterId && (
                   <p className="work__break">
-                    <span className="work__break-a"><GoodWord /> DESIGN<i>.</i></span>
+                    <span className="work__break-a">GOOD DESIGN<i>.</i></span>
                     <span className="work__break-b">LOUD IDEAS<i>.</i></span>
                   </p>
                 )}
