@@ -76,7 +76,7 @@ export default function Header() {
 
           <nav className="header__nav" aria-label="Primary">
             {NAV.map(({ label, id }) => (
-              <a key={id} href={`#${id}`} className="header__link" onClick={(e) => go(e, id)}>
+              <a key={id} href={`#${id}`} className={`header__link${id === 'work' ? ' is-key' : ''}`} onClick={(e) => go(e, id)}>
                 {label}
               </a>
             ))}
