@@ -115,7 +115,8 @@ const INDUSTRIES = [
 
 const MILESTONES = [
   { when: '2009', title: 'Started exploring Photoshop', text: 'The start of a long relationship with pixels.' },
-  { when: '2016 onwards', title: 'Developed graphic design skills', text: 'Explored different creative formats and kept experimenting.' },
+  { when: '2011', title: 'Started designing professionally', text: 'Wedding albums, banners and print layouts, all built in Photoshop.' },
+  { when: '2019', title: 'Moved into brand and campaign work', text: 'Joined a graphics-focused IT company and started designing for real brands and campaigns.' },
   {
     when: 'Professional journey',
     title: 'Real briefs, real brands',
