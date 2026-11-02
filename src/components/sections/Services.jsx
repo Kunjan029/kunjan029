@@ -118,10 +118,10 @@ const PhotoArt = () => (
 
 // Delete or set `enabled: false` on an entry to hide a service. Numbers re-sequence automatically.
 const SERVICES = [
-  { id: 'social', Art: SocialArt, title: 'Social Media Creatives', text: 'Scroll-stopping visuals that help brands communicate consistently and stand out on social platforms.' },
+  { id: 'social', Art: SocialArt, title: 'Social Media Creatives', text: 'Social media post design with scroll-stopping visuals that help brands communicate consistently and stand out on Instagram, Facebook and LinkedIn.' },
   { id: 'carousel', Art: CarouselArt, title: 'Carousel Design', text: 'Well-structured, visually engaging carousels that turn information into content people want to explore.' },
-  { id: 'product', Art: ProductArt, title: 'E-commerce Product Visuals', text: 'Compelling product imagery and marketplace visuals designed to showcase products and communicate their value.' },
-  { id: 'ads', Art: AdsArt, title: 'Advertising Creatives', text: 'Creative advertising visuals designed to capture attention and communicate campaign messages effectively.' },
+  { id: 'product', Art: ProductArt, title: 'E-commerce Product Visuals', text: 'Amazon A+ content, product imagery and marketplace visuals designed to showcase products and communicate their value.' },
+  { id: 'ads', Art: AdsArt, title: 'Advertising Creatives', text: 'Creative advertising visuals and ad creatives designed to capture attention and communicate campaign messages effectively.' },
   {
     id: 'photo', Art: PhotoArt, title: 'Photo Editing',
     text: 'Refined, polished imagery, from careful retouching to creative composites, finished to a standard brands can publish with confidence.',

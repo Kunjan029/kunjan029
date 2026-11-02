@@ -125,6 +125,15 @@ const RAW_PROJECTS = [
   { id: 'placeholder-06', placeholder: true, title: 'Project Title 06', category: 'e-commerce', method: 'ai-assisted', size: 'feature', images: [] },
 ]
 
+const ALT_KIND = {
+  'social-media': 'social media post design',
+  'e-commerce': 'e-commerce and Amazon product visual design',
+  advertising: 'advertising creative design',
+  'photo-editing': 'photo editing and retouching',
+  'ui-ux': 'UI design',
+}
+const altBase = (p) => `${p.title}, ${ALT_KIND[p.category] || 'graphic design'} by Kunjan Atara`
+
 /* ---------- Normalisation: components only ever see this clean shape ---------- */
 const toImage = (v, fallbackAlt) => {
   if (!v) return null
@@ -136,14 +145,14 @@ function normalize(p) {
   // Photo editing: each pair is shown side by side; the viewer gets them as original, edited, original, edited...
   const compare = (Array.isArray(p.compare) ? p.compare : [])
     .map((c, i) => {
-      const before = toImage(c.before, `${p.title}, original ${i + 1}`)
-      const after = toImage(c.after, `${p.title}, edited ${i + 1}`)
+      const before = toImage(c.before, `${altBase(p)}, original photo ${i + 1}`)
+      const after = toImage(c.after, `${altBase(p)}, edited photo ${i + 1}`)
       return before && after ? { before: { ...before, caption: before.caption || 'Original' }, after: { ...after, caption: after.caption || 'Edited' } } : null
     })
     .filter(Boolean)
   const raw = compare.length ? compare.flatMap((c) => [c.before, c.after]) : Array.isArray(p.images) ? p.images : []
-  const gallery = raw.map((v, i) => toImage(v, `${p.title}, image ${i + 1}`)).filter(Boolean)
-  const cover = toImage(p.cover, `${p.title}, cover`) || (compare.length ? compare[0].after : null) || gallery[0] || null
+  const gallery = raw.map((v, i) => toImage(v, `${altBase(p)}, image ${i + 1}`)).filter(Boolean)
+  const cover = toImage(p.cover, `${altBase(p)}, cover`) || (compare.length ? compare[0].after : null) || gallery[0] || null
   // A project with only a cover still gets a working one-image gallery in the popup
   const images = gallery.length ? gallery : cover ? [cover] : []
   return {

@@ -170,7 +170,7 @@ export default function Hero() {
 
         <div className="hero__bottom">
           <p className="hero__text">
-            Experienced graphic designer creating bold social, advertising and e-commerce visuals. Open to full-time design roles and freelance collaborations.
+            Freelance graphic and social media designer in Ahmedabad, 16+ years of experience. Social posts, Amazon A+ content, e-commerce and ads. Open to full-time and freelance work.
           </p>
           <div className="hero__actions">
             <Button href="#work" size="lg" onClick={go('work')}>Explore My Work</Button>
