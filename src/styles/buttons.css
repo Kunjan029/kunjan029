@@ -57,3 +57,10 @@
   .btn--secondary:hover { border-color: var(--color-accent); color: var(--color-accent); }
   .btn--ghost:hover { color: var(--color-accent); }
 }
+
+/* Download icon: a small nudge every few seconds, and a continuous bounce on hover or focus */
+.dl-ico { animation: dl-nudge 4s ease-in-out 1.5s infinite; }
+@keyframes dl-nudge { 0%, 80%, 100% { transform: translateY(0); } 86% { transform: translateY(3px); } 92% { transform: translateY(-1px); } 96% { transform: translateY(1px); } }
+a:hover > .dl-ico, a:focus-visible > .dl-ico { animation: dl-bounce 0.7s ease-in-out infinite; }
+@keyframes dl-bounce { 0%, 100% { transform: translateY(-1px); } 50% { transform: translateY(3px); } }
+@media (prefers-reduced-motion: reduce) { .dl-ico, a:hover > .dl-ico, a:focus-visible > .dl-ico { animation: none; } }

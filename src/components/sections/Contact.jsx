@@ -245,12 +245,12 @@ export default function Contact() {
               <p className="ct__links-h">Resume</p>
               {resume ? (
                 <a href={resume} className="link link--resume" target="_blank" rel="noopener noreferrer" data-cursor>
-                  <Download size={18} aria-hidden="true" /><span>Download Resume</span><ArrowUpRight size={18} className="link__go" aria-hidden="true" />
+                  <Download size={18} className="dl-ico" aria-hidden="true" /><span>Download Resume</span><ArrowUpRight size={18} className="link__go" aria-hidden="true" />
                 </a>
               ) : (
                 <>
                   <span className="link link--resume is-off" aria-disabled="true">
-                    <Download size={18} aria-hidden="true" /><span>Download Resume</span><em>Coming soon</em>
+                    <Download size={18} className="dl-ico" aria-hidden="true" /><span>Download Resume</span><em>Coming soon</em>
                   </span>
                   <p className="ct__todo">Add your resume link in <code>src/data/contact.js</code> (<code>resume</code>) and this button goes live.</p>
                 </>

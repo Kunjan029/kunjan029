@@ -89,7 +89,7 @@ export default function Header() {
             <ContactLinks className="header__contact" tooltips />
             {resume && (
               <Button href={resume} variant="secondary" size="sm" className="header__cta header__resume" target="_blank" rel="noopener noreferrer" data-cursor>
-                <Download size={15} aria-hidden="true" /> Resume
+                <Download size={15} className="dl-ico" aria-hidden="true" /> Resume
               </Button>
             )}
             <Button href="#contact" size="sm" className="header__cta" onClick={(e) => go(e, 'contact')}>
@@ -131,7 +131,7 @@ export default function Header() {
           </Button>
           {resume && (
             <Button href={resume} variant="secondary" size="lg" target="_blank" rel="noopener noreferrer">
-              <Download size={18} aria-hidden="true" /> Download Resume
+              <Download size={18} className="dl-ico" aria-hidden="true" /> Download Resume
             </Button>
           )}
           <ContactLinks className="menu__contact" labels />
