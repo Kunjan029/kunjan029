@@ -3,7 +3,7 @@ import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair } from 'lucide-rea
 import MiniShell from './MiniShell.jsx'
 import useBest from './useBest.js'
 import { fitCanvas, overlayFor, useAutoPause, useKeys, useRaf } from './arcadeKit.js'
-import { registerPlay } from '../../utils/plays.js'
+import { registerPlay, reportGameOver } from '../../utils/plays.js'
 
 const S = 300, T = 22
 const DIRS = { up: [0, -1, 0], right: [1, 0, 90], down: [0, 1, 180], left: [-1, 0, 270] }
@@ -56,7 +56,7 @@ export default function TankGame() {
     gRef.current = fresh(); sync(); setNewBest(false); set('playing'); registerPlay(); k.clear()
     boardRef.current?.focus({ preventScroll: true }); draw()
   }
-  const end = () => { set('over'); setNewBest(submitBest(gRef.current.score)) }
+  const end = () => { set('over'); setNewBest(submitBest(gRef.current.score)); reportGameOver('tank', gRef.current.score) }
   const togglePause = () => {
     if (phaseRef.current === 'playing') { set('paused'); k.clear() }
     else if (phaseRef.current === 'paused') { set('playing'); boardRef.current?.focus({ preventScroll: true }) }

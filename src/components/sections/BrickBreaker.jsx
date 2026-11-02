@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight } from 'lucide-react'
 import MiniShell from './MiniShell.jsx'
 import useBest from './useBest.js'
 import { fitCanvas, overlayFor, useAutoPause, useKeys, useRaf } from './arcadeKit.js'
-import { registerPlay } from '../../utils/plays.js'
+import { registerPlay, reportGameOver } from '../../utils/plays.js'
 
 const W = 300, H = 400, PW = 66, PH = 10, PY = H - 30, R = 6
 const COLS = 8, ROWS = 5, BW = (W - 20) / COLS, BH = 14
@@ -43,7 +43,7 @@ export default function BrickBreaker() {
     gRef.current = fresh(); sync(); setNewBest(false); set('playing'); registerPlay(); k.clear()
     boardRef.current?.focus({ preventScroll: true }); draw()
   }
-  const end = () => { set('over'); setNewBest(submitBest(gRef.current.score)) }
+  const end = () => { set('over'); setNewBest(submitBest(gRef.current.score)); reportGameOver('bricks', gRef.current.score) }
   const togglePause = () => {
     if (phaseRef.current === 'playing') { set('paused'); k.clear() }
     else if (phaseRef.current === 'paused') { set('playing'); boardRef.current?.focus({ preventScroll: true }) }

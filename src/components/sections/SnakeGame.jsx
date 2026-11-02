@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from 'lucide-react'
 import MiniShell from './MiniShell.jsx'
 import useBest from './useBest.js'
-import { registerPlay } from '../../utils/plays.js'
+import { registerPlay, reportGameOver } from '../../utils/plays.js'
 
 const N = 16
 const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }
@@ -67,7 +67,7 @@ export default function SnakeGame() {
 
   const end = useCallback(() => {
     setPhase('over')
-    setNewBest(submitBest(gRef.current.score))
+    setNewBest(submitBest(gRef.current.score)); reportGameOver('snake', gRef.current.score)
   }, [submitBest])
 
   // game loop: speeds up as the snake eats
