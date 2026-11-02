@@ -114,7 +114,7 @@ const INDUSTRIES = [
 ]
 
 const MILESTONES = [
-  { when: '2011', title: 'Started exploring Photoshop', text: 'The start of a long relationship with pixels.' },
+  { when: '2009', title: 'Started exploring Photoshop', text: 'The start of a long relationship with pixels.' },
   { when: '2016 onwards', title: 'Developed graphic design skills', text: 'Explored different creative formats and kept experimenting.' },
   {
     when: 'Professional journey',
@@ -145,7 +145,7 @@ const STAT_GROUPS = [
 ]
 
 const FACTS = [
-  { v: 'year', icon: Layers, hook: '2011', fact: 'Photoshop has been part of my life since 2011.' },
+  { v: 'year', icon: Layers, hook: '2009', fact: 'Photoshop has been part of my life since 2009.' },
   { v: 'lab', icon: Palette, hook: 'Style lab', fact: 'I love experimenting with visual styles.' },
   { v: 'morph', icon: Shapes, hook: 'Complex in, simple out', fact: 'I enjoy turning complex ideas into simple visuals.' },
   { v: 'spark', icon: Sparkles, hook: 'Still curious', fact: 'I’m always curious about new creative tools and workflows.' },
@@ -240,7 +240,7 @@ export default function About() {
           <p className="about__lead">Every pixel has a purpose. Every project has a story. I bring that care, and a strong eye for visual communication, to full-time design teams and freelance client projects alike.</p>
           <ul className="about__marks" role="list">
             <li>Adobe Photoshop expertise</li>
-            <li>Using Photoshop since 2011</li>
+            <li>Using Photoshop since 2009</li>
           </ul>
         </div>
 
