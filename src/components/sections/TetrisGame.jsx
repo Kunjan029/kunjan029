@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowDown, ArrowLeft, ArrowRight, ChevronsDown, Pause, Play, RotateCcw, RotateCw, X } from 'lucide-react'
 import Button from '../ui/Button.jsx'
 import Reveal from '../ui/Reveal.jsx'
+import { registerPlay } from '../../utils/plays.js'
 import {
   COLS, ROWS, COLORS, SHAPES, createGame, move, rotate, softDrop, hardDrop, stepDown, lock, clearRows, ghostY, dropInterval,
 } from './tetris.js'
@@ -215,6 +216,7 @@ export default function TetrisGame({ onClose }) {
     setHud({ score: 0, level: 1, lines: 0 })
     setPhase('playing')
     setStatus('Game started.')
+    registerPlay()
     drawNext(); draw(); run()
     wrapRef.current?.focus({ preventScroll: true })
   }

@@ -1,7 +1,9 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { BookOpen, Gamepad2 } from 'lucide-react'
 import TetrisGame from './TetrisGame.jsx'
 import CreativeArchive from './CreativeArchive.jsx'
+import { PLAYS_MIN_TO_SHOW } from '../../data/analytics.js'
+import { fetchPlayCount } from '../../utils/plays.js'
 import './AboutArcade.css'
 
 // Two separate experiences, one at a time. Switching unmounts the other, so nothing keeps running in the background.
@@ -13,6 +15,8 @@ const MODES = [
 export default function AboutArcade() {
   const [mode, setMode] = useState('break') // 'break' | 'journey' | null (closed)
   const refs = useRef([])
+  const [plays, setPlays] = useState(null)
+  useEffect(() => { fetchPlayCount().then(setPlays) }, [])
 
   // Tabs pattern: arrow keys move between the two modes
   const onKeyDown = (e, i) => {
@@ -26,6 +30,9 @@ export default function AboutArcade() {
   return (
     <div className="block arcade">
       <p className="arcade__label">CHOOSE YOUR EXPERIENCE</p>
+      {plays !== null && plays >= PLAYS_MIN_TO_SHOW && (
+        <p className="arcade__plays"><strong>{plays.toLocaleString('en-IN')}</strong> people have played so far</p>
+      )}
       <div className="arcade__tabs" role="tablist" aria-label="Choose an experience">
         {MODES.map(({ id, label, sub, Icon }, i) => (
           <button

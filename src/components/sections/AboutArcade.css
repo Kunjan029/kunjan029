@@ -22,3 +22,6 @@
 /* Now its own band below Work */
 .arcade-section { position: relative; padding-block: var(--section-space); border-top: 1px solid var(--color-border); overflow: clip; }
 .arcade-section .block { margin-top: 0; }
+
+.arcade__plays { margin-top: var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
+.arcade__plays strong { color: var(--color-text); }
