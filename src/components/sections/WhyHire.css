@@ -1,0 +1,28 @@
+.why { padding-block: var(--section-space); border-top: 1px solid var(--color-border); }
+.why .line { display: block; }
+.why__label { display: inline-block; font-family: var(--font-heading); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.18em; color: var(--color-accent); }
+.why__title { margin-top: var(--space-5); font-size: clamp(2.4rem, 0.9rem + 6.4vw, 7.25rem); font-weight: 700; line-height: 0.95; letter-spacing: -0.045em; text-transform: uppercase; }
+.why__lead { margin-top: var(--space-6); font-size: var(--text-lg); max-width: 34rem; }
+
+.why__grid { list-style: none; padding: 0; margin: clamp(2.5rem, 6vw, 4.5rem) 0 0; display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+@media (min-width: 640px) { .why__grid { grid-template-columns: 1fr 1fr; gap: var(--space-5); } }
+@media (min-width: 1000px) { .why__grid { grid-template-columns: repeat(3, 1fr); } }
+
+.why__card {
+  position: relative; display: flex; flex-direction: column; gap: var(--space-3); padding: clamp(1.25rem, 2.2vw, 2rem);
+  border: 1px solid var(--color-border-strong); border-radius: var(--radius-lg); background: var(--color-card);
+  transition: border-color var(--duration-base) ease, transform var(--duration-base) var(--ease-out), opacity 0.6s var(--ease-out);
+}
+.why__card.is-pending { opacity: 0; transform: translateY(20px); }
+.why__card { transition-delay: 0s, 0s, var(--d, 0s); }
+.why__num { font-family: var(--font-heading); font-size: var(--text-sm); font-weight: 700; letter-spacing: 0.1em; color: var(--color-accent); }
+.why__card h3 { font-size: var(--text-xl, 1.5rem); line-height: 1.1; letter-spacing: -0.03em; }
+.why__card p { color: var(--color-text-muted); line-height: 1.6; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) { .why__card:hover { border-color: var(--color-accent); transform: translateY(-4px); } }
+
+.why__cta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5); margin-top: clamp(2.5rem, 5vw, 4rem); }
+.why__link { font-family: var(--font-heading); font-weight: 600; border-bottom: 1px solid var(--color-border-strong); padding-bottom: 0.2rem; transition: color var(--duration-fast) ease, border-color var(--duration-fast) ease; }
+@media (hover: hover) { .why__link:hover { color: var(--color-accent); border-color: var(--color-accent); } }
+.why__link:focus-visible { outline: 2px solid var(--color-text); outline-offset: 4px; }
+
+@media (prefers-reduced-motion: reduce) { .why__card { transition: none; } .why__card.is-pending { opacity: 1; transform: none; } }
