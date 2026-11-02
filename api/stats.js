@@ -104,7 +104,7 @@ h2 small{letter-spacing:0;text-transform:none;font-size:12px}
 .dev{display:flex;gap:20px;align-items:center}.dev ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;flex:1}.dev li{display:flex;align-items:center;gap:8px;text-transform:capitalize}.dev li i{width:10px;height:10px;border-radius:3px}.dev li b{margin-left:auto}
 .feed{list-style:none;margin:0;padding:0;max-height:420px;overflow:auto}.feed li{display:grid;grid-template-columns:10px 92px 170px 1fr;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
 .feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}
-.empty{color:var(--mute);margin:0}
+.empty,.feed li.empty{display:block;color:var(--mute);margin:0}
 @media(max-width:980px){.kpis{grid-template-columns:repeat(4,1fr)}.row,.row3,.row2{grid-template-columns:1fr}}
 @media(max-width:560px){.kpis,.kpis4{grid-template-columns:repeat(2,1fr)}.feed li{grid-template-columns:10px 1fr;}.f__p,.f__w{grid-column:2}.kpi b{font-size:28px}}
 </style>
