@@ -19,6 +19,10 @@
 @media (hover: hover) and (pointer: fine) { .fwa:hover .fwa__tip { opacity: 1; transform: translate(0, -50%); } }
 .fwa:focus-visible .fwa__tip { opacity: 1; transform: translate(0, -50%); }
 
+/* Designer icon stacked above the WhatsApp button */
+.fwa--why { bottom: calc(1rem + 3.5rem + 0.75rem + env(safe-area-inset-bottom, 0px)); color: var(--color-accent); border-color: var(--color-accent); }
+@media (hover: hover) { .fwa--why:hover { background: rgb(198 255 77 / 0.14); } }
+
 /* Keep clear of the page's bottom-edge controls on phones */
-@media (max-width: 767px) { .fwa { width: 3.25rem; height: 3.25rem; right: calc(0.875rem + env(safe-area-inset-right, 0px)); bottom: calc(0.875rem + env(safe-area-inset-bottom, 0px)); } }
+@media (max-width: 767px) { .fwa.fwa--why { bottom: calc(0.875rem + 3.25rem + 0.75rem + env(safe-area-inset-bottom, 0px)); } .fwa { width: 3.25rem; height: 3.25rem; right: calc(0.875rem + env(safe-area-inset-right, 0px)); bottom: calc(0.875rem + env(safe-area-inset-bottom, 0px)); } }
 @media (prefers-reduced-motion: reduce) { .fwa, .fwa__tip { transition: none; } }
