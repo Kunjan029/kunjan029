@@ -57,7 +57,6 @@ export default function WhyHire() {
 
         <div className="why__cta">
           <Button href="#contact" size="lg" onClick={go('contact')}>Let’s talk</Button>
-          <a href="#work" className="why__link" onClick={go('work')} data-cursor>See my work</a>
         </div>
       </Container>
     </section>
