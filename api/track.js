@@ -3,7 +3,8 @@ import { configured, redis } from './_redis.js'
 
 // POST /api/track  { type: 'visit' | 'click' | 'section', name?, ref?, device? }
 // Stores only aggregate counts plus a short "recent activity" list (time, city, what happened).
-// The IP address is never stored: it is only hashed (with the day and a secret) to count a visitor once per day.
+// The IP address itself is never stored: it is only hashed (with a secret). A per-day hash counts a visitor once a day,
+// and a stable hash (no day) lets the dashboard tell how many days the same visitor came back.
 const NAME_OK = /^[\w &'.:+\-–]{1,60}$/
 const SECTIONS = new Set(['about', 'why', 'work', 'arcade', 'services', 'contact'])
 const DEVICES = new Set(['phone', 'tablet', 'desktop'])
@@ -23,6 +24,7 @@ export default async function handler(req, res) {
     const day = istDay()
     const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress || ''
     const id = createHash('sha256').update(`${ip}|${day}|${process.env.STATS_KEY || 'kunjan'}`).digest('hex').slice(0, 32)
+    const vid = createHash('sha256').update(`${ip}|${process.env.STATS_KEY || 'kunjan'}`).digest('hex').slice(0, 6)
     const country = String(req.headers['x-vercel-ip-country'] || '??').slice(0, 2).toUpperCase()
     const city = clean(req.headers['x-vercel-ip-city'] || 'Unknown', 60) || 'Unknown'
     const place = `${city}, ${country}`
@@ -34,6 +36,8 @@ export default async function handler(req, res) {
       if (seen.result !== 'OK') return res.status(204).end()
       const ref = clean(body.ref, 60).toLowerCase() || 'direct'
       const device = DEVICES.has(body.device) ? body.device : 'desktop'
+      const [seenDays] = await redis([['HINCRBY', 'visitors:count', vid, 1], ['HSET', 'visitors:city', vid, place]])
+      const nth = Number(seenDays.result) || 1
       await redis([
         ['INCR', 'visits:total'],
         ['HINCRBY', 'visits:days', day, 1],
@@ -41,7 +45,7 @@ export default async function handler(req, res) {
         ['HINCRBY', 'visits:city', place, 1],
         ['HINCRBY', 'visits:ref', ref, 1],
         ['HINCRBY', 'visits:device', device, 1],
-        event(`visit via ${ref} (${device})`),
+        event(`visit via ${ref} (${device}) · ID ${vid} · day ${nth}${nth > 1 ? ' · returning' : ''}`),
         trim,
       ])
     } else if (type === 'click') {

@@ -32,10 +32,10 @@ export default async function handler(req, res) {
     const r = await redis([
       ['GET', 'visits:total'], ['HGETALL', 'visits:days'], ['HGETALL', 'visits:country'], ['HGETALL', 'visits:city'],
       ['HGETALL', 'visits:ref'], ['HGETALL', 'visits:device'], ['HGETALL', 'clicks:total'], ['HGETALL', 'sections:total'],
-      ['LRANGE', 'events', 0, 39], ['GET', 'plays:total'], ['HGETALL', 'plays:city'],
+      ['LRANGE', 'events', 0, 39], ['GET', 'plays:total'], ['HGETALL', 'plays:city'], ['HGETALL', 'visitors:count'], ['HGETALL', 'visitors:city'],
       ...dayKeys.map((d) => ['HGETALL', `clicks:${d}`]),
     ])
-    const [vt, vd, vc, vcity, vref, vdev, clicks, sections, events, pt, pcity, ...clicksByDay] = r.map((x) => x.result)
+    const [vt, vd, vc, vcity, vref, vdev, clicks, sections, events, pt, pcity, vcount, vcityMap, ...clicksByDay] = r.map((x) => x.result)
     const visitsByDay = Object.fromEntries(pairs(vd))
     const series = dayKeys.map((d, i) => ({ d, v: visitsByDay[d] || 0, c: pairs(clicksByDay[i]).reduce((a, [, n]) => a + n, 0) }))
     const total = Number(vt) || 0
@@ -62,6 +62,11 @@ export default async function handler(req, res) {
     const donut = dev.length ? `conic-gradient(${dev.map(([, n], i) => { const s = acc; acc += (n / devTotal) * 100; return `${colors[i % 3]} ${s}% ${acc}%` }).join(',')})` : '#26262b'
     const legend = dev.map(([k, n], i) => `<li><i style="background:${colors[i % 3]}"></i>${esc(k)}<b>${Math.round((n / devTotal) * 100)}%</b></li>`).join('')
 
+    const vis = pairs(vcount)
+    const cityOf = Object.fromEntries(pairs(vcityMap))
+    const repeaters = vis.filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1])
+    const repeatList = repeaters.slice(0, 10).map(([id, n]) => `<li class="click"><i></i><span class="f__t">ID ${esc(id)}</span><span class="f__p">${esc(cityOf[id] || '')}</span><span class="f__w"><b>${num(n)}</b> days visited</span></li>`).join('') || '<li class="empty">No one has come back yet</li>'
+
     const feed = (events || []).map((e) => {
       const [t, place, what = ''] = String(e).split('|')
       const kind = what.startsWith('visit') ? 'visit' : 'click'
@@ -79,7 +84,7 @@ export default async function handler(req, res) {
 header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:20px}
 h1{font:700 26px 'Space Grotesk',sans-serif;margin:0}h1 span{color:var(--acc)}.sub{color:var(--mute);font-size:12px;margin-top:2px}
 .tag{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12px;color:var(--mute);display:flex;gap:8px;align-items:center}.tag:before{content:'';width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 4px rgb(198 255 77/.15)}
-.grid{display:grid;gap:12px}.kpis{grid-template-columns:repeat(6,1fr);margin-bottom:12px}.kpis4{grid-template-columns:repeat(4,1fr);margin-bottom:12px}
+.grid{display:grid;gap:12px}.kpis{grid-template-columns:repeat(7,1fr);margin-bottom:12px}.kpis4{grid-template-columns:repeat(4,1fr);margin-bottom:12px}
 .kpi,.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
 .kpi span{display:block;color:var(--mute);font-size:12px}.kpi b{display:block;font:700 32px/1.15 'Space Grotesk',sans-serif;margin:6px 0 2px}.kpi small{color:var(--mute);font-size:12px}
 .kpi:first-child b,.kpi.hot b,.kpis4 .kpi b{color:var(--acc)}
@@ -100,7 +105,7 @@ h2 small{letter-spacing:0;text-transform:none;font-size:12px}
 .feed{list-style:none;margin:0;padding:0;max-height:420px;overflow:auto}.feed li{display:grid;grid-template-columns:10px 92px 170px 1fr;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
 .feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}
 .empty{color:var(--mute);margin:0}
-@media(max-width:980px){.kpis{grid-template-columns:repeat(3,1fr)}.row,.row3,.row2{grid-template-columns:1fr}}
+@media(max-width:980px){.kpis{grid-template-columns:repeat(4,1fr)}.row,.row3,.row2{grid-template-columns:1fr}}
 @media(max-width:560px){.kpis,.kpis4{grid-template-columns:repeat(2,1fr)}.feed li{grid-template-columns:10px 1fr;}.f__p,.f__w{grid-column:2}.kpi b{font-size:28px}}
 </style>
 <div class="wrap">
@@ -111,6 +116,7 @@ ${kpi('Visitors · all time', num(total), '')}
 ${kpi('Today', num(today), `${delta(today, yest)} vs yesterday`)}
 ${kpi('Last 7 days', num(week), `${delta(week, prevWeek)} vs previous 7`)}
 ${kpi('Clicks today', num(clicksToday), 'all tracked buttons')}
+<div class="kpi hot"><span>Returning visitors</span><b>${num(repeaters.length)}</b><small>of ${num(vis.length)} unique, came on 2+ days</small></div>
 <div class="kpi hot"><span>Resume downloads</span><b>${num(resume)}</b><small>all time</small></div>
 <div class="kpi hot"><span>Reached out</span><b>${num(contact)}</b><small>total of the 4 below</small></div>
 </div>
@@ -136,6 +142,8 @@ ${kpi('Clicks today', num(clicksToday), 'all tracked buttons')}
 <section class="card"><h2>Countries</h2>${hbars(pairs(vc), { n: 8, total, fmt: (k) => COUNTRY[k] || k })}</section>
 <section class="card"><h2>Top cities</h2>${hbars(pairs(vcity), { n: 8, total })}</section>
 </div>
+
+<section class="card"><h2>Returning visitors <small>same network on different days, by anonymous ID</small></h2><ul class="feed">${repeatList}</ul></section>
 
 <section class="card"><h2>Recent activity <small><span style="color:var(--blue)">●</span> visit &nbsp; <span style="color:var(--acc)">●</span> click</small></h2><ul class="feed">${feed}</ul></section>
 </div>`)
