@@ -14,7 +14,7 @@ export const CONTACT = {
   email: 'kunjan029@gmail.com', // confirmed by Kunjan
   linkedin: 'https://www.linkedin.com/in/kunjan-atara-768b86107/', // from the existing Framer portfolio
   instagram: '',
-  resume: 'https://drive.google.com/uc?export=download&id=1mxW7dE_7aAm4xoBWnDJmc_Ud9UX3fmxY',
+  resume: 'https://drive.google.com/uc?export=download&id=1xYVu0V8hu_8Jd1RssQMvsQ1I0ZDKvBVn',
 }
 
 export const getResume = () => CONTACT.resume?.trim() || ''
