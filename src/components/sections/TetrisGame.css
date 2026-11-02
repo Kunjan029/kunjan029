@@ -2,12 +2,12 @@
 
 /* ---------- Intro ---------- */
 .tet__label { display: inline-block; font-family: var(--font-heading); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.18em; color: var(--color-accent); }
-.tet__title { margin-top: var(--space-5); max-width: 18em; font-size: clamp(2rem, 0.8rem + 5.2vw, 5.5rem); font-weight: 700; line-height: 0.98; letter-spacing: -0.045em; text-transform: uppercase; text-wrap: wrap; }
+.tet__title { margin-top: var(--space-4); max-width: 24em; font-size: clamp(1.5rem, 1rem + 2vw, 2.75rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.045em; text-transform: uppercase; text-wrap: wrap; }
 .tet .line { display: block; }
 .tet__lead { margin-top: var(--space-5); font-size: var(--text-lg); max-width: 34rem; }
 
 /* ---------- Card + layout ---------- */
-.tet__card { margin-top: var(--space-7); padding: clamp(1rem, 3vw, 2.25rem); background: var(--color-bg-secondary); border: 1px solid var(--color-border-strong); border-radius: var(--radius-lg); }
+.tet__card { margin-top: var(--space-6); padding: clamp(1rem, 3vw, 2.25rem); background: var(--color-bg-secondary); border: 1px solid var(--color-border-strong); border-radius: var(--radius-lg); }
 .tet__layout { display: grid; gap: var(--space-4); justify-items: center; grid-template-areas: 'stats' 'board' 'tools' 'keys' 'pad'; }
 .tet__stats { grid-area: stats; }
 .tet__board { grid-area: board; }
