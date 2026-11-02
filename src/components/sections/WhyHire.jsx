@@ -6,9 +6,9 @@ import { scrollToId } from '../../utils/scrollTo.js'
 import './WhyHire.css'
 
 const REASONS = [
-  { title: '16+ years of real design work', text: 'Started in 2011 designing wedding albums, and grew through graphics, advertising, e-commerce and UI/UX. I have seen what works across many formats and many kinds of clients.' },
+  { title: '16+ years of real design work', text: 'Started in 2011 designing wedding albums, and grew through graphics, advertising and e-commerce. I have seen what works across many formats and many kinds of clients.' },
   { title: 'Built for e-commerce', text: 'Amazon A+ content, product visuals and marketplace creatives that explain a product clearly and make a listing look trustworthy.' },
-  { title: 'One designer, many formats', text: 'Social media, advertising, branding, photo editing and UI/UX from a single person, so your visuals feel consistent from post to product page.' },
+  { title: 'One designer, many formats', text: 'Social media, advertising, branding, photo editing from a single person, so your visuals feel consistent from post to product page.' },
   { title: 'Experience across industries', text: 'Real estate, perfume, clothing, skincare, events, technology and travel. I learn each audience quickly and adapt the look and tone to it.' },
   { title: 'Strong craft, fast hands', text: 'Deep Photoshop and Illustrator skills mean I can take a rough idea to a polished layout without handing it off or waiting on others.' },
   { title: 'Flexible way of working', text: 'Open to full-time design roles and freelance projects. Clear communication, honest feedback and work that is ready to use.' },
