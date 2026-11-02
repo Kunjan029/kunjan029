@@ -43,7 +43,7 @@ function Example({ ex, hue }) {
   return (
     <figure className="ex" style={{ '--hue': hue }}>
       {ex.placeholder ? (
-        <div className="ex__frame ex__frame--ph"><PlaceholderArt kind={ex.art} /><span className="ex__soon">Artwork to be added</span></div>
+        <div className="ex__frame ex__frame--ph"><PlaceholderArt kind={ex.art} /></div>
       ) : (
         <div className="ex__frame"><img src={ex.src} alt={ex.alt || ex.label} loading="lazy" style={{ objectFit: ex.fit || 'cover', objectPosition: ex.focus || 'center' }} /></div>
       )}
