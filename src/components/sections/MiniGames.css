@@ -101,13 +101,9 @@
 .gpick ~ .block { animation: arcade-in 0.55s var(--ease-out); }
 @media (prefers-reduced-motion: reduce) { .gpick__w, .gpick__k, .gpick__btn, .gpick__btn.is-on, .gpick ~ .block { animation: none; } .gpick__btn { transition: none; } }
 
-/* "childhood": the two o's slowly turn into a smiling face, then back to normal letters */
-.cd__oo { position: relative; display: inline-block; animation: cd-happy 8s ease-in-out 3s infinite; }
-.cd__oo::after {
-  content: ''; position: absolute; left: 6%; right: 6%; top: 74%; height: 0.36em; box-sizing: border-box;
-  border: 0.085em solid var(--color-accent); border-top: 0; border-radius: 0 0 999px 999px; opacity: 0; transform: scaleX(0.4); transform-origin: center top;
-  animation: cd-smile 8s ease-in-out 3s infinite;
-}
-@keyframes cd-smile { 0%, 30% { opacity: 0; transform: scaleX(0.4); } 42%, 68% { opacity: 1; transform: scaleX(1); } 80%, 100% { opacity: 0; transform: scaleX(0.4); } }
-@keyframes cd-happy { 0%, 30% { color: inherit; transform: none; } 42%, 68% { color: var(--color-accent); transform: translateY(-0.03em); } 80%, 100% { color: inherit; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .cd__oo, .cd__oo::after { animation: none; } }
+/* "childhood": the two o's become eyes and the last "d" flips upside down under them as a tongue, ":P", then everything returns */
+.cd__oo, .cd__d { display: inline-block; animation: cd-happy 8s ease-in-out 3s infinite; }
+.cd__d { animation-name: cd-tongue; }
+@keyframes cd-happy { 0%, 30% { color: inherit; transform: none; } 42%, 68% { color: var(--color-accent); transform: translateY(-0.04em); } 80%, 100% { color: inherit; transform: none; } }
+@keyframes cd-tongue { 0%, 30% { color: inherit; transform: none; } 42%, 68% { color: var(--color-accent); transform: translate(-0.95em, 0.74em) rotate(180deg); } 80%, 100% { color: inherit; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .cd__oo, .cd__d { animation: none; } }
