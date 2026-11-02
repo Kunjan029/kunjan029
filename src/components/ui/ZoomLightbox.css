@@ -1,0 +1,18 @@
+.zl { width: 100vw; height: 100vh; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: rgb(5 5 6 / 0.94); color: var(--color-text); overflow: hidden; }
+.zl::backdrop { background: rgb(5 5 6 / 0.94); }
+.zl__stage { position: absolute; inset: 0; display: grid; place-items: center; padding: 3.5rem 1rem 5rem; overflow: hidden; touch-action: none; cursor: zoom-in; }
+.zl__stage.is-zoomed { cursor: grab; }
+.zl__stage:active.is-zoomed { cursor: grabbing; }
+.zl__stage img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; user-select: none; -webkit-user-drag: none; transform-origin: center; will-change: transform; }
+.zl__bar { position: absolute; left: 50%; bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: flex; align-items: center; gap: 0.35rem; padding: 0.35rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius-pill); background: rgb(17 17 20 / 0.92); }
+.zl__bar span { min-width: 3.4rem; text-align: center; font-size: var(--text-sm); font-weight: 600; }
+.zl__bar button, .zl__close { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border: 0; border-radius: 50%; background: transparent; color: var(--color-text); }
+.zl__bar button:disabled { opacity: 0.35; }
+.zl__close { position: absolute; top: calc(1rem + env(safe-area-inset-top, 0px)); right: 1rem; border: 1px solid var(--color-border-strong); background: rgb(17 17 20 / 0.92); }
+@media (hover: hover) { .zl__bar button:not(:disabled):hover, .zl__close:hover { background: var(--color-accent); color: var(--color-on-accent); } }
+.zl button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+/* The small square "enlarge" icon shown on every image */
+.zoom-btn { position: absolute; top: 0.6rem; right: 0.6rem; z-index: 3; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; padding: 0; border: 1px solid rgb(255 255 255 / 0.35); border-radius: 0.4rem; background: rgb(11 11 13 / 0.72); color: #fff; line-height: 0; cursor: zoom-in; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+@media (hover: hover) { .zoom-btn:hover { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); } }
+.zoom-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }

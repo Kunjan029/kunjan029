@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { Maximize2 } from 'lucide-react'
 import { Art, Pager } from './shared.jsx'
+import { openZoom } from '../ZoomLightbox.jsx'
 
 // Clean comparison: side by side on wide screens, a touch-friendly slider on narrow ones. No decoration.
 function Slider({ pair, onOpen, index }) {
@@ -10,6 +12,7 @@ function Slider({ pair, onOpen, index }) {
         <img className="ba-slider__after" src={pair.after.src} alt={pair.after.alt} draggable={false} />
         <img className="ba-slider__before" src={pair.before.src} alt={pair.before.alt} draggable={false} />
         <span className="ba-slider__line" aria-hidden="true"><i /></span>
+        <button type="button" className="zoom-btn" onClick={() => openZoom({ src: pair.after.src, alt: pair.after.alt })} aria-label="Enlarge edited image"><Maximize2 size={16} aria-hidden="true" /></button>
         <span className="ba-label ba-label--l">Original</span>
         <span className="ba-label ba-label--r">Edited</span>
         <input type="range" min="0" max="100" value={pos} onChange={(e) => setPos(Number(e.target.value))} aria-label="Comparison: drag between original and edited" />

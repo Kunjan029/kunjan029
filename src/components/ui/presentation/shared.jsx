@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { Maximize2 } from 'lucide-react'
+import { openZoom } from '../ZoomLightbox.jsx'
 
 // Natural pixel size of an image, so presentations can respect original dimensions and ratios
 export function useNatural(src) {
@@ -20,11 +22,12 @@ export function Art({ image, index, onOpen, className = '', eager = false, label
     <button
       type="button"
       className={`px-art ${className}`}
-      onClick={() => onOpen?.(index)}
+      onClick={(e) => { if (e.target.closest?.('.zoom-btn')) { e.stopPropagation(); openZoom({ src: image.src, alt: image.alt }); return } onOpen?.(index) }}
       aria-label={label || `Open image ${index + 1} in the original viewer`}
       data-cursor-label="VIEW"
     >
       <img src={image.src} alt={image.alt} draggable={false} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+      <span className="zoom-btn" role="img" aria-label="Enlarge image"><Maximize2 size={16} aria-hidden="true" /></span>
     </button>
   )
 }

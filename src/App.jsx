@@ -12,6 +12,7 @@ import FloatingWhatsApp from './components/ui/FloatingWhatsApp.jsx'
 import { useEffect } from 'react'
 import { installMailtoFallback } from './utils/mailtoFallback.js'
 import Cursor from './components/ui/Cursor.jsx'
+import ZoomLightbox from './components/ui/ZoomLightbox.jsx'
 
 export default function App() {
   useEffect(() => installMailtoFallback(), [])
@@ -32,6 +33,7 @@ export default function App() {
       </main>
       <Footer />
       <FloatingWhatsApp />
+      <ZoomLightbox />
     </>
   )
 }

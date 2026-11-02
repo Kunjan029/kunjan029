@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowLeft, ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, Maximize2, X } from 'lucide-react'
+import { openZoom } from './ZoomLightbox.jsx'
 import Button from './Button.jsx'
 import ProjectVisual, { imageCount } from './ProjectVisual.jsx'
 import Presentation, { hasContext } from './presentation/index.jsx'
@@ -91,6 +92,9 @@ export default function ProjectModal({ project, onClose }) {
                   <button type="button" className="pm__nav pm__nav--prev" onClick={() => go(-1)} aria-label="Previous image" data-cursor-label="PREV"><ChevronLeft size={22} /></button>
                   <button type="button" className="pm__nav pm__nav--next" onClick={() => go(1)} aria-label="Next image" data-cursor-label="NEXT"><ChevronRight size={22} /></button>
                 </>
+              )}
+              {project.images?.[idx]?.src && (
+                <button type="button" className="zoom-btn" onPointerDown={(e) => e.stopPropagation()} onClick={() => openZoom({ src: project.images[idx].src, alt: project.images[idx].alt })} aria-label="Enlarge image" data-cursor-label="ZOOM"><Maximize2 size={16} aria-hidden="true" /></button>
               )}
               <span className="pm__counter">{String(idx + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}</span>
             </div>
