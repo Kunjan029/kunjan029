@@ -57,7 +57,7 @@
 .mg__dpad--h { grid-template-areas: 'l r'; grid-template-columns: 1fr 1fr; width: min(100%, 20rem); }
 .mg__dpad--tank { grid-template-areas: '. u . f' 'l d r f'; grid-template-columns: repeat(3, 1fr) 1.4fr; width: min(100%, 22rem); }
 .mg__pad-fire { grid-area: f; }
-.gpick__intro { color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-xl, 1.5rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.03em; max-width: 28em; margin-bottom: var(--space-5); text-wrap: balance; }
+.gpick__intro { color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-xl, 1.5rem); font-weight: 700; line-height: 1.32; letter-spacing: -0.03em; max-width: 28em; margin-bottom: var(--space-5); text-wrap: balance; }
 
 /* Same layout as Tetris: board on the left, stats + controls on the right (stacked on small screens) */
 .mg__card { margin-top: var(--space-6); padding: clamp(1rem, 3vw, 2.25rem); background: var(--color-bg-secondary); border: 1px solid var(--color-border-strong); border-radius: var(--radius-lg); }
@@ -100,3 +100,14 @@
 @keyframes gp-glow { 50% { box-shadow: 0 0 0 6px rgb(198 255 77 / 0.14); } }
 .gpick ~ .block { animation: arcade-in 0.55s var(--ease-out); }
 @media (prefers-reduced-motion: reduce) { .gpick__w, .gpick__k, .gpick__btn, .gpick__btn.is-on, .gpick ~ .block { animation: none; } .gpick__btn { transition: none; } }
+
+/* "childhood": the two o's slowly turn into a smiling face, then back to normal letters */
+.cd__oo { position: relative; display: inline-block; animation: cd-happy 8s ease-in-out 3s infinite; }
+.cd__oo::after {
+  content: ''; position: absolute; left: 6%; right: 6%; top: 74%; height: 0.36em; box-sizing: border-box;
+  border: 0.085em solid var(--color-accent); border-top: 0; border-radius: 0 0 999px 999px; opacity: 0; transform: scaleX(0.4); transform-origin: center top;
+  animation: cd-smile 8s ease-in-out 3s infinite;
+}
+@keyframes cd-smile { 0%, 30% { opacity: 0; transform: scaleX(0.4); } 42%, 68% { opacity: 1; transform: scaleX(1); } 80%, 100% { opacity: 0; transform: scaleX(0.4); } }
+@keyframes cd-happy { 0%, 30% { color: inherit; transform: none; } 42%, 68% { color: var(--color-accent); transform: translateY(-0.03em); } 80%, 100% { color: inherit; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .cd__oo, .cd__oo::after { animation: none; } }

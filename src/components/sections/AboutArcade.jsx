@@ -65,7 +65,7 @@ export default function AboutArcade() {
           {mode === 'break' ? (
             <>
               <p className="gpick__intro" aria-label={INTRO}>
-                {INTRO.split(' ').map((w, i) => <span key={i} className="gpick__w" style={{ '--i': i }} aria-hidden="true">{w}{' '}</span>)}
+                {INTRO.split(' ').map((w, i) => <span key={i} className="gpick__w" style={{ '--i': i }} aria-hidden="true">{w === 'childhood' ? <>childh<span className="cd__oo">oo</span>d</> : w}{' '}</span>)}
               </p>
               <div className="gpick" role="group" aria-label="Pick a game">
                 <span className="gpick__k">PICK A GAME</span>
