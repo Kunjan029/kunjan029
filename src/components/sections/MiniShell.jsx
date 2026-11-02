@@ -3,7 +3,7 @@ import Button from '../ui/Button.jsx'
 import './MiniGames.css'
 
 // Shared frame for the small games: stats, board with overlay, tools and key hints.
-export default function MiniShell({ name, lead, stats, boardClass = '', boardRef, onKeyDown, onPointerDown, onPointerUp, boardLabel, overlay, children, onPause, paused, canPause, onRestart, keys, pad }) {
+export default function MiniShell({ name, lead, stats, boardClass = '', boardRef, onKeyDown, onKeyUp, onBlur, onPointerDown, onPointerUp, onPointerMove, boardLabel, overlay, children, onPause, paused, canPause, onRestart, keys, pad }) {
   return (
     <div className="block mg">
       <p className="mg__label">{name.toUpperCase()}</p>
@@ -19,6 +19,9 @@ export default function MiniShell({ name, lead, stats, boardClass = '', boardRef
           role="group"
           aria-label={boardLabel}
           onKeyDown={onKeyDown}
+          onKeyUp={onKeyUp}
+          onBlur={onBlur}
+          onPointerMove={onPointerMove}
           onPointerDown={onPointerDown}
           onPointerUp={onPointerUp}
         >

@@ -15,7 +15,7 @@
 .mg__label { font-family: var(--font-heading); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.18em; color: var(--color-accent); }
 .mg__lead { margin-top: var(--space-3); font-size: var(--text-lg); max-width: 34rem; }
 .mg__card { margin-top: var(--space-6); display: grid; gap: var(--space-4); justify-items: center; padding: clamp(1rem, 3vw, 2.25rem); background: var(--color-bg-secondary); border: 1px solid var(--color-border-strong); border-radius: var(--radius-lg); }
-.mg__stats { width: min(100%, 28rem); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.mg__stats { width: min(100%, 28rem); display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: var(--space-3); }
 .mg__tools { width: min(100%, 28rem); display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: var(--space-3); }
 .mg__keys { grid-area: auto; width: min(100%, 28rem); }
 .mg__board {
@@ -54,3 +54,11 @@
 .g2048__t.v1024 { background: #C6FF4D; color: #0B0B0D; font-size: 0.7em; }
 .g2048__t.v2048 { background: #F2F0EA; color: #0B0B0D; font-size: 0.7em; box-shadow: 0 0 24px rgb(198 255 77 / 0.5); }
 @media (prefers-reduced-motion: reduce) { .g2048__t, .g2048__t.is-new, .g2048__t.is-merged { animation: none; transition: none; } }
+
+/* Retro games */
+.mg__board--tall { aspect-ratio: 3 / 4; width: min(100%, 24rem, calc((100svh - 18rem) * 0.75)); }
+.mg__board--rc { aspect-ratio: 2 / 3; width: min(100%, 20rem, calc((100svh - 18rem) * 0.667)); }
+.mg__dpad--h { grid-template-areas: 'l r'; grid-template-columns: 1fr 1fr; width: min(100%, 20rem); }
+.mg__dpad--tank { grid-template-areas: '. u . f' 'l d r f'; grid-template-columns: repeat(3, 1fr) 1.4fr; width: min(100%, 22rem); }
+.mg__pad-fire { grid-area: f; }
+.gpick__intro { color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-xl, 1.5rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.03em; max-width: 28em; margin-bottom: var(--space-5); text-wrap: balance; }
