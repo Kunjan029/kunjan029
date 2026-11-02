@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { BookOpen, Gamepad2 } from 'lucide-react'
 import TetrisGame from './TetrisGame.jsx'
+import SnakeGame from './SnakeGame.jsx'
+import Game2048 from './Game2048.jsx'
+import './MiniGames.css'
 import CreativeArchive from './CreativeArchive.jsx'
 import { PLAYS_MIN_TO_SHOW } from '../../data/analytics.js'
 import { fetchPlayCount } from '../../utils/plays.js'
@@ -8,11 +11,14 @@ import './AboutArcade.css'
 
 // Two separate experiences, one at a time. Switching unmounts the other, so nothing keeps running in the background.
 const MODES = [
-  { id: 'break', label: 'Creative Break', sub: 'Play a round of Tetris', Icon: Gamepad2 },
+  { id: 'break', label: 'Creative Break', sub: 'Pick a game: Tetris, Snake or 2048', Icon: Gamepad2 },
   { id: 'journey', label: 'The Creative Journey', sub: 'Open the Creative Archive', Icon: BookOpen },
 ]
 
+const GAMES = [{ id: 'tetris', label: 'Tetris' }, { id: 'snake', label: 'Snake' }, { id: '2048', label: '2048' }]
+
 export default function AboutArcade() {
+  const [game, setGame] = useState('tetris')
   const [mode, setMode] = useState('break') // 'break' | 'journey' | null (closed)
   const refs = useRef([])
   const [plays, setPlays] = useState(null)
@@ -58,7 +64,19 @@ export default function AboutArcade() {
 
       {mode && (
         <div id="arcade-panel" role="tabpanel" aria-labelledby={`arcade-tab-${mode}`} className="arcade__panel" key={mode}>
-          {mode === 'break' ? <TetrisGame onClose={() => { setMode(null); refs.current[0]?.focus() }} /> : <CreativeArchive />}
+          {mode === 'break' ? (
+            <>
+              <div className="gpick" role="group" aria-label="Pick a game">
+                <span className="gpick__k">PICK A GAME</span>
+                {GAMES.map((g) => (
+                  <button key={g.id} type="button" className={`gpick__btn${game === g.id ? ' is-on' : ''}`} aria-pressed={game === g.id} onClick={() => setGame(g.id)} data-cursor>{g.label}</button>
+                ))}
+              </div>
+              {game === 'tetris' && <TetrisGame key="tetris" onClose={() => { setMode(null); refs.current[0]?.focus() }} />}
+              {game === 'snake' && <SnakeGame key="snake" />}
+              {game === '2048' && <Game2048 key="2048" />}
+            </>
+          ) : <CreativeArchive />}
         </div>
       )}
     </div>

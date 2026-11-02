@@ -1,0 +1,56 @@
+/* Picker: choose which game to play */
+.gpick { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-bottom: var(--space-6); }
+.gpick__k { font-family: var(--font-heading); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.18em; color: var(--color-text-muted); margin-right: var(--space-2); }
+.gpick__btn {
+  min-height: 2.75rem; padding: 0 var(--space-5); border: 1px solid var(--color-border-strong); border-radius: var(--radius-pill); background: transparent; color: var(--color-text);
+  font-family: var(--font-heading); font-size: var(--text-sm); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+  transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+.gpick__btn.is-on { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); }
+@media (hover: hover) { .gpick__btn:not(.is-on):hover { border-color: var(--color-accent); color: var(--color-accent); } }
+.gpick__btn:focus-visible { outline: 2px solid var(--color-text); outline-offset: 3px; }
+.gpick__close { margin-left: auto; }
+
+/* Mini game frame */
+.mg__label { font-family: var(--font-heading); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.18em; color: var(--color-accent); }
+.mg__lead { margin-top: var(--space-3); font-size: var(--text-lg); max-width: 34rem; }
+.mg__card { margin-top: var(--space-6); display: grid; gap: var(--space-4); justify-items: center; padding: clamp(1rem, 3vw, 2.25rem); background: var(--color-bg-secondary); border: 1px solid var(--color-border-strong); border-radius: var(--radius-lg); }
+.mg__stats { width: min(100%, 28rem); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.mg__tools { width: min(100%, 28rem); display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: var(--space-3); }
+.mg__keys { grid-area: auto; width: min(100%, 28rem); }
+.mg__board {
+  position: relative; width: min(100%, 28rem, calc(100svh - 18rem)); min-width: 15rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius-md); background: var(--color-bg);
+  overflow: hidden; outline: none; touch-action: none; user-select: none; -webkit-user-select: none; transition: border-color var(--duration-fast) ease, box-shadow var(--duration-base) ease;
+}
+.mg__board:focus-visible, .mg__board:focus { border-color: var(--color-accent); box-shadow: 0 0 0 3px rgb(198 255 77 / 0.14); }
+.mg__board--sq { aspect-ratio: 1; }
+.mg__canvas { display: block; width: 100%; height: 100%; }
+
+.mg__dpad { width: min(100%, 15rem); display: grid; grid-template-columns: repeat(3, 1fr); grid-template-areas: '. u .' 'l d r'; gap: var(--space-2); }
+.mg__pad-up { grid-area: u; } .mg__pad-left { grid-area: l; } .mg__pad-down { grid-area: d; } .mg__pad-right { grid-area: r; }
+@media (hover: hover) and (pointer: fine) { .mg__dpad { display: none; } }
+
+/* 2048 */
+.g2048 { --gap: 3%; padding: var(--gap); }
+.g2048__grid { position: relative; width: 100%; height: 100%; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 3%; }
+.g2048__bg { border-radius: 10px; background: var(--color-bg-secondary); }
+.g2048__t {
+  position: absolute; width: 22.75%; height: 22.75%; left: calc(var(--c) * 25.75%); top: calc(var(--r) * 25.75%); display: grid; place-items: center; border-radius: 10px;
+  background: #2a2a31; color: var(--color-text); font-family: var(--font-heading); font-weight: 700; letter-spacing: -0.04em; font-size: clamp(1.1rem, 0.6rem + 3.2vw, 2rem);
+  transition: left 0.12s ease, top 0.12s ease;
+}
+.g2048__t.is-new { animation: g-pop 0.2s ease; }
+.g2048__t.is-merged { animation: g-merge 0.2s ease; }
+@keyframes g-pop { from { transform: scale(0.4); opacity: 0; } }
+@keyframes g-merge { 50% { transform: scale(1.12); } }
+.g2048__t.v4 { background: #34343c; }
+.g2048__t.v8 { background: #4a5a24; }
+.g2048__t.v16 { background: #5d7424; }
+.g2048__t.v32 { background: #719023; }
+.g2048__t.v64 { background: #85ac2b; color: #0B0B0D; }
+.g2048__t.v128 { background: #9ccc36; color: #0B0B0D; font-size: 0.85em; }
+.g2048__t.v256 { background: #aee443; color: #0B0B0D; font-size: 0.85em; }
+.g2048__t.v512 { background: #bdf34a; color: #0B0B0D; font-size: 0.85em; }
+.g2048__t.v1024 { background: #C6FF4D; color: #0B0B0D; font-size: 0.7em; }
+.g2048__t.v2048 { background: #F2F0EA; color: #0B0B0D; font-size: 0.7em; box-shadow: 0 0 24px rgb(198 255 77 / 0.5); }
+@media (prefers-reduced-motion: reduce) { .g2048__t, .g2048__t.is-new, .g2048__t.is-merged { animation: none; transition: none; } }
