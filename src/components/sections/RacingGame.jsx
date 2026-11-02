@@ -19,7 +19,7 @@ function car(ctx, cx, y, color, up) {
   ;[y + 6, y + CAR_H - 16].forEach((wy2) => { ctx.fillRect(cx - CAR_W / 2 - 3, wy2, 4, 10); ctx.fillRect(cx + CAR_W / 2 - 1, wy2, 4, 10) })
 }
 
-export default function RacingGame() {
+export default function RacingGame({ onClose }) {
   const canvasRef = useRef(null)
   const boardRef = useRef(null)
   const gRef = useRef(fresh())
@@ -94,7 +94,8 @@ export default function RacingGame() {
   return (
     <MiniShell
       name="Racing" lead="Switch lanes, dodge the traffic and see how long you can keep driving. It speeds up as you go."
-      stats={[['SCORE', score], ['BEST', Math.max(best, score)]]}
+      onClose={onClose}
+      stats={[['SCORE', score], ['LEVEL', Math.floor(score / 10) + 1], ['BEST', Math.max(best, score)]]}
       boardRef={boardRef} boardClass="mg__board--rc" boardLabel="Racing board. Left and right arrows or A and D change lane, P pauses."
       onKeyDown={onKeyDown} onPointerDown={onPointerDown} onPointerUp={onPointerUp}
       overlay={overlayFor({ phase, name: 'Racing', tagline: 'Dodge the cars coming at you.', best, score, newBest, start, resume: togglePause })}

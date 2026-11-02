@@ -15,7 +15,7 @@ function placeFood(snake) {
   return free[Math.floor(Math.random() * free.length)] || [0, 0]
 }
 
-export default function SnakeGame() {
+export default function SnakeGame({ onClose }) {
   const canvasRef = useRef(null)
   const boardRef = useRef(null)
   const gRef = useRef(fresh())
@@ -135,7 +135,8 @@ export default function SnakeGame() {
   return (
     <MiniShell
       name="Snake" lead="Guide the snake, eat the dots and don’t bite yourself. It gets faster as you grow."
-      stats={[['SCORE', score], ['BEST', Math.max(best, score)]]}
+      onClose={onClose}
+      stats={[['SCORE', score], ['LENGTH', score / 10 + 3], ['BEST', Math.max(best, score)]]}
       boardRef={boardRef} boardClass="mg__board--sq" boardLabel="Snake board. Use the arrow keys or W A S D to steer, P to pause."
       onKeyDown={onKeyDown} onPointerDown={onPointerDown} onPointerUp={onPointerUp}
       overlay={overlay} onPause={togglePause} paused={phase === 'paused'} canPause={phase === 'playing' || phase === 'paused'} onRestart={start}

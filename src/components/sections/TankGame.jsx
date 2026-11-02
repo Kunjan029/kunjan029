@@ -24,7 +24,7 @@ function tank(ctx, t, color) {
   ctx.restore()
 }
 
-export default function TankGame() {
+export default function TankGame({ onClose }) {
   const canvasRef = useRef(null)
   const boardRef = useRef(null)
   const gRef = useRef(fresh())
@@ -133,6 +133,7 @@ export default function TankGame() {
     <MiniShell
       name="Tank Battle" lead="Move, aim and fire. Take out the enemy tanks and don’t let them hit you."
       stats={[['SCORE', hud.score], ['LIVES', hud.lives], ['BEST', Math.max(best, hud.score)]]}
+      onClose={onClose}
       boardRef={boardRef} boardClass="mg__board--sq" boardLabel="Tank battle board. Arrow keys move, space fires, P pauses."
       onKeyDown={onKeyDown} onKeyUp={k.up} onBlur={k.clear}
       overlay={overlayFor({ phase, name: 'Tank Battle', tagline: 'Destroy every enemy tank.', best, score: hud.score, newBest, start, resume: togglePause })}

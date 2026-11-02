@@ -12,7 +12,7 @@ const bricks = () => Array.from({ length: ROWS * COLS }, (_, i) => ({ c: i % COL
 const fresh = () => ({ px: W / 2 - PW / 2, bx: W / 2, by: PY - R - 1, vx: 0, vy: 0, wait: 0.8, bricks: bricks(), score: 0, lives: 3, level: 1 })
 const speedFor = (lvl) => 230 + (lvl - 1) * 25
 
-export default function BrickBreaker() {
+export default function BrickBreaker({ onClose }) {
   const canvasRef = useRef(null)
   const boardRef = useRef(null)
   const gRef = useRef(fresh())
@@ -107,6 +107,7 @@ export default function BrickBreaker() {
     <MiniShell
       name="Brick Breaker" lead="Bounce the ball off your paddle and break every brick. Move with the arrow keys or just slide your mouse or finger."
       stats={[['SCORE', hud.score], ['LIVES', hud.lives], ['BEST', Math.max(best, hud.score)]]}
+      onClose={onClose}
       boardRef={boardRef} boardClass="mg__board--tall" boardLabel="Brick Breaker board. Left and right arrows move the paddle, P pauses."
       onKeyDown={onKeyDown} onKeyUp={k.up} onBlur={k.clear} onPointerMove={onPointerMove} onPointerDown={onPointerMove}
       overlay={overlayFor({ phase, name: 'Brick Breaker', tagline: 'Don’t let the ball drop.', best, score: hud.score, newBest, start, resume: togglePause })}

@@ -22,6 +22,7 @@ export default function AboutArcade() {
   const [game, setGame] = useState('tetris')
   const [mode, setMode] = useState('break') // 'break' | 'journey' | null (closed)
   const refs = useRef([])
+  const closeGames = () => { setMode(null); refs.current[0]?.focus() }
 
   // Tabs pattern: arrow keys move between the two modes
   const onKeyDown = (e, i) => {
@@ -69,11 +70,11 @@ export default function AboutArcade() {
                   <button key={g.id} type="button" className={`gpick__btn${game === g.id ? ' is-on' : ''}`} aria-pressed={game === g.id} onClick={() => setGame(g.id)} data-cursor>{g.label}</button>
                 ))}
               </div>
-              {game === 'tetris' && <TetrisGame key="tetris" onClose={() => { setMode(null); refs.current[0]?.focus() }} />}
-              {game === 'snake' && <SnakeGame key="snake" />}
-              {game === 'racing' && <RacingGame key="racing" />}
-              {game === 'tank' && <TankGame key="tank" />}
-              {game === 'bricks' && <BrickBreaker key="bricks" />}
+              {game === 'tetris' && <TetrisGame key="tetris" onClose={closeGames} />}
+              {game === 'snake' && <SnakeGame key="snake" onClose={closeGames} />}
+              {game === 'racing' && <RacingGame key="racing" onClose={closeGames} />}
+              {game === 'tank' && <TankGame key="tank" onClose={closeGames} />}
+              {game === 'bricks' && <BrickBreaker key="bricks" onClose={closeGames} />}
               <Leaderboard key={`lb-${game}`} game={game} />
             </>
           ) : <CreativeArchive />}
