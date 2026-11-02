@@ -105,5 +105,5 @@
 .cd__oo, .cd__d { display: inline-block; animation: cd-happy 8s ease-in-out 3s infinite; }
 .cd__d { animation-name: cd-tongue; }
 @keyframes cd-happy { 0%, 30% { color: inherit; transform: none; } 42%, 68% { color: var(--color-accent); transform: translateY(-0.04em); } 80%, 100% { color: inherit; transform: none; } }
-@keyframes cd-tongue { 0%, 30% { color: inherit; transform: none; } 42%, 68% { color: var(--color-accent); transform: translate(-0.95em, 0.74em) rotate(180deg); } 80%, 100% { color: inherit; transform: none; } }
+@keyframes cd-tongue { 0%, 30% { color: inherit; transform: none; } 42%, 68% { color: var(--color-accent); transform: translate(-0.88em, 0.74em) rotate(-90deg); } 80%, 100% { color: inherit; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .cd__oo, .cd__d { animation: none; } }
