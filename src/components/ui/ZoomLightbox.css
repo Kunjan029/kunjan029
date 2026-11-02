@@ -3,7 +3,7 @@
 .zl__stage { position: absolute; inset: 0; display: grid; place-items: center; padding: 3.5rem 1rem 5rem; overflow: hidden; touch-action: none; cursor: zoom-in; }
 .zl__stage.is-zoomed { cursor: grab; }
 .zl__stage:active.is-zoomed { cursor: grabbing; }
-.zl__stage img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; user-select: none; -webkit-user-drag: none; transform-origin: center; will-change: transform; }
+.zl__stage img { max-width: calc(100vw - 2rem); max-height: calc(100vh - 8.5rem); max-height: calc(100dvh - 8.5rem); width: auto; height: auto; object-fit: contain; user-select: none; -webkit-user-drag: none; transform-origin: center; will-change: transform; }
 .zl__bar { position: absolute; left: 50%; bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: flex; align-items: center; gap: 0.35rem; padding: 0.35rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius-pill); background: rgb(17 17 20 / 0.92); }
 .zl__bar span { min-width: 3.4rem; text-align: center; font-size: var(--text-sm); font-weight: 600; }
 .zl__bar button, .zl__close { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border: 0; border-radius: 50%; background: transparent; color: var(--color-text); }

@@ -29,7 +29,7 @@ export default function ZoomLightbox() {
     const st = stageRef.current, im = imgRef.current
     if (!st || !im) return p
     const mx = Math.max(0, (im.offsetWidth * zoom - st.clientWidth) / 2) + 40
-    const my = Math.max(0, (im.offsetHeight * zoom - st.clientHeight) / 2) + 40
+    const my = Math.max(0, (im.offsetHeight * zoom - st.clientHeight) / 2) + 90
     return { x: Math.min(mx, Math.max(-mx, p.x)), y: Math.min(my, Math.max(-my, p.y)) }
   }
   const set = (next) => {
