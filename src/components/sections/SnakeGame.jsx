@@ -85,9 +85,9 @@ export default function SnakeGame() {
       g.snake = [head, ...body]
       if (eats) { g.score += 10; setScore(g.score); g.food = placeFood(g.snake) }
       draw()
-      id = setTimeout(tick, Math.max(65, 140 - g.score * 0.7))
+      id = setTimeout(tick, Math.max(74, 158 - g.score * 0.8))
     }
-    id = setTimeout(tick, 140)
+    id = setTimeout(tick, 158)
     return () => clearTimeout(id)
   }, [phase, draw, end])
 
