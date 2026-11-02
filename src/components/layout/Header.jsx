@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Download, Menu, X } from 'lucide-react'
 import gsap from 'gsap'
 import Button from '../ui/Button.jsx'
 import Availability from '../ui/Availability.jsx'
 import ContactLinks from '../ui/ContactLinks.jsx'
+import { getResume } from '../../data/contact.js'
 import { scrollToId } from '../../utils/scrollTo.js'
 import './Header.css'
 
@@ -14,6 +15,7 @@ const NAV = [
 ]
 
 export default function Header() {
+  const resume = getResume()
   const [compact, setCompact] = useState(false)
   const [open, setOpen] = useState(false)
   const barRef = useRef(null)
@@ -85,6 +87,11 @@ export default function Header() {
           <div className="header__right">
             <Availability label="Available" className="header__avail" />
             <ContactLinks className="header__contact" tooltips />
+            {resume && (
+              <Button href={resume} variant="secondary" size="sm" className="header__cta header__resume" target="_blank" rel="noopener noreferrer" data-cursor>
+                <Download size={15} aria-hidden="true" /> Resume
+              </Button>
+            )}
             <Button href="#contact" size="sm" className="header__cta" onClick={(e) => go(e, 'contact')}>
               Let’s Talk
             </Button>
@@ -122,6 +129,11 @@ export default function Header() {
           <Button href="#contact" size="lg" onClick={(e) => go(e, 'contact')}>
             Let’s Talk
           </Button>
+          {resume && (
+            <Button href={resume} variant="secondary" size="lg" target="_blank" rel="noopener noreferrer">
+              <Download size={18} aria-hidden="true" /> Download Resume
+            </Button>
+          )}
           <ContactLinks className="menu__contact" labels />
           <Availability label="Open to roles and projects" />
         </div>

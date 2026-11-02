@@ -148,3 +148,5 @@
 html { scroll-padding-top: 1.5rem; }
 section[id], [id='top'] { scroll-margin-top: 0; }
 
+.header__resume { gap: 0.4rem; }
+@media (min-width: 768px) and (max-width: 979px) { .header__resume { display: none; } }
