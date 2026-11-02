@@ -25,13 +25,53 @@ export default function ZoomLightbox() {
   const stageRef = useRef(null)
   const imgRef = useRef(null)
   // Keeps the enlarged image inside reach: you can scroll to every edge but never lose it off-screen
-  const clamp = (p, zoom) => {
+  const limits = (zoom) => {
     const st = stageRef.current, im = imgRef.current
-    if (!st || !im) return p
-    const mx = Math.max(0, (im.offsetWidth * zoom - st.clientWidth) / 2) + 40
-    const my = Math.max(0, (im.offsetHeight * zoom - st.clientHeight) / 2) + 90
-    return { x: Math.min(mx, Math.max(-mx, p.x)), y: Math.min(my, Math.max(-my, p.y)) }
+    if (!st || !im) return null
+    return {
+      mx: Math.max(0, (im.offsetWidth * zoom - st.clientWidth) / 2) + 40,
+      my: Math.max(0, (im.offsetHeight * zoom - st.clientHeight) / 2) + 90,
+      sw: st.clientWidth, sh: st.clientHeight,
+    }
   }
+  const clamp = (p, zoom) => {
+    const l = limits(zoom)
+    if (!l) return p
+    return { x: Math.min(l.mx, Math.max(-l.mx, p.x)), y: Math.min(l.my, Math.max(-l.my, p.y)) }
+  }
+  // Visible scrollbars: thumb size = how much of the image is on screen, thumb position = where you are
+  const sb = z > 1 ? limits(z) : null
+  const bar = (axis) => {
+    if (!sb) return null
+    const m = axis === 'y' ? sb.my : sb.mx
+    const view = axis === 'y' ? sb.sh : sb.sw
+    const ratio = Math.max(0.12, view / (view + 2 * m))
+    const frac = m ? (m - (axis === 'y' ? pos.y : pos.x)) / (2 * m) : 0
+    return { m, ratio, frac: Math.min(1, Math.max(0, frac)) }
+  }
+  const setFrac = (axis, f) => {
+    const l = limits(z); if (!l) return
+    const m = axis === 'y' ? l.my : l.mx
+    const v = m - Math.min(1, Math.max(0, f)) * 2 * m
+    setPos((p) => (axis === 'y' ? { ...p, y: v } : { ...p, x: v }))
+  }
+  const dragBar = (axis, b) => (e) => {
+    e.preventDefault(); e.stopPropagation()
+    const track = e.currentTarget.parentElement.getBoundingClientRect()
+    const len = (axis === 'y' ? track.height : track.width) * (1 - b.ratio) || 1
+    const start = axis === 'y' ? e.clientY : e.clientX
+    const f0 = b.frac
+    const mv = (ev) => setFrac(axis, f0 + ((axis === 'y' ? ev.clientY : ev.clientX) - start) / len)
+    const up2 = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up2) }
+    window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up2)
+  }
+  const jump = (axis, b) => (e) => {
+    if (e.target !== e.currentTarget) return
+    const r = e.currentTarget.getBoundingClientRect()
+    const f = ((axis === 'y' ? e.clientY - r.top : e.clientX - r.left) / (axis === 'y' ? r.height : r.width) - b.ratio / 2) / (1 - b.ratio)
+    setFrac(axis, f)
+  }
+  const by = bar('y'), bx = bar('x')
   const set = (next) => {
     const v = Math.min(MAX, Math.max(MIN, next))
     setZ(v)
@@ -80,6 +120,17 @@ export default function ZoomLightbox() {
           >
             <img ref={imgRef} src={img.src} alt={img.alt || ''} draggable={false} style={{ transform: `translate(${pos.x}px, ${pos.y}px) scale(${z})` }} />
           </div>
+          {by && (
+            <div className="zl__sb zl__sb--y" onPointerDown={jump('y', by)} aria-hidden="true">
+              <i style={{ height: `${by.ratio * 100}%`, top: `${by.frac * (1 - by.ratio) * 100}%` }} onPointerDown={dragBar('y', by)} />
+            </div>
+          )}
+          {bx && (
+            <div className="zl__sb zl__sb--x" onPointerDown={jump('x', bx)} aria-hidden="true">
+              <i style={{ width: `${bx.ratio * 100}%`, left: `${bx.frac * (1 - bx.ratio) * 100}%` }} onPointerDown={dragBar('x', bx)} />
+            </div>
+          )}
+          <p className="zl__hint">{z > 1 ? 'Scroll, drag the image or use the bars to move around' : 'Press + to zoom in and see details'}</p>
           <div className="zl__bar" role="group" aria-label="Zoom controls">
             <button type="button" onClick={() => set(z - 0.5)} disabled={z <= MIN} aria-label="Zoom out"><Minus size={18} /></button>
             <span aria-live="polite">{Math.round(z * 100)}%</span>
