@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger)
 const TILES = [
   { icon: PenTool, kicker: 'Visual', big: 'Storyteller' },
   { icon: MapPin, big: 'Ahmedabad', small: 'India' },
-  { icon: Layers, big: '15+', small: 'Years of Graphic Design Experience' },
+  { icon: Layers, big: '16+', small: 'Years of Graphic Design Experience' },
   { icon: Lightbulb, big: 'Passionate', small: 'About visual communication and creative problem-solving.' },
 ]
 

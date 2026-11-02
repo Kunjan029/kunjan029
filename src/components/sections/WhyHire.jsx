@@ -6,7 +6,7 @@ import { scrollToId } from '../../utils/scrollTo.js'
 import './WhyHire.css'
 
 const REASONS = [
-  { title: '14+ years of real design work', text: 'Started in 2011 designing wedding albums, and grew through graphics, advertising, e-commerce and UI/UX. I have seen what works across many formats and many kinds of clients.' },
+  { title: '16+ years of real design work', text: 'Started in 2011 designing wedding albums, and grew through graphics, advertising, e-commerce and UI/UX. I have seen what works across many formats and many kinds of clients.' },
   { title: 'Built for e-commerce', text: 'Amazon A+ content, product visuals and marketplace creatives that explain a product clearly and make a listing look trustworthy.' },
   { title: 'One designer, many formats', text: 'Social media, advertising, branding, photo editing and UI/UX from a single person, so your visuals feel consistent from post to product page.' },
   { title: 'Experience across industries', text: 'Real estate, perfume, clothing, skincare, events, technology and travel. I learn each audience quickly and adapt the look and tone to it.' },

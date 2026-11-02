@@ -22,12 +22,12 @@ export default function App() {
       <main id="main">
         <Hero />
         <About />
+        <WhyHire />
         <Work />
         <section id="arcade" className="arcade-section" aria-label="Creative break and creative journey">
           <Container><AboutArcade /></Container>
         </section>
         <Services />
-        <WhyHire />
         <Contact />
       </main>
       <Footer />
