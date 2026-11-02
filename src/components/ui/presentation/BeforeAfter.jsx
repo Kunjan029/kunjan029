@@ -36,7 +36,7 @@ export default function BeforeAfter({ project, onOpen }) {
         </figure>
       </div>
       <Slider key={`s${i}`} pair={p} onOpen={onOpen} index={i} />
-      <Pager count={pairs.length} index={i} onChange={setI} label="Comparison" />
+      <Pager images={pairs.map((x) => x.after)} count={pairs.length} index={i} onChange={setI} label="Comparison" />
     </div>
   )
 }

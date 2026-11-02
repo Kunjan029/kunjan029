@@ -32,14 +32,19 @@ export function Art({ image, index, onOpen, className = '', eager = false, label
 // Neutral placeholder bars: stand in for page text without inventing any content
 export const Bar = ({ w = '100%', h = 10, className = '' }) => <span className={`px-bar ${className}`} style={{ width: w, height: h }} aria-hidden="true" />
 
-// Small pager used when a project supplies several independent images or pairs
-export function Pager({ count, index, onChange, label = 'Image' }) {
+// Pager used when a project supplies several independent images or pairs: small image thumbnails (numbers only if no image exists)
+export function Pager({ count, index, onChange, label = 'Image', images }) {
   if (count < 2) return null
   return (
     <div className="px-pager" role="group" aria-label={`${label} selector`}>
-      {Array.from({ length: count }, (_, i) => (
-        <button key={i} type="button" className={i === index ? 'is-on' : ''} onClick={() => onChange(i)} aria-label={`${label} ${i + 1}`} aria-current={i === index}>{String(i + 1).padStart(2, '0')}</button>
-      ))}
+      {Array.from({ length: count }, (_, i) => {
+        const src = images?.[i]?.src
+        return (
+          <button key={i} type="button" className={`${i === index ? 'is-on' : ''}${src ? ' has-thumb' : ''}`} onClick={() => onChange(i)} aria-label={`${label} ${i + 1}`} aria-current={i === index}>
+            {src ? <img src={src} alt="" draggable={false} loading="lazy" decoding="async" /> : String(i + 1).padStart(2, '0')}
+          </button>
+        )
+      })}
     </div>
   )
 }

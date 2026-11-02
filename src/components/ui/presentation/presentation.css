@@ -12,7 +12,11 @@
 .px-pager { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem; margin-top: 0.75rem; }
 .px-pager button { min-width: 2.75rem; height: 2.75rem; padding: 0 0.6rem; border: 1px solid var(--frame); border-radius: 4px; background: transparent; color: var(--color-text-muted); font-family: var(--font-heading); font-size: 0.8rem; font-weight: 700; }
 .px-pager button.is-on { background: var(--color-text); border-color: var(--color-text); color: var(--color-bg); }
-@media (hover: hover) { .px-pager button:not(.is-on):hover { border-color: var(--color-text-muted); color: var(--color-text); } }
+.px-pager button.has-thumb { width: 4.5rem; min-width: 0; height: auto; aspect-ratio: 1; padding: 0; overflow: hidden; opacity: 0.55; border-width: 2px; background: transparent; transition: opacity var(--duration-fast) ease, border-color var(--duration-fast) ease; }
+.px-pager button.has-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.px-pager button.has-thumb.is-on { opacity: 1; border-color: var(--color-accent); background: transparent; }
+@media (hover: hover) { .px-pager button.has-thumb:not(.is-on):hover { opacity: 0.9; } }
+@media (hover: hover) { .px-pager button:not(.is-on):not(.has-thumb):hover { border-color: var(--color-text-muted); color: var(--color-text); } }
 
 /* ---------- Social: Instagram-inspired ---------- */
 .ig { display: grid; grid-template-columns: minmax(0, 1fr); border: 1px solid var(--frame); border-radius: 4px; overflow: hidden; background: #0B0B0D; }

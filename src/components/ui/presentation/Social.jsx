@@ -52,7 +52,7 @@ export function InstagramPost({ project, onOpen, sponsored = false }) {
   return (
     <>
       <IgShell project={project} sponsored={sponsored} phone={image} media={<Art key={i} image={image} index={i} onOpen={onOpen} eager className="ig__art" />} />
-      <Pager count={project.images.length} index={i} onChange={setI} label="Post" />
+      <Pager images={project.images} count={project.images.length} index={i} onChange={setI} label="Post" />
     </>
   )
 }

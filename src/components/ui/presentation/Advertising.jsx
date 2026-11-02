@@ -75,5 +75,5 @@ export default function Advertising({ project, onOpen }) {
     : f === 'display-ad' ? <Display project={project} onOpen={onOpen} i={i} />
     : f === 'social-ad' ? <InstagramPost key={i} project={{ ...project, images: [project.images[i]] }} onOpen={() => onOpen(i)} sponsored />
     : <Poster project={project} onOpen={onOpen} i={i} />
-  return <>{view}<Pager count={project.images.length} index={i} onChange={setI} label="Creative" /></>
+  return <>{view}<Pager images={project.images} count={project.images.length} index={i} onChange={setI} label="Creative" /></>
 }

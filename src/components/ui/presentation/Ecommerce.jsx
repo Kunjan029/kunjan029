@@ -24,7 +24,7 @@ function Listing({ project, onOpen }) {
         <Ghost />
         <Ghost />
       </div>
-      <Pager count={project.images.length} index={i} onChange={setI} label="Image" />
+      <Pager images={project.images} count={project.images.length} index={i} onChange={setI} label="Image" />
     </>
   )
 }
@@ -86,7 +86,7 @@ function Ad({ project, onOpen }) {
         </Card>
         <Card className="ec-card--row ec-card--ghost"><span className="ec-card__img" aria-hidden="true" /><span className="ec-lines" aria-hidden="true"><Bar w="70%" /><Bar w="45%" /><Bar w="25%" h={14} /></span></Card>
       </div>
-      <Pager count={project.images.length} index={i} onChange={setI} label="Image" />
+      <Pager images={project.images} count={project.images.length} index={i} onChange={setI} label="Image" />
     </>
   )
 }

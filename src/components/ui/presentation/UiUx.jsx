@@ -14,7 +14,7 @@ export default function UiUx({ project }) {
         </div>
         <div className="ux__base" aria-hidden="true" />
       </div>
-      <Pager count={project.images.length} index={i} onChange={setI} label="Screen" />
+      <Pager images={project.images} count={project.images.length} index={i} onChange={setI} label="Screen" />
     </>
   )
 }
