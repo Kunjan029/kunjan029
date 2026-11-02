@@ -70,6 +70,6 @@ export function initTrack() {
         if (en.isIntersecting && !seen.has(en.target.id)) { seen.add(en.target.id); send({ type: 'section', name: en.target.id }); io.unobserve(en.target) }
       }
     }, { rootMargin: '-45% 0px -45% 0px' })
-    window.addEventListener('load', () => ['about', 'why', 'work', 'arcade', 'services', 'contact'].forEach((id) => { const n = document.getElementById(id); if (n) io.observe(n) }))
+    window.addEventListener('load', () => ['about', 'why', 'work', 'arcade', 'services', 'testimonials', 'contact'].forEach((id) => { const n = document.getElementById(id); if (n) io.observe(n) }))
   }
 }

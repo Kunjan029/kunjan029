@@ -6,7 +6,7 @@ import { configured, redis } from './_redis.js'
 // The IP address itself is never stored: it is only hashed (with a secret). A per-day hash counts a visitor once a day,
 // and a stable hash (no day) lets the dashboard tell how many days the same visitor came back.
 const NAME_OK = /^[\w &'.:+\-–]{1,60}$/
-const SECTIONS = new Set(['about', 'why', 'work', 'arcade', 'services', 'contact'])
+const SECTIONS = new Set(['about', 'why', 'work', 'arcade', 'services', 'testimonials', 'contact'])
 const DEVICES = new Set(['phone', 'tablet', 'desktop'])
 const BOT = /bot|crawl|spider|headless|lighthouse|preview|facebookexternalhit|slurp|monitor/i
 

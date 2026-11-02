@@ -5,6 +5,7 @@ import Work from './components/sections/Work.jsx'
 import Container from './components/ui/Container.jsx'
 import AboutArcade from './components/sections/AboutArcade.jsx'
 import Services from './components/sections/Services.jsx'
+import Testimonials from './components/sections/Testimonials.jsx'
 import WhyHire from './components/sections/WhyHire.jsx'
 import Contact from './components/sections/Contact.jsx'
 import Footer from './components/layout/Footer.jsx'
@@ -29,6 +30,7 @@ export default function App() {
           <Container><AboutArcade /></Container>
         </section>
         <Services />
+        <Testimonials />
         <Contact />
       </main>
       <Footer />

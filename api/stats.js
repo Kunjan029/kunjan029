@@ -51,7 +51,7 @@ export default async function handler(req, res) {
     const maxV = Math.max(...series.map((s) => s.v), 1)
     const chart = series.map((s) => `<div class="col" title="${short(s.d)}: ${s.v} visitors, ${s.c} clicks"><span class="col__n">${s.v || ''}</span><div class="col__bar"><i style="--h:${(s.v / maxV) * 100}%"></i></div><span class="col__d">${short(s.d).split(' ')[0]}</span></div>`).join('')
 
-    const secOrder = [['about', 'About'], ['why', 'Why hire me'], ['work', 'Work'], ['arcade', 'Creative break'], ['services', 'Services'], ['contact', 'Contact']]
+    const secOrder = [['about', 'About'], ['why', 'Why hire me'], ['work', 'Work'], ['arcade', 'Creative break'], ['services', 'Services'], ['testimonials', 'Testimonials'], ['contact', 'Contact']]
     const secMap = Object.fromEntries(pairs(sections))
     const funnel = secOrder.map(([id, label]) => `<li><span>${label}</span><b>${num(secMap[id])}</b><i style="--w:${total ? Math.min(100, ((secMap[id] || 0) / total) * 100) : 0}%"></i></li>`).join('')
 
