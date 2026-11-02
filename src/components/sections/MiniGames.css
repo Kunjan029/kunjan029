@@ -85,3 +85,18 @@
   .mg__keys { gap: 0.7rem; padding: var(--space-4); }
   .mg__padwrap { align-self: end; }
 }
+
+/* Intro animation: words rise in one by one, game buttons pop in, the chosen game fades in */
+.gpick__w { display: inline-block; margin-right: 0.27em; animation: gp-word 0.7s var(--ease-out) both; animation-delay: calc(var(--i) * 70ms); }
+@keyframes gp-word { from { opacity: 0; transform: translateY(0.6em); filter: blur(4px); } }
+.gpick__k { animation: gp-fade 0.6s ease 0.7s both; }
+.gpick__btn { animation: gp-pop 0.55s var(--ease-out) both; animation-delay: calc(0.7s + var(--i) * 90ms); }
+@keyframes gp-pop { from { opacity: 0; transform: translateY(0.7rem) scale(0.9); } }
+@keyframes gp-fade { from { opacity: 0; } }
+.gpick__btn { transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease, border-color var(--duration-fast) ease, transform 0.25s var(--ease-out); }
+@media (hover: hover) { .gpick__btn:hover { transform: translateY(-2px); } }
+.gpick__btn:active { transform: scale(0.96); }
+.gpick__btn.is-on { animation: gp-pop 0.55s var(--ease-out) both, gp-glow 2.8s ease-in-out 1.5s infinite; animation-delay: calc(0.7s + var(--i) * 90ms), 1.5s; }
+@keyframes gp-glow { 50% { box-shadow: 0 0 0 6px rgb(198 255 77 / 0.14); } }
+.gpick ~ .block { animation: arcade-in 0.55s var(--ease-out); }
+@media (prefers-reduced-motion: reduce) { .gpick__w, .gpick__k, .gpick__btn, .gpick__btn.is-on, .gpick ~ .block { animation: none; } .gpick__btn { transition: none; } }

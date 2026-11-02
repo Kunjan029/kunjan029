@@ -16,6 +16,7 @@ const MODES = [
   { id: 'journey', label: 'The Creative Journey', sub: 'Open the Creative Archive', Icon: BookOpen },
 ]
 
+const INTRO = 'Forget the stress. Live your childhood once again for a few minutes.'
 const GAMES = [{ id: 'tetris', label: 'Tetris' }, { id: 'snake', label: 'Snake' }, { id: 'racing', label: 'Racing' }, { id: 'tank', label: 'Tank' }, { id: 'bricks', label: 'Brick Breaker' }]
 
 export default function AboutArcade() {
@@ -63,11 +64,13 @@ export default function AboutArcade() {
         <div id="arcade-panel" role="tabpanel" aria-labelledby={`arcade-tab-${mode}`} className="arcade__panel" key={mode}>
           {mode === 'break' ? (
             <>
-              <p className="gpick__intro">Forget the stress. Live your childhood once again for a few minutes.</p>
+              <p className="gpick__intro" aria-label={INTRO}>
+                {INTRO.split(' ').map((w, i) => <span key={i} className="gpick__w" style={{ '--i': i }} aria-hidden="true">{w}{' '}</span>)}
+              </p>
               <div className="gpick" role="group" aria-label="Pick a game">
                 <span className="gpick__k">PICK A GAME</span>
-                {GAMES.map((g) => (
-                  <button key={g.id} type="button" className={`gpick__btn${game === g.id ? ' is-on' : ''}`} aria-pressed={game === g.id} onClick={() => setGame(g.id)} data-cursor>{g.label}</button>
+                {GAMES.map((g, i) => (
+                  <button key={g.id} type="button" style={{ '--i': i }} className={`gpick__btn${game === g.id ? ' is-on' : ''}`} aria-pressed={game === g.id} onClick={() => setGame(g.id)} data-cursor>{g.label}</button>
                 ))}
               </div>
               {game === 'tetris' && <TetrisGame key="tetris" onClose={closeGames} />}
