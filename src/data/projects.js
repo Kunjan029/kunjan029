@@ -74,7 +74,7 @@ const RAW_PROJECTS = [
   // ---- Real work (migrated from the Framer portfolio). No clients, years or results are claimed. ----
   { id: 'ecommerce', title: 'E-Commerce', category: 'e-commerce', method: 'non-ai', presentation: 'instagram', fit: 'contain', images: ['velor-1.jpg', 'veera-1.jpg', 'luxor-1.jpg'].map((f) => img(f)) },
   {
-    id: 'gitex', title: 'GITEX', category: 'advertising', method: 'ai-assisted', presentation: 'viewer', fit: 'contain',
+    id: 'gitex', title: 'GITEX', category: 'advertising', method: 'ai-assisted', presentation: 'instagram', fit: 'contain',
     images: ['gitex-1.png', 'gitex-2.png', 'gitex-3.png', 'gitex-4.png', 'gitex-5.png', 'gitex-6.png'].map((f) => img(f)),
   },
   {
