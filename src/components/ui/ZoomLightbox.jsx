@@ -71,7 +71,7 @@ export default function ZoomLightbox() {
     const f = ((axis === 'y' ? e.clientY - r.top : e.clientX - r.left) / (axis === 'y' ? r.height : r.width) - b.ratio / 2) / (1 - b.ratio)
     setFrac(axis, f)
   }
-  const by = bar('y'), bx = bar('x')
+  const by = bar('y')
   const set = (next) => {
     const v = Math.min(MAX, Math.max(MIN, next))
     setZ(v)
@@ -125,12 +125,7 @@ export default function ZoomLightbox() {
               <i style={{ height: `${by.ratio * 100}%`, top: `${by.frac * (1 - by.ratio) * 100}%` }} onPointerDown={dragBar('y', by)} />
             </div>
           )}
-          {bx && (
-            <div className="zl__sb zl__sb--x" onPointerDown={jump('x', bx)} aria-hidden="true">
-              <i style={{ width: `${bx.ratio * 100}%`, left: `${bx.frac * (1 - bx.ratio) * 100}%` }} onPointerDown={dragBar('x', bx)} />
-            </div>
-          )}
-          <p className="zl__hint">{z > 1 ? 'Scroll, drag the image or use the bars to move around' : 'Press + to zoom in and see details'}</p>
+          <p className="zl__hint">{z > 1 ? 'Scroll, drag the image or use the bar on the right to move around' : 'Press + to zoom in and see details'}</p>
           <div className="zl__bar" role="group" aria-label="Zoom controls">
             <button type="button" onClick={() => set(z - 0.5)} disabled={z <= MIN} aria-label="Zoom out"><Minus size={18} /></button>
             <span aria-live="polite">{Math.round(z * 100)}%</span>
