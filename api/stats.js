@@ -79,10 +79,10 @@ export default async function handler(req, res) {
 header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:20px}
 h1{font:700 26px 'Space Grotesk',sans-serif;margin:0}h1 span{color:var(--acc)}.sub{color:var(--mute);font-size:12px;margin-top:2px}
 .tag{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12px;color:var(--mute);display:flex;gap:8px;align-items:center}.tag:before{content:'';width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 4px rgb(198 255 77/.15)}
-.grid{display:grid;gap:12px}.kpis{grid-template-columns:repeat(6,1fr);margin-bottom:12px}
+.grid{display:grid;gap:12px}.kpis{grid-template-columns:repeat(6,1fr);margin-bottom:12px}.kpis4{grid-template-columns:repeat(4,1fr);margin-bottom:12px}
 .kpi,.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
 .kpi span{display:block;color:var(--mute);font-size:12px}.kpi b{display:block;font:700 32px/1.15 'Space Grotesk',sans-serif;margin:6px 0 2px}.kpi small{color:var(--mute);font-size:12px}
-.kpi:first-child b,.kpi.hot b{color:var(--acc)}
+.kpi:first-child b,.kpi.hot b,.kpis4 .kpi b{color:var(--acc)}
 em{font-style:normal;color:var(--mute);font-size:12px;margin-left:6px}em.up{color:var(--acc)}em.down{color:var(--down)}
 .row{grid-template-columns:2fr 1fr;margin-bottom:12px}.row3{grid-template-columns:repeat(3,1fr);margin-bottom:12px}.row2{grid-template-columns:1fr 1fr;margin-bottom:12px}
 h2{font:500 12px Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 14px;display:flex;justify-content:space-between}
@@ -101,7 +101,7 @@ h2 small{letter-spacing:0;text-transform:none;font-size:12px}
 .feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}
 .empty{color:var(--mute);margin:0}
 @media(max-width:980px){.kpis{grid-template-columns:repeat(3,1fr)}.row,.row3,.row2{grid-template-columns:1fr}}
-@media(max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}.feed li{grid-template-columns:10px 1fr;}.f__p,.f__w{grid-column:2}.kpi b{font-size:28px}}
+@media(max-width:560px){.kpis,.kpis4{grid-template-columns:repeat(2,1fr)}.feed li{grid-template-columns:10px 1fr;}.f__p,.f__w{grid-column:2}.kpi b{font-size:28px}}
 </style>
 <div class="wrap">
 <header><div><h1>Portfolio <span>dashboard</span></h1><div class="sub">kunjan029.vercel.app · times in IST · one count per visitor per day · refreshes every 2 min · add <code>?me=1</code> to the site URL once to hide your own visits</div></div><div class="tag">Live · ${new Date(Date.now() + 19800000).toISOString().slice(0, 16).replace('T', ' ')} IST</div></header>
@@ -112,7 +112,13 @@ ${kpi('Today', num(today), `${delta(today, yest)} vs yesterday`)}
 ${kpi('Last 7 days', num(week), `${delta(week, prevWeek)} vs previous 7`)}
 ${kpi('Clicks today', num(clicksToday), 'all tracked buttons')}
 <div class="kpi hot"><span>Resume downloads</span><b>${num(resume)}</b><small>all time</small></div>
-<div class="kpi hot"><span>Reached out</span><b>${num(contact)}</b><small>WhatsApp, email, LinkedIn, Let's talk</small></div>
+<div class="kpi hot"><span>Reached out</span><b>${num(contact)}</b><small>total of the 4 below</small></div>
+</div>
+<div class="grid kpis4">
+<div class="kpi"><span>WhatsApp</span><b>${num(clickMap.whatsapp || 0)}</b><small>clicks, all time</small></div>
+<div class="kpi"><span>Email</span><b>${num(clickMap.email || 0)}</b><small>clicks, all time</small></div>
+<div class="kpi"><span>LinkedIn</span><b>${num(clickMap.linkedin || 0)}</b><small>clicks, all time</small></div>
+<div class="kpi"><span>Let's talk</span><b>${num(clickMap["let's talk"] || 0)}</b><small>clicks, all time</small></div>
 </div>
 
 <div class="grid row">
