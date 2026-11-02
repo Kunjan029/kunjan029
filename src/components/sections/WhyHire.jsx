@@ -39,7 +39,7 @@ export default function WhyHire() {
   return (
     <section id="why" className="why" aria-labelledby="why-title">
       <Container>
-        <p className="why__label">THE SHORT VERSION / 003</p>
+        <p className="why__label">THE SHORT VERSION / 001</p>
         <h2 id="why-title" className="why__title">
           <span className="line"><Reveal text="WHY HIRE ME." accentDots /></span>
         </h2>

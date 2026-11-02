@@ -196,7 +196,7 @@ export default function Services() {
     <section id="services" className="svs" ref={rootRef}>
       <Container>
         <div className="svs__intro">
-          <p className="svs__label">WHAT I DO / 002</p>
+          <p className="svs__label">WHAT I DO / 003</p>
           <h2 className="svs__title">
             <span className="line"><Reveal text="GOOD IDEAS." accentDots /></span>
             <span className="line"><Reveal text="GREAT VISUALS." accentDots /></span>

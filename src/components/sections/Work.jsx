@@ -177,7 +177,7 @@ export default function Work() {
     <section id="work" className="work" ref={rootRef}>
       <Container>
         <div className="work__intro">
-          <p className="work__label">SELECTED WORK / 001</p>
+          <p className="work__label">SELECTED WORK / 002</p>
           <h2 className="work__title">
             <span className="line"><Reveal text="LESS TALK." accentDots /></span>
             <span className="line"><Reveal text="MORE GOOD DESIGN." accentDots custom={{ GOOD: <GoodWord /> }} /></span>
