@@ -1,7 +1,7 @@
 /* Real-world presentation of the artwork. One consistent frame: 1px #303036, 4px corners, no glow. */
 .px { --frame: #303036; --page: #F4F4F1; --page-line: #E1E1DB; --ghost: #E2E2DC; --ink: #16161a; --view: min(72dvh, 46rem);
-  container-type: inline-size; display: grid; gap: 0; width: 100%; }
-.px__hint { margin-top: 0.85rem; font-size: 0.8rem; text-align: center; color: var(--color-text-muted); }
+  container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; width: 100%; }
+.px__hint { width: 100%; max-width: none; align-self: stretch; margin-top: 0.85rem; font-size: 0.8rem; text-align: center; color: var(--color-text-muted); }
 
 /* Artwork button: never cropped, never stretched */
 .px-art { position: relative; display: block; padding: 0; border: 0; background: none; line-height: 0; cursor: zoom-in; max-width: 100%; }
