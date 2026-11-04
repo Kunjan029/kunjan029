@@ -43,7 +43,7 @@ export default function RacingGame({ onClose }) {
   }
 
   const start = () => {
-    gRef.current = fresh(); setScore(0); setNewBest(false); set('playing'); registerPlay()
+    gRef.current = fresh(); setScore(0); setNewBest(false); set('playing'); registerPlay('racing')
     boardRef.current?.focus({ preventScroll: true }); draw()
   }
   const end = () => { set('over'); setNewBest(submitBest(gRef.current.score)); reportGameOver('racing', gRef.current.score) }

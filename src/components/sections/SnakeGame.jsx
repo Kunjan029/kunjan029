@@ -61,7 +61,7 @@ export default function SnakeGame({ onClose }) {
   }, [])
 
   const start = () => {
-    gRef.current = fresh(); setScore(0); setNewBest(false); setPhase('playing'); registerPlay(); draw()
+    gRef.current = fresh(); setScore(0); setNewBest(false); setPhase('playing'); registerPlay('snake'); draw()
     boardRef.current?.focus({ preventScroll: true })
   }
 

@@ -20,6 +20,12 @@ function send(payload) {
   } catch { /* ignore */ }
 }
 
+// A round of a game started (counted every time, so the dashboard shows which games are really played)
+export function trackGame(name) {
+  if (skip()) return
+  send({ type: 'game', name })
+}
+
 function source() {
   const p = new URLSearchParams(window.location.search)
   const utm = p.get('utm_source') || p.get('ref') || p.get('source')

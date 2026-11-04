@@ -216,7 +216,7 @@ export default function TetrisGame({ onClose }) {
     setHud({ score: 0, level: 1, lines: 0 })
     setPhase('playing')
     setStatus('Game started.')
-    registerPlay()
+    registerPlay('tetris')
     drawNext(); draw(); run()
     wrapRef.current?.focus({ preventScroll: true })
   }

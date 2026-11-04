@@ -7,6 +7,7 @@ import { configured, redis } from './_redis.js'
 // and a stable hash (no day) lets the dashboard tell how many days the same visitor came back.
 const NAME_OK = /^[\w &'.:+\-–]{1,60}$/
 const SECTIONS = new Set(['about', 'why', 'work', 'arcade', 'services', 'testimonials', 'contact'])
+const GAMES = new Set(['tetris', 'snake', 'racing', 'tank', 'bricks'])
 const DEVICES = new Set(['phone', 'tablet', 'desktop'])
 const TTL = 34000000 // keep the daily city data for about 13 months
 const BOT = /bot|crawl|spider|headless|lighthouse|preview|facebookexternalhit|slurp|monitor/i
@@ -57,6 +58,13 @@ export default async function handler(req, res) {
       const name = String(body.name || '')
       if (!NAME_OK.test(name)) return res.status(204).end()
       await redis([['HINCRBY', 'clicks:total', name, 1], ['HINCRBY', `clicks:${day}`, name, 1], ['HINCRBY', `cd:${day}`, `${name}|${place}`, 1], ['EXPIRE', `cd:${day}`, TTL], event(`clicked ${name}`), trim])
+    } else if (type === 'game') {
+      const name = String(body.name || '')
+      if (!GAMES.has(name)) return res.status(204).end()
+      const [first] = await redis([['SET', `gp:${id}:${name}`, '1', 'NX', 'EX', '90000']])
+      const cmds = [['HINCRBY', 'games:total', name, 1], ['HINCRBY', `gd:${day}`, name, 1], ['EXPIRE', `gd:${day}`, TTL]]
+      if (first.result === 'OK') cmds.push(['HINCRBY', 'games:players', name, 1], ['HINCRBY', `gu:${day}`, name, 1], ['EXPIRE', `gu:${day}`, TTL])
+      await redis(cmds)
     } else if (type === 'section') {
       const name = String(body.name || '')
       if (!SECTIONS.has(name)) return res.status(204).end()

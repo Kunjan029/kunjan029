@@ -40,7 +40,7 @@ export default function BrickBreaker({ onClose }) {
   }
 
   const start = () => {
-    gRef.current = fresh(); sync(); setNewBest(false); set('playing'); registerPlay(); k.clear()
+    gRef.current = fresh(); sync(); setNewBest(false); set('playing'); registerPlay('bricks'); k.clear()
     boardRef.current?.focus({ preventScroll: true }); draw()
   }
   const end = () => { set('over'); setNewBest(submitBest(gRef.current.score)); reportGameOver('bricks', gRef.current.score) }

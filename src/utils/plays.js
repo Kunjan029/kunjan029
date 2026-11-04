@@ -1,3 +1,4 @@
+import { trackGame } from './track.js'
 const FLAG = 'kunjan-portfolio:played'
 
 // Public total, or null when the counter isn't available (local dev, not configured, offline)
@@ -13,7 +14,8 @@ export async function fetchPlayCount() {
 }
 
 // Called when a game starts: counts the visitor once per browser, and sends a Clarity event.
-export function registerPlay() {
+export function registerPlay(game) {
+  if (game) trackGame(game)
   try {
     if (window.localStorage.getItem(FLAG)) return
     window.localStorage.setItem(FLAG, '1')
