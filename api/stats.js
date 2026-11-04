@@ -28,22 +28,19 @@ export default async function handler(req, res) {
   if (!key || !configured()) return res.status(503).send('Stats not configured.')
   if (req.query?.key !== key) return res.status(401).send('Not allowed.')
   try {
+    const today0 = istDay()
+    const sel = /^\d{4}-\d{2}-\d{2}$/.test(String(req.query?.date || '')) && req.query.date <= today0 ? req.query.date : today0 // day shown in the daily report
     const dayKeys = Array.from({ length: DAYS }, (_, i) => istDay(DAYS - 1 - i))
     const r = await redis([
       ['GET', 'visits:total'], ['HGETALL', 'visits:days'], ['HGETALL', 'visits:country'], ['HGETALL', 'visits:city'],
       ['HGETALL', 'visits:ref'], ['HGETALL', 'visits:device'], ['HGETALL', 'clicks:total'], ['HGETALL', 'sections:total'],
       ['LRANGE', 'events', 0, 39], ['GET', 'plays:total'], ['HGETALL', 'plays:city'], ['HGETALL', 'visitors:count'], ['HGETALL', 'visitors:city'],
       ...dayKeys.map((d) => ['HGETALL', `clicks:${d}`]),
-      ['HGETALL', 'plays:days'],
-      ...dayKeys.map((d) => ['HGETALL', `vd:${d}`]),
-      ...dayKeys.map((d) => ['HGETALL', `cd:${d}`]),
-      ...dayKeys.map((d) => ['HGETALL', `pd:${d}`]),
-      ...dayKeys.map((d) => ['HGETALL', `hd:${d}`]),
+      ['HGET', 'plays:days', sel], ['HGETALL', `vd:${sel}`], ['HGETALL', `cd:${sel}`], ['HGETALL', `pd:${sel}`], ['HGETALL', `hd:${sel}`], ['HGETALL', `clicks:${sel}`], ['HGET', 'visits:days', sel],
     ])
     const [vt, vd, vc, vcity, vref, vdev, clicks, sections, events, pt, pcity, vcount, vcityMap, ...tail] = r.map((x) => x.result)
     const clicksByDay = tail.slice(0, DAYS)
-    const playsDays = Object.fromEntries(pairs(tail[DAYS]))
-    const vdByDay = tail.slice(DAYS + 1, 2 * DAYS + 1), cdByDay = tail.slice(2 * DAYS + 1, 3 * DAYS + 1), pdByDay = tail.slice(3 * DAYS + 1, 4 * DAYS + 1), hdByDay = tail.slice(4 * DAYS + 1, 5 * DAYS + 1)
+    const [selPlays, selVd, selCd, selPd, selHd, selClicks, selVisits] = tail.slice(DAYS)
     const visitsByDay = Object.fromEntries(pairs(vd))
     const series = dayKeys.map((d, i) => ({ d, v: visitsByDay[d] || 0, c: pairs(clicksByDay[i]).reduce((a, [, n]) => a + n, 0) }))
     const total = Number(vt) || 0
@@ -81,29 +78,30 @@ export default async function handler(req, res) {
       return `<li class="${kind}"><i></i><span class="f__t">${esc(ist(t))}</span><span class="f__p">${esc(place)}</span><span class="f__w">${esc(what)}</span></li>`
     }).join('') || '<li class="empty">No activity yet</li>'
 
-    // Daily report: per day, which cities visited, played, downloaded the resume and clicked WhatsApp / LinkedIn
-    const col = (title, total, list) => `<div class="dcol"><h3>${title} <b>${num(total)}</b></h3>${list.length ? `<ul>${list.slice(0, 8).map(([c, n]) => `<li><span>${esc(c)}</span><b>${num(n)}</b></li>`).join('')}</ul>` : '<p class="empty">–</p>'}</div>`
-    const CORE = [['resume download', 'Resume downloads'], ['whatsapp', 'WhatsApp'], ['linkedin', 'LinkedIn'], ['email', 'Email'], ["let's talk", "Let's talk"], ['why hire me icon', 'Why-hire-me icon']]
-    const daily = dayKeys.map((d, i) => {
-      const clickCity = {}, projects = []
-      pairs(cdByDay[i]).forEach(([k, n]) => {
-        const [nm, ...pl] = k.split('|'), place = pl.join('|')
-        if (nm.startsWith('project: ')) projects.push([`${nm.slice(9)} · ${place}`, n])
-        else (clickCity[nm] ||= []).push([place, n])
-      })
-      const cm = Object.fromEntries(pairs(clicksByDay[i]))
-      const sum = (l) => (l || []).reduce((a, [, n]) => a + n, 0)
-      const visits = series[i].v, played = playsDays[d] || 0
-      const chips = [['Visitors', visits], ['Played', played], ...CORE.map(([k, label]) => [label.replace(' downloads', '').replace('Why-hire-me icon', 'Why hire me'), cm[k] || 0])]
-      const extra = Object.keys(clickCity).filter((k) => !CORE.some(([c]) => c === k)).map((k) => [k, k.charAt(0).toUpperCase() + k.slice(1)])
-      const hours = Object.fromEntries(pairs(hdByDay[i]).map(([h, n]) => [Number(h), n]))
-      const hmax = Math.max(1, ...Object.values(hours))
-      const hourBars = Array.from({ length: 24 }, (_, h) => `<i title="${h}:00 · ${hours[h] || 0} visitors" style="--h:${((hours[h] || 0) / hmax) * 100}%"></i>`).join('')
-      const hourRow = Object.keys(hours).length ? `<div class="dcol dcol--hours"><h3>Visitors by hour (IST) <b>${Object.entries(hours).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([h]) => `${h}:00`).join(', ')}</b></h3><div class="hours">${hourBars}</div><div class="hours__l"><span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>11pm</span></div></div>` : ''
-      const label = i === DAYS - 1 ? `Today · ${short(d)}` : i === DAYS - 2 ? `Yesterday · ${short(d)}` : short(d)
-      return `<details class="day"${i >= DAYS - 2 ? ' open' : ''}><summary><span class="day__d">${label}</span><span class="chips">${chips.map(([k, n]) => `<em>${esc(k)} <b>${num(n)}</b></em>`).join('')}</span></summary>
-<div class="dgrid">${col('Visitors', visits, pairs(vdByDay[i]))}${col('Played a game', played, pairs(pdByDay[i]))}${[...CORE, ...extra].map(([k, label]) => col(label, cm[k] || sum(clickCity[k]), clickCity[k] || [])).join('')}${col('Projects opened', sum(projects), projects)}${hourRow}</div></details>`
-    }).reverse().join('')
+    // Daily report for one chosen day (?date=YYYY-MM-DD): a card per metric, with the cities behind each number
+    const CORE = [['resume download', 'Resume downloads'], ['whatsapp', 'WhatsApp'], ['linkedin', 'LinkedIn'], ['email', 'Email'], ["let's talk", "Let's talk"], ['why hire me icon', 'Why hire me icon']]
+    const clickCity = {}, projects = []
+    pairs(selCd).forEach(([k, n]) => {
+      const [nm, ...pl] = k.split('|'), place = pl.join('|')
+      if (nm.startsWith('project: ')) projects.push([`${nm.slice(9)} · ${place}`, n])
+      else (clickCity[nm] ||= []).push([place, n])
+    })
+    const cm = Object.fromEntries(pairs(selClicks))
+    const sum = (l) => (l || []).reduce((a, [, n]) => a + n, 0)
+    const dcard = (label, total, list, hot = true) => `<div class="kpi dk${hot ? ' hot' : ''}${total ? '' : ' dk--zero'}"><span>${esc(label)}</span><b>${num(total)}</b>${list.length ? `<ul class="dk__l">${list.slice(0, 6).map(([c, n]) => `<li><span>${esc(c)}</span><em>${num(n)}</em></li>`).join('')}</ul>` : `<small>${total ? 'city not recorded' : 'none'}</small>`}</div>`
+    const extra = Object.keys(clickCity).filter((k) => !CORE.some(([c]) => c === k)).map((k) => [k, k.charAt(0).toUpperCase() + k.slice(1)])
+    const hours = Object.fromEntries(pairs(selHd).map(([h, n]) => [Number(h), n]))
+    const hmax = Math.max(1, ...Object.values(hours))
+    const hourCard = Object.keys(hours).length ? `<div class="kpi dk dk--wide"><span>Visitors by hour (IST) · busiest: ${Object.entries(hours).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([h]) => `${h}:00`).join(', ')}</span><div class="hours">${Array.from({ length: 24 }, (_, h) => `<i title="${h}:00 · ${hours[h] || 0} visitors" style="--h:${((hours[h] || 0) / hmax) * 100}%"></i>`).join('')}</div><div class="hours__l"><span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>11pm</span></div></div>` : ''
+    const selVisitsN = Number(selVisits) || 0
+    const addDay = (d, n) => new Date(new Date(d + 'T00:00:00Z').getTime() + n * 86400000).toISOString().slice(0, 10)
+    const href = (d) => `?key=${encodeURIComponent(key)}&date=${d}`
+    const selLabel = new Date(sel + 'T00:00:00Z').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+    const daily = `<div class="dpick"><a class="dbtn" href="${href(addDay(sel, -1))}" aria-label="Previous day">‹</a>
+<form method="get" class="dform"><input type="hidden" name="key" value="${esc(key)}"><input type="date" name="date" value="${sel}" max="${today0}" onchange="this.form.submit()"><noscript><button>Go</button></noscript></form>
+<a class="dbtn${sel >= today0 ? ' is-off' : ''}" href="${sel >= today0 ? '#' : href(addDay(sel, 1))}" aria-label="Next day">›</a>
+<a class="dbtn dbtn--t" href="${href(today0)}">Today</a><span class="dpick__l">${selLabel}</span></div>
+<div class="grid dcards">${dcard('Visitors', selVisitsN, pairs(selVd))}${dcard('Played a game', Number(selPlays) || 0, pairs(selPd))}${[...CORE, ...extra].map(([k, label]) => dcard(label, cm[k] || sum(clickCity[k]), clickCity[k] || [])).join('')}${dcard('Projects opened', sum(projects), projects)}${hourCard}</div>`
 
     const kpi = (label, value, sub) => `<div class="kpi"><span>${label}</span><b>${value}</b><small>${sub || ''}</small></div>`
     res.setHeader('Content-Type', 'text/html; charset=utf-8')
@@ -136,14 +134,13 @@ h2 small{letter-spacing:0;text-transform:none;font-size:12px}
 .dev{display:flex;gap:20px;align-items:center}.dev ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;flex:1}.dev li{display:flex;align-items:center;gap:8px;text-transform:capitalize}.dev li i{width:10px;height:10px;border-radius:3px}.dev li b{margin-left:auto}
 .feed{list-style:none;margin:0;padding:0;max-height:420px;overflow:auto}.feed li{display:grid;grid-template-columns:10px 92px 170px 1fr;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
 .feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}
-.days{display:grid;gap:8px}.day{border:1px solid var(--line);border-radius:12px;background:var(--bg)}
-.day summary{cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 14px}.day summary::-webkit-details-marker{display:none}
-.day__d{font-weight:600}.chips{display:flex;flex-wrap:wrap;gap:6px 14px}.chips em{margin:0;color:var(--mute)}.chips b{color:var(--text);margin-left:2px}
-.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(11.5rem,1fr));gap:18px 16px;padding:4px 14px 14px;border-top:1px solid var(--line);padding-top:14px}
-.dcol h3{font:500 11px Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:0 0 8px;display:flex;justify-content:space-between;gap:6px}.dcol h3 b{color:var(--acc);font-size:13px}
-.dcol ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}.dcol li{display:flex;justify-content:space-between;gap:8px;font-size:13px}.dcol li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dcol li b{font-weight:600}
-.dcol--hours{grid-column:1/-1}.hours{display:flex;align-items:flex-end;gap:3px;height:56px}.hours i{flex:1;height:max(var(--h),4%);border-radius:3px;background:var(--acc);opacity:.85}.hours__l{display:flex;justify-content:space-between;color:var(--mute);font-size:11px;margin-top:4px}
-@media(max-width:560px){.dgrid{grid-template-columns:1fr 1fr}}
+.dpick{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px}.dform{margin:0}
+.dpick input[type=date]{background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;color-scheme:dark}
+.dbtn{display:inline-grid;place-items:center;min-width:36px;height:36px;padding:0 12px;border:1px solid var(--line);border-radius:10px;color:var(--text);text-decoration:none;background:var(--bg)}.dbtn:hover{border-color:var(--acc)}.dbtn.is-off{opacity:.35;pointer-events:none}.dbtn--t{color:var(--acc)}
+.dpick__l{color:var(--mute);margin-left:6px}
+.dcards{grid-template-columns:repeat(auto-fill,minmax(13rem,1fr))}.dk{background:var(--bg)}.dk--zero b{color:var(--mute)!important}.dk--wide{grid-column:1/-1}
+.dk__l{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:5px}.dk__l li{display:flex;justify-content:space-between;gap:8px;font-size:13px}.dk__l li span{display:inline;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dk__l em{margin:0;color:var(--acc);font-weight:600}
+.hours{display:flex;align-items:flex-end;gap:3px;height:64px;margin-top:10px}.hours i{flex:1;height:max(var(--h),4%);border-radius:3px;background:var(--acc);opacity:.85}.hours__l{display:flex;justify-content:space-between;color:var(--mute);font-size:11px;margin-top:4px}
 .empty,.feed li.empty{display:block;color:var(--mute);margin:0}
 @media(max-width:980px){.kpis{grid-template-columns:repeat(4,1fr)}.row,.row3,.row2{grid-template-columns:1fr}}
 @media(max-width:560px){.kpis,.kpis4{grid-template-columns:repeat(2,1fr)}.feed li{grid-template-columns:10px 1fr;}.f__p,.f__w{grid-column:2}.kpi b{font-size:28px}}
@@ -185,7 +182,7 @@ ${kpi('Clicks today', num(clicksToday), 'all tracked buttons')}
 
 <section class="card"><h2>Returning visitors <small>same network on different days, by anonymous ID</small></h2><ul class="feed">${repeatList}</ul></section>
 
-<section class="card"><h2>Daily report · by city <small>city-wise data is collected from 4 Nov; earlier days show totals only</small></h2><div class="days">${daily}</div></section>
+<section class="card"><h2>Daily report · by city <small>pick a day. City and hour data exists from 4 Nov; earlier days show totals only</small></h2>${daily}</section>
 
 <section class="card"><h2>Recent activity <small><span style="color:var(--blue)">●</span> visit &nbsp; <span style="color:var(--acc)">●</span> click</small></h2><ul class="feed">${feed}</ul></section>
 </div>`)
