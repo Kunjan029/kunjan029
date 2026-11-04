@@ -34,8 +34,15 @@ export default async function handler(req, res) {
       ['HGETALL', 'visits:ref'], ['HGETALL', 'visits:device'], ['HGETALL', 'clicks:total'], ['HGETALL', 'sections:total'],
       ['LRANGE', 'events', 0, 39], ['GET', 'plays:total'], ['HGETALL', 'plays:city'], ['HGETALL', 'visitors:count'], ['HGETALL', 'visitors:city'],
       ...dayKeys.map((d) => ['HGETALL', `clicks:${d}`]),
+      ['HGETALL', 'plays:days'],
+      ...dayKeys.map((d) => ['HGETALL', `vd:${d}`]),
+      ...dayKeys.map((d) => ['HGETALL', `cd:${d}`]),
+      ...dayKeys.map((d) => ['HGETALL', `pd:${d}`]),
     ])
-    const [vt, vd, vc, vcity, vref, vdev, clicks, sections, events, pt, pcity, vcount, vcityMap, ...clicksByDay] = r.map((x) => x.result)
+    const [vt, vd, vc, vcity, vref, vdev, clicks, sections, events, pt, pcity, vcount, vcityMap, ...tail] = r.map((x) => x.result)
+    const clicksByDay = tail.slice(0, DAYS)
+    const playsDays = Object.fromEntries(pairs(tail[DAYS]))
+    const vdByDay = tail.slice(DAYS + 1, 2 * DAYS + 1), cdByDay = tail.slice(2 * DAYS + 1, 3 * DAYS + 1), pdByDay = tail.slice(3 * DAYS + 1, 4 * DAYS + 1)
     const visitsByDay = Object.fromEntries(pairs(vd))
     const series = dayKeys.map((d, i) => ({ d, v: visitsByDay[d] || 0, c: pairs(clicksByDay[i]).reduce((a, [, n]) => a + n, 0) }))
     const total = Number(vt) || 0
@@ -73,6 +80,18 @@ export default async function handler(req, res) {
       return `<li class="${kind}"><i></i><span class="f__t">${esc(ist(t))}</span><span class="f__p">${esc(place)}</span><span class="f__w">${esc(what)}</span></li>`
     }).join('') || '<li class="empty">No activity yet</li>'
 
+    // Daily report: per day, which cities visited, played, downloaded the resume and clicked WhatsApp / LinkedIn
+    const col = (title, total, list) => `<div class="dcol"><h3>${title} <b>${num(total)}</b></h3>${list.length ? `<ul>${list.slice(0, 8).map(([c, n]) => `<li><span>${esc(c)}</span><b>${num(n)}</b></li>`).join('')}</ul>` : '<p class="empty">–</p>'}</div>`
+    const daily = dayKeys.map((d, i) => {
+      const clickCity = {}
+      pairs(cdByDay[i]).forEach(([k, n]) => { const [nm, ...pl] = k.split('|'); (clickCity[nm] ||= []).push([pl.join('|'), n]) })
+      const cm = Object.fromEntries(pairs(clicksByDay[i]))
+      const tot = { visit: series[i].v, play: playsDays[d] || 0, resume: cm['resume download'] || 0, wa: cm.whatsapp || 0, li: cm.linkedin || 0 }
+      const label = i === DAYS - 1 ? `Today · ${short(d)}` : i === DAYS - 2 ? `Yesterday · ${short(d)}` : short(d)
+      return `<details class="day"${i >= DAYS - 2 ? ' open' : ''}><summary><span class="day__d">${label}</span><span class="chips"><em>Visitors <b>${num(tot.visit)}</b></em><em>Played <b>${num(tot.play)}</b></em><em>Resume <b>${num(tot.resume)}</b></em><em>WhatsApp <b>${num(tot.wa)}</b></em><em>LinkedIn <b>${num(tot.li)}</b></em></span></summary>
+<div class="dgrid">${col('Visitors', tot.visit, pairs(vdByDay[i]))}${col('Played a game', tot.play, pairs(pdByDay[i]))}${col('Resume downloads', tot.resume, clickCity['resume download'] || [])}${col('WhatsApp clicks', tot.wa, clickCity.whatsapp || [])}${col('LinkedIn clicks', tot.li, clickCity.linkedin || [])}</div></details>`
+    }).reverse().join('')
+
     const kpi = (label, value, sub) => `<div class="kpi"><span>${label}</span><b>${value}</b><small>${sub || ''}</small></div>`
     res.setHeader('Content-Type', 'text/html; charset=utf-8')
     return res.status(200).send(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="120"><title>Portfolio dashboard</title>
@@ -104,6 +123,13 @@ h2 small{letter-spacing:0;text-transform:none;font-size:12px}
 .dev{display:flex;gap:20px;align-items:center}.dev ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;flex:1}.dev li{display:flex;align-items:center;gap:8px;text-transform:capitalize}.dev li i{width:10px;height:10px;border-radius:3px}.dev li b{margin-left:auto}
 .feed{list-style:none;margin:0;padding:0;max-height:420px;overflow:auto}.feed li{display:grid;grid-template-columns:10px 92px 170px 1fr;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
 .feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}
+.days{display:grid;gap:8px}.day{border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.day summary{cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 14px}.day summary::-webkit-details-marker{display:none}
+.day__d{font-weight:600}.chips{display:flex;flex-wrap:wrap;gap:6px 14px}.chips em{margin:0;color:var(--mute)}.chips b{color:var(--text);margin-left:2px}
+.dgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;padding:4px 14px 14px;border-top:1px solid var(--line);padding-top:14px}
+.dcol h3{font:500 11px Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:0 0 8px;display:flex;justify-content:space-between;gap:6px}.dcol h3 b{color:var(--acc);font-size:13px}
+.dcol ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}.dcol li{display:flex;justify-content:space-between;gap:8px;font-size:13px}.dcol li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dcol li b{font-weight:600}
+@media(max-width:980px){.dgrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.dgrid{grid-template-columns:1fr}}
 .empty,.feed li.empty{display:block;color:var(--mute);margin:0}
 @media(max-width:980px){.kpis{grid-template-columns:repeat(4,1fr)}.row,.row3,.row2{grid-template-columns:1fr}}
 @media(max-width:560px){.kpis,.kpis4{grid-template-columns:repeat(2,1fr)}.feed li{grid-template-columns:10px 1fr;}.f__p,.f__w{grid-column:2}.kpi b{font-size:28px}}
@@ -144,6 +170,8 @@ ${kpi('Clicks today', num(clicksToday), 'all tracked buttons')}
 </div>
 
 <section class="card"><h2>Returning visitors <small>same network on different days, by anonymous ID</small></h2><ul class="feed">${repeatList}</ul></section>
+
+<section class="card"><h2>Daily report · by city <small>city-wise data is collected from 4 Nov; earlier days show totals only</small></h2><div class="days">${daily}</div></section>
 
 <section class="card"><h2>Recent activity <small><span style="color:var(--blue)">●</span> visit &nbsp; <span style="color:var(--acc)">●</span> click</small></h2><ul class="feed">${feed}</ul></section>
 </div>`)

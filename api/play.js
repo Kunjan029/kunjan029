@@ -12,6 +12,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress || ''
       const day = new Date().toISOString().slice(0, 10)
+      const istDay = new Date(Date.now() + 19800000).toISOString().slice(0, 10)
       const id = createHash('sha256').update(`${ip}|${day}|${process.env.STATS_KEY || 'kunjan'}`).digest('hex').slice(0, 32)
       const [seen] = await redis([['SET', `seen:${id}`, '1', 'NX', 'EX', '86400']])
       if (seen.result === 'OK') {
@@ -21,6 +22,9 @@ export default async function handler(req, res) {
           ['INCR', 'plays:total'],
           ['HINCRBY', 'plays:country', country, 1],
           ['HINCRBY', 'plays:city', `${city}, ${country}`, 1],
+          ['HINCRBY', 'plays:days', istDay, 1],
+          ['HINCRBY', `pd:${istDay}`, `${city}, ${country}`, 1],
+          ['EXPIRE', `pd:${istDay}`, 34000000],
         ])
       }
     }

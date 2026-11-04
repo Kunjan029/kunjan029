@@ -8,6 +8,7 @@ import { configured, redis } from './_redis.js'
 const NAME_OK = /^[\w &'.:+\-–]{1,60}$/
 const SECTIONS = new Set(['about', 'why', 'work', 'arcade', 'services', 'testimonials', 'contact'])
 const DEVICES = new Set(['phone', 'tablet', 'desktop'])
+const TTL = 34000000 // keep the daily city data for about 13 months
 const BOT = /bot|crawl|spider|headless|lighthouse|preview|facebookexternalhit|slurp|monitor/i
 
 const istDay = () => new Date(Date.now() + 19800000).toISOString().slice(0, 10)
@@ -43,6 +44,8 @@ export default async function handler(req, res) {
         ['HINCRBY', 'visits:days', day, 1],
         ['HINCRBY', 'visits:country', country, 1],
         ['HINCRBY', 'visits:city', place, 1],
+        ['HINCRBY', `vd:${day}`, place, 1],
+        ['EXPIRE', `vd:${day}`, TTL],
         ['HINCRBY', 'visits:ref', ref, 1],
         ['HINCRBY', 'visits:device', device, 1],
         event(`visit via ${ref} (${device}) · ID ${vid} · day ${nth}${nth > 1 ? ' · returning' : ''}`),
@@ -51,7 +54,7 @@ export default async function handler(req, res) {
     } else if (type === 'click') {
       const name = String(body.name || '')
       if (!NAME_OK.test(name)) return res.status(204).end()
-      await redis([['HINCRBY', 'clicks:total', name, 1], ['HINCRBY', `clicks:${day}`, name, 1], event(`clicked ${name}`), trim])
+      await redis([['HINCRBY', 'clicks:total', name, 1], ['HINCRBY', `clicks:${day}`, name, 1], ['HINCRBY', `cd:${day}`, `${name}|${place}`, 1], ['EXPIRE', `cd:${day}`, TTL], event(`clicked ${name}`), trim])
     } else if (type === 'section') {
       const name = String(body.name || '')
       if (!SECTIONS.has(name)) return res.status(204).end()
