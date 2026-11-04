@@ -68,6 +68,92 @@ export const METHODS = [
   { id: 'ai', label: 'AI Design' },
 ]
 
+
+// "How I solved it": a short, qualitative case study per project (problem / approach / outcome).
+// Design-rationale only: no clients, numbers or results are claimed. Edit freely.
+const STORIES = {
+  ecommerce: {
+    problem: 'Online fashion and lifestyle stores need product posts that stop the scroll without every post looking like a different brand.',
+    approach: 'Built one repeatable layout per brand: a clean product-first frame, a consistent type scale, and brand colours pulled from the product itself. Offers and prices sit in a fixed zone so shoppers always know where to look.',
+    outcome: 'A cohesive feed that looks like one store, and a template the team can reuse for every new drop.',
+  },
+  gitex: {
+    problem: 'A tech-expo campaign has to feel futuristic and credible at the same time, across many formats, on a short timeline.',
+    approach: 'Set a single visual direction first (dark base, glowing accent, strong headline), then used AI to explore imagery quickly and designed the layout, typography and hierarchy by hand so every slide stays on message.',
+    outcome: 'A consistent multi-slide set where AI speeds up exploration but the final decisions are design-led.',
+  },
+  'event-posters': {
+    problem: 'Event posters compete with everything else on a phone screen and must communicate date, place and mood in a second.',
+    approach: 'Led with one dominant visual and a high-contrast headline, kept details in a clear secondary tier, and used AI-assisted imagery to reach the right mood faster before refining it manually.',
+    outcome: 'Posters that read instantly at thumbnail size and still hold up when opened full screen.',
+  },
+  'republic-day': {
+    problem: 'Festival posts all look alike; a national day needs to feel respectful and still stand out.',
+    approach: 'Used the tricolour as the colour system, one strong central symbol, and generous space around the greeting so the message stays calm and legible.',
+    outcome: 'A dignified, instantly recognisable greeting that fits the brand without shouting.',
+  },
+  navratri: {
+    problem: 'Navratri creatives need energy and colour without becoming cluttered.',
+    approach: 'Picked a vivid festive palette, framed the subject with traditional motifs, and kept text minimal and centred so the celebration feels rich but the greeting stays clear.',
+    outcome: 'A festive post that feels warm and lively while remaining clean on a small screen.',
+  },
+  'travel-ad': {
+    problem: 'A travel ad has to sell a feeling, not just a destination, in a single frame.',
+    approach: 'Generated the scenery with AI, then composed it like an ad: clear focal point, headline placed in the calm area of the image, and a short call to action that is easy to find.',
+    outcome: 'An aspirational ad where the visual draws attention and the offer is readable at a glance.',
+  },
+  banners: {
+    problem: 'Sale banners get seconds of attention, and each one must carry an offer, a code and a button.',
+    approach: 'Gave every banner one idea: a bold hero element (like the neon sign), the discount as the largest number, and the coupon and call to action on a clean dark ground for contrast.',
+    outcome: 'Banners where the offer is understood first, with a clear next step.',
+  },
+  'ganesh-chaturthi': {
+    problem: 'A religious festival post should feel devotional, not like a generic sale graphic.',
+    approach: 'Centred the deity illustration, used warm gold and saffron tones, and kept the greeting simple and well spaced.',
+    outcome: 'A respectful, polished greeting that fits comfortably in a brand feed.',
+  },
+  christmas: {
+    problem: 'Christmas posts are everywhere; the brand needs a greeting that still feels its own.',
+    approach: 'Kept to a restrained festive palette, one clear focal element, and balanced the greeting text against the decoration so neither fights for attention.',
+    outcome: 'A clean seasonal post that feels festive without losing the brand look.',
+  },
+  'new-year': {
+    problem: 'New Year posts need celebration and a premium feel at the same time.',
+    approach: 'Used a black and gold palette, a mirror-ball detail inside the year number as the single highlight, and a calm script headline with a short wish below.',
+    outcome: 'An elegant greeting that feels celebratory and upmarket.',
+  },
+  'independence-day': {
+    problem: 'Independence Day posts often end up crowded with flags and clichés.',
+    approach: 'Built the post around one illustrated scene on a soft tricolour wash, with a simple, well-spaced greeting underneath.',
+    outcome: 'A patriotic post with character that stays easy to read.',
+  },
+  'product-retouching': {
+    problem: 'Raw product photos look flat and inconsistent, which weakens trust on a store page.',
+    approach: 'Cleaned the product, corrected colour and lighting, and placed it in a styled scene with soft shadows so it feels premium. Shown as before and after to make the difference clear.',
+    outcome: 'Product shots that look consistent across a catalogue and ready for ads and listings.',
+  },
+  'photo-editing': {
+    problem: 'Photos shot in imperfect light need to look natural, not over-edited.',
+    approach: 'Worked on exposure, colour balance and detail first, then fine retouching, keeping the original character of the photo.',
+    outcome: 'Clean, natural-looking results, shown side by side with the originals.',
+  },
+  'spotify-design-system': {
+    problem: 'Interfaces drift apart as screens multiply unless the building blocks are defined once.',
+    approach: 'Studied how a familiar product structures its UI, then defined reusable components, spacing and type styles so any new screen can be assembled from the same parts.',
+    outcome: 'A small design system that keeps screens consistent and speeds up future design work.',
+  },
+  'all-veggies': {
+    problem: 'A one-page site for fresh produce has to feel lively yet remain easy to scan.',
+    approach: 'Used bold colour blocks, big type and a clear section order so the story flows from top to bottom, with hierarchy doing the guiding.',
+    outcome: 'A vibrant landing page where the structure is obvious at a glance.',
+  },
+  'white-label': {
+    problem: 'An e-commerce UI that must serve several brands cannot be hard-coded to one look.',
+    approach: 'Designed it as components (colours, cards, forms, checkout steps) that can be re-themed, and mapped the full journey from signup to checkout.',
+    outcome: 'A flexible, component-driven UI that scales across brands.',
+  },
+}
+
 // Placeholder slots only: no real projects, clients or results are implied.
 // `placeholderCount` just shows how many image slots the gallery will have.
 const RAW_PROJECTS = [
@@ -164,6 +250,7 @@ function normalize(p) {
     focus: p.focus || 'center',
     tags: p.tags || [],
     tools: p.tools || [],
+    story: p.story || STORIES[p.id] || null,
   }
 }
 

@@ -120,6 +120,14 @@ export default function ProjectModal({ project, onClose }) {
               <p className="pm__desc">{project.description || 'Short description goes here.'}</p>
             )}
             {paragraphs.map((t, i) => <p key={i} className="pm__desc pm__desc--detail">{t}</p>)}
+            {project.story && (
+              <div className="pm__story">
+                <h4 className="pm__storyhead">How I solved it</h4>
+                {[['Problem', project.story.problem], ['Approach', project.story.approach], ['Outcome', project.story.outcome]].filter(([, v]) => v).map(([k, v]) => (
+                  <div key={k} className="pm__storyrow"><span>{k}</span><p>{v}</p></div>
+                ))}
+              </div>
+            )}
             {facts.length > 0 && (
               <dl className="pm__facts">
                 {facts.map(([k, v]) => (

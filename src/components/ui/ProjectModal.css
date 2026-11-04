@@ -51,6 +51,11 @@
 .pm__info h3 { font-size: var(--text-2xl); text-transform: uppercase; }
 .pm__desc { font-size: var(--text-base); }
 .pm__desc--detail { font-size: var(--text-sm); }
+.pm__story { display: grid; gap: var(--space-3); width: 100%; padding: var(--space-4); border: 1px solid var(--color-border); border-left: 3px solid var(--color-accent); border-radius: var(--radius-sm); background: rgb(255 255 255 / 0.02); }
+.pm__storyhead { font-family: var(--font-heading); font-size: var(--text-sm); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text); }
+.pm__storyrow { display: grid; gap: 0.2rem; }
+.pm__storyrow span { font-family: var(--font-heading); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); }
+.pm__storyrow p { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); line-height: 1.55; }
 .pm__facts { display: grid; gap: var(--space-2); width: 100%; margin: 0; padding-top: var(--space-4); border-top: 1px solid var(--color-border); }
 .pm__facts div { display: flex; gap: var(--space-4); }
 .pm__facts dt { flex: 0 0 4.5rem; font-family: var(--font-heading); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-muted); }
