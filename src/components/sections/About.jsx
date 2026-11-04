@@ -240,11 +240,10 @@ export default function About() {
           </h2>
           <p className="about__lead">Every pixel has a purpose. Every project has a story. I bring that care, and a strong eye for visual communication, to full-time design teams and freelance client projects alike.</p>
           <ul className="about__marks" role="list">
-            <li>Adobe Photoshop expertise</li>
-            <li>Using Photoshop since 2009</li>
+            <li>Photoshop expert, since 2009</li>
           </ul>
           <ul className="about__marks about__tools" role="list" aria-label="Software I use">
-            {['Photoshop', 'Illustrator', 'Figma', 'Canva', 'Premiere Pro'].map((t) => <li key={t}>{t}</li>)}
+            {['Illustrator', 'Figma', 'Canva', 'Premiere Pro'].map((t) => <li key={t}>{t}</li>)}
           </ul>
         </div>
 
