@@ -38,11 +38,12 @@ export default async function handler(req, res) {
       ...dayKeys.map((d) => ['HGETALL', `vd:${d}`]),
       ...dayKeys.map((d) => ['HGETALL', `cd:${d}`]),
       ...dayKeys.map((d) => ['HGETALL', `pd:${d}`]),
+      ...dayKeys.map((d) => ['HGETALL', `hd:${d}`]),
     ])
     const [vt, vd, vc, vcity, vref, vdev, clicks, sections, events, pt, pcity, vcount, vcityMap, ...tail] = r.map((x) => x.result)
     const clicksByDay = tail.slice(0, DAYS)
     const playsDays = Object.fromEntries(pairs(tail[DAYS]))
-    const vdByDay = tail.slice(DAYS + 1, 2 * DAYS + 1), cdByDay = tail.slice(2 * DAYS + 1, 3 * DAYS + 1), pdByDay = tail.slice(3 * DAYS + 1, 4 * DAYS + 1)
+    const vdByDay = tail.slice(DAYS + 1, 2 * DAYS + 1), cdByDay = tail.slice(2 * DAYS + 1, 3 * DAYS + 1), pdByDay = tail.slice(3 * DAYS + 1, 4 * DAYS + 1), hdByDay = tail.slice(4 * DAYS + 1, 5 * DAYS + 1)
     const visitsByDay = Object.fromEntries(pairs(vd))
     const series = dayKeys.map((d, i) => ({ d, v: visitsByDay[d] || 0, c: pairs(clicksByDay[i]).reduce((a, [, n]) => a + n, 0) }))
     const total = Number(vt) || 0
@@ -82,14 +83,26 @@ export default async function handler(req, res) {
 
     // Daily report: per day, which cities visited, played, downloaded the resume and clicked WhatsApp / LinkedIn
     const col = (title, total, list) => `<div class="dcol"><h3>${title} <b>${num(total)}</b></h3>${list.length ? `<ul>${list.slice(0, 8).map(([c, n]) => `<li><span>${esc(c)}</span><b>${num(n)}</b></li>`).join('')}</ul>` : '<p class="empty">–</p>'}</div>`
+    const CORE = [['resume download', 'Resume downloads'], ['whatsapp', 'WhatsApp'], ['linkedin', 'LinkedIn'], ['email', 'Email'], ["let's talk", "Let's talk"], ['why hire me icon', 'Why-hire-me icon']]
     const daily = dayKeys.map((d, i) => {
-      const clickCity = {}
-      pairs(cdByDay[i]).forEach(([k, n]) => { const [nm, ...pl] = k.split('|'); (clickCity[nm] ||= []).push([pl.join('|'), n]) })
+      const clickCity = {}, projects = []
+      pairs(cdByDay[i]).forEach(([k, n]) => {
+        const [nm, ...pl] = k.split('|'), place = pl.join('|')
+        if (nm.startsWith('project: ')) projects.push([`${nm.slice(9)} · ${place}`, n])
+        else (clickCity[nm] ||= []).push([place, n])
+      })
       const cm = Object.fromEntries(pairs(clicksByDay[i]))
-      const tot = { visit: series[i].v, play: playsDays[d] || 0, resume: cm['resume download'] || 0, wa: cm.whatsapp || 0, li: cm.linkedin || 0 }
+      const sum = (l) => (l || []).reduce((a, [, n]) => a + n, 0)
+      const visits = series[i].v, played = playsDays[d] || 0
+      const chips = [['Visitors', visits], ['Played', played], ...CORE.map(([k, label]) => [label.replace(' downloads', '').replace('Why-hire-me icon', 'Why hire me'), cm[k] || 0])]
+      const extra = Object.keys(clickCity).filter((k) => !CORE.some(([c]) => c === k)).map((k) => [k, k.charAt(0).toUpperCase() + k.slice(1)])
+      const hours = Object.fromEntries(pairs(hdByDay[i]).map(([h, n]) => [Number(h), n]))
+      const hmax = Math.max(1, ...Object.values(hours))
+      const hourBars = Array.from({ length: 24 }, (_, h) => `<i title="${h}:00 · ${hours[h] || 0} visitors" style="--h:${((hours[h] || 0) / hmax) * 100}%"></i>`).join('')
+      const hourRow = Object.keys(hours).length ? `<div class="dcol dcol--hours"><h3>Visitors by hour (IST) <b>${Object.entries(hours).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([h]) => `${h}:00`).join(', ')}</b></h3><div class="hours">${hourBars}</div><div class="hours__l"><span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>11pm</span></div></div>` : ''
       const label = i === DAYS - 1 ? `Today · ${short(d)}` : i === DAYS - 2 ? `Yesterday · ${short(d)}` : short(d)
-      return `<details class="day"${i >= DAYS - 2 ? ' open' : ''}><summary><span class="day__d">${label}</span><span class="chips"><em>Visitors <b>${num(tot.visit)}</b></em><em>Played <b>${num(tot.play)}</b></em><em>Resume <b>${num(tot.resume)}</b></em><em>WhatsApp <b>${num(tot.wa)}</b></em><em>LinkedIn <b>${num(tot.li)}</b></em></span></summary>
-<div class="dgrid">${col('Visitors', tot.visit, pairs(vdByDay[i]))}${col('Played a game', tot.play, pairs(pdByDay[i]))}${col('Resume downloads', tot.resume, clickCity['resume download'] || [])}${col('WhatsApp clicks', tot.wa, clickCity.whatsapp || [])}${col('LinkedIn clicks', tot.li, clickCity.linkedin || [])}</div></details>`
+      return `<details class="day"${i >= DAYS - 2 ? ' open' : ''}><summary><span class="day__d">${label}</span><span class="chips">${chips.map(([k, n]) => `<em>${esc(k)} <b>${num(n)}</b></em>`).join('')}</span></summary>
+<div class="dgrid">${col('Visitors', visits, pairs(vdByDay[i]))}${col('Played a game', played, pairs(pdByDay[i]))}${[...CORE, ...extra].map(([k, label]) => col(label, cm[k] || sum(clickCity[k]), clickCity[k] || [])).join('')}${col('Projects opened', sum(projects), projects)}${hourRow}</div></details>`
     }).reverse().join('')
 
     const kpi = (label, value, sub) => `<div class="kpi"><span>${label}</span><b>${value}</b><small>${sub || ''}</small></div>`
@@ -126,10 +139,11 @@ h2 small{letter-spacing:0;text-transform:none;font-size:12px}
 .days{display:grid;gap:8px}.day{border:1px solid var(--line);border-radius:12px;background:var(--bg)}
 .day summary{cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 14px}.day summary::-webkit-details-marker{display:none}
 .day__d{font-weight:600}.chips{display:flex;flex-wrap:wrap;gap:6px 14px}.chips em{margin:0;color:var(--mute)}.chips b{color:var(--text);margin-left:2px}
-.dgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;padding:4px 14px 14px;border-top:1px solid var(--line);padding-top:14px}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(11.5rem,1fr));gap:18px 16px;padding:4px 14px 14px;border-top:1px solid var(--line);padding-top:14px}
 .dcol h3{font:500 11px Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:0 0 8px;display:flex;justify-content:space-between;gap:6px}.dcol h3 b{color:var(--acc);font-size:13px}
 .dcol ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}.dcol li{display:flex;justify-content:space-between;gap:8px;font-size:13px}.dcol li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dcol li b{font-weight:600}
-@media(max-width:980px){.dgrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.dgrid{grid-template-columns:1fr}}
+.dcol--hours{grid-column:1/-1}.hours{display:flex;align-items:flex-end;gap:3px;height:56px}.hours i{flex:1;height:max(var(--h),4%);border-radius:3px;background:var(--acc);opacity:.85}.hours__l{display:flex;justify-content:space-between;color:var(--mute);font-size:11px;margin-top:4px}
+@media(max-width:560px){.dgrid{grid-template-columns:1fr 1fr}}
 .empty,.feed li.empty{display:block;color:var(--mute);margin:0}
 @media(max-width:980px){.kpis{grid-template-columns:repeat(4,1fr)}.row,.row3,.row2{grid-template-columns:1fr}}
 @media(max-width:560px){.kpis,.kpis4{grid-template-columns:repeat(2,1fr)}.feed li{grid-template-columns:10px 1fr;}.f__p,.f__w{grid-column:2}.kpi b{font-size:28px}}

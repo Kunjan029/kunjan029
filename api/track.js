@@ -45,6 +45,8 @@ export default async function handler(req, res) {
         ['HINCRBY', 'visits:country', country, 1],
         ['HINCRBY', 'visits:city', place, 1],
         ['HINCRBY', `vd:${day}`, place, 1],
+        ['HINCRBY', `hd:${day}`, String(new Date(Date.now() + 19800000).getUTCHours()), 1],
+        ['EXPIRE', `hd:${day}`, TTL],
         ['EXPIRE', `vd:${day}`, TTL],
         ['HINCRBY', 'visits:ref', ref, 1],
         ['HINCRBY', 'visits:device', device, 1],
