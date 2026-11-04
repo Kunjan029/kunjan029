@@ -242,8 +242,11 @@ export default function About() {
           <ul className="about__marks" role="list">
             <li>Photoshop expert, since 2009</li>
           </ul>
-          <ul className="about__marks about__tools" role="list" aria-label="Software I use">
-            {['Illustrator', 'Figma', 'Canva', 'Premiere Pro'].map((t) => <li key={t}>{t}</li>)}
+          <p className="about__alsolabel">Also working with</p>
+          <ul className="about__marks about__tools" role="list" aria-label="Also working with">
+            {[['Illustrator', 'Vectors & logos'], ['Figma', 'Frames & flows'], ['Canva', 'Fast turnarounds'], ['Premiere Pro', 'Motion & reels']].map(([t, q]) => (
+              <li key={t} data-q={q}><span className="tl__n">{t}</span><span className="tl__q" aria-hidden="true">{q}</span></li>
+            ))}
           </ul>
         </div>
 

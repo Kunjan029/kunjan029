@@ -31,7 +31,18 @@
 .about__marks { list-style: none; display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-5) 0 0; padding: 0; }
 .about__marks li { display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.5rem 1rem; border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-family: var(--font-heading); font-size: var(--text-sm); font-weight: 600; color: var(--color-text); }
 .about__marks li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); }
-.about__tools { margin-top: var(--space-3); }
+.about__alsolabel { margin: var(--space-4) 0 0; font-family: var(--font-heading); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-text-muted); }
+.about__tools { margin-top: var(--space-2); }
+.about__tools li { position: relative; overflow: hidden; transition: border-color 0.25s ease, color 0.25s ease, transform 0.25s ease; }
+.tl__n, .tl__q { display: block; transition: transform 0.3s ease, opacity 0.3s ease; }
+.about__tools li { display: inline-grid; place-items: center; }
+.tl__n, .tl__q { grid-area: 1 / 1; white-space: nowrap; }
+.tl__q { color: var(--color-accent); transform: translateY(100%); opacity: 0; }
+@media (hover: hover) {
+  .about__tools li:hover { border-color: var(--color-accent); transform: translateY(-2px); }
+  .about__tools li:hover .tl__n { transform: translateY(-100%); opacity: 0; }
+  .about__tools li:hover .tl__q { transform: none; opacity: 1; }
+}
 .about__tools li { border-color: var(--color-border-strong); color: var(--color-text-muted); }
 .about__tools li::before { display: none; }
 
