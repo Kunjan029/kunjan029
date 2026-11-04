@@ -31,6 +31,9 @@
 .about__marks { list-style: none; display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-5) 0 0; padding: 0; }
 .about__marks li { display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.5rem 1rem; border: 1px solid var(--color-accent); border-radius: var(--radius-pill); font-family: var(--font-heading); font-size: var(--text-sm); font-weight: 600; color: var(--color-text); }
 .about__marks li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); }
+.about__tools { margin-top: var(--space-3); }
+.about__tools li { border-color: var(--color-border-strong); color: var(--color-text-muted); }
+.about__tools li::before { display: none; }
 
 /* ---------- Block 1: Meet ---------- */
 .meet { position: relative; display: grid; gap: var(--space-8); margin-top: clamp(4rem, 9vw, 7rem); }

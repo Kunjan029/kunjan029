@@ -243,6 +243,9 @@ export default function About() {
             <li>Adobe Photoshop expertise</li>
             <li>Using Photoshop since 2009</li>
           </ul>
+          <ul className="about__marks about__tools" role="list" aria-label="Software I use">
+            {['Photoshop', 'Illustrator', 'Figma', 'Canva', 'Premiere Pro'].map((t) => <li key={t}>{t}</li>)}
+          </ul>
         </div>
 
         {/* ---------- Block 1: Meet Kunjan ---------- */}
