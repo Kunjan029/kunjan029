@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     } else if (type === 'click') {
       const name = String(body.name || '')
       if (!NAME_OK.test(name)) return res.status(204).end()
-      await redis([['HINCRBY', 'clicks:total', name, 1], ['HINCRBY', `clicks:${day}`, name, 1], ['HINCRBY', `cd:${day}`, `${name}|${place}`, 1], ['EXPIRE', `cd:${day}`, TTL], event(`clicked ${name}`), trim])
+      await redis([['HINCRBY', 'clicks:total', name, 1], ['HINCRBY', `clicks:${day}`, name, 1], ['HINCRBY', `cd:${day}`, `${name}|${place}`, 1], ['EXPIRE', `cd:${day}`, TTL], event(`clicked ${name} · ID ${vid}`), trim])
     } else if (type === 'game') {
       const name = String(body.name || '')
       if (!GAMES.has(name)) return res.status(204).end()

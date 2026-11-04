@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     const r = await redis([
       ['GET', 'visits:total'], ['HGETALL', 'visits:days'], ['HGETALL', 'visits:country'], ['HGETALL', 'visits:city'],
       ['HGETALL', 'visits:ref'], ['HGETALL', 'visits:device'], ['HGETALL', 'clicks:total'], ['HGETALL', 'sections:total'],
-      ['LRANGE', 'events', 0, 39], ['GET', 'plays:total'], ['HGETALL', 'plays:city'], ['HGETALL', 'visitors:count'], ['HGETALL', 'visitors:city'],
+      ['LRANGE', 'events', 0, 199], ['GET', 'plays:total'], ['HGETALL', 'plays:city'], ['HGETALL', 'visitors:count'], ['HGETALL', 'visitors:city'],
       ...dayKeys.map((d) => ['HGETALL', `clicks:${d}`]),
       ['HGET', 'plays:days', sel], ['HGETALL', `vd:${sel}`], ['HGETALL', `cd:${sel}`], ['HGETALL', `pd:${sel}`], ['HGETALL', `hd:${sel}`], ['HGETALL', `clicks:${sel}`], ['HGET', 'visits:days', sel], ['HGETALL', 'games:total'], ['HGETALL', 'games:players'], ['HGETALL', `gd:${sel}`], ['HGETALL', `gu:${sel}`],
     ])
@@ -72,10 +72,20 @@ export default async function handler(req, res) {
     const repeaters = vis.filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1])
     const repeatList = repeaters.slice(0, 10).map(([id, n]) => `<li class="click"><i></i><span class="f__t">ID ${esc(id)}</span><span class="f__p">${esc(cityOf[id] || '')}</span><span class="f__w"><b>${num(n)}</b> days visited</span></li>`).join('') || '<li class="empty">No one has come back yet</li>'
 
-    const feed = (events || []).map((e) => {
+    // Recent activity: a visit row also lists what that same anonymous ID clicked afterwards
+    const evs = (events || []).map((e) => {
       const [t, place, what = ''] = String(e).split('|')
-      const kind = what.startsWith('visit') ? 'visit' : 'click'
-      return `<li class="${kind}"><i></i><span class="f__t">${esc(ist(t))}</span><span class="f__p">${esc(place)}</span><span class="f__w">${esc(what)}</span></li>`
+      return { t, place, what, kind: what.startsWith('visit') ? 'visit' : 'click', id: (what.match(/· ID (\w+)/) || [])[1] || '' }
+    })
+    const lastVisit = {}
+    for (let i = evs.length - 1; i >= 0; i--) { // oldest first, so each click lands on the latest earlier visit of that ID
+      const ev = evs[i]
+      if (ev.kind === 'visit' && ev.id) lastVisit[ev.id] = ev
+      else if (ev.kind === 'click' && ev.id && lastVisit[ev.id]) (lastVisit[ev.id].clicks = lastVisit[ev.id].clicks || []).push(ev.what.replace(/^clicked /, '').replace(/ · ID \w+$/, ''))
+    }
+    const feed = evs.slice(0, 60).map((ev) => {
+      const trail = ev.clicks?.length ? `<span class="f__c">clicked: ${esc(ev.clicks.join(', '))}</span>` : ''
+      return `<li class="${ev.kind}"><i></i><span class="f__t">${esc(ist(ev.t))}</span><span class="f__p">${esc(ev.place)}</span><span class="f__w">${esc(ev.what)}${trail}</span></li>`
     }).join('') || '<li class="empty">No activity yet</li>'
 
     // Daily report for one chosen day (?date=YYYY-MM-DD): a card per metric, with the cities behind each number
@@ -140,7 +150,7 @@ h2 small{letter-spacing:0;text-transform:none;font-size:12px}
 .donut{width:120px;height:120px;border-radius:50%;background:${donut};-webkit-mask:radial-gradient(circle 36px,transparent 98%,#000 100%);mask:radial-gradient(circle 36px,transparent 98%,#000 100%);flex:none}
 .dev{display:flex;gap:20px;align-items:center}.dev ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;flex:1}.dev li{display:flex;align-items:center;gap:8px;text-transform:capitalize}.dev li i{width:10px;height:10px;border-radius:3px}.dev li b{margin-left:auto}
 .feed{list-style:none;margin:0;padding:0;max-height:420px;overflow:auto}.feed li{display:grid;grid-template-columns:10px 92px 170px 1fr;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
-.feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}
+.feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}.f__w{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;justify-content:space-between}.f__c{color:var(--acc);font-size:13px;font-weight:600}
 .tblw{overflow-x:auto}.gt{width:100%;border-collapse:collapse;font-size:13px}.gt th{color:var(--mute);font-weight:500;text-align:right;padding:6px 10px;white-space:nowrap}.gt th:first-child,.gt td:first-child{text-align:left}.gt td{text-align:right;padding:9px 10px;border-top:1px solid var(--line);font-weight:600}.gt td:first-child{font-weight:500}.gt .gb{width:30%;min-width:80px;padding:0 10px}.gt .gb i{display:block;height:6px;width:var(--w);border-radius:4px;background:var(--acc)}
 .dpick{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px}.dform{margin:0}
 .dpick input[type=date]{background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;color-scheme:dark}
