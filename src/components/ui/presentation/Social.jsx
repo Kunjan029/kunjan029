@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { Bookmark, ChevronLeft, ChevronRight, Heart, MessageCircle, Send, User } from 'lucide-react'
 import { Art, Pager } from './shared.jsx'
 
@@ -8,8 +8,25 @@ const SWIPE = 50
 // media left and a side panel on wide ones. No likes, comments or follower numbers are ever shown.
 function IgShell({ project, media, sponsored = false, phone = null }) {
   const name = project.client || 'Your brand'
+  const art = useRef(null)
+  const [ph, setPh] = useState(null)
+  // Wide layout: the artwork panel is made exactly as tall as the phone panel, so both sit level with equal padding
+  useLayoutEffect(() => {
+    const el = art.current?.querySelector('.ig__phone')
+    if (!el || typeof ResizeObserver === 'undefined') return undefined
+    const read = () => setPh(el.offsetParent ? el.getBoundingClientRect().height : null)
+    read()
+    const ro = new ResizeObserver(read)
+    ro.observe(el)
+    const screen = el.querySelector('.ig__screen')
+    if (screen) ro.observe(screen)
+    const feed = el.querySelector('img')
+    feed?.addEventListener('load', read)
+    const t = window.setTimeout(read, 400)
+    return () => { ro.disconnect(); feed?.removeEventListener('load', read); window.clearTimeout(t) }
+  }, [phone?.src])
   return (
-    <article className={`ig${phone ? ' ig--phone' : ''}`}>
+    <article ref={art} className={`ig${phone ? ' ig--phone' : ''}`} style={ph ? { '--ph': `${Math.round(ph)}px` } : undefined}>
       <div className="ig__media">{media}</div>
       <div className="ig__side">
         <header className="ig__head">

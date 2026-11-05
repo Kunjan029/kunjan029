@@ -174,8 +174,8 @@
 
 /* Wide post + phone preview: two separate panels. The artwork panel hugs the image with identical padding on all four sides */
 @container (min-width: 640px) {
-  .ig--phone { align-items: center; gap: 1rem; border: 0; border-radius: 0; background: none; overflow: visible; }
+  .ig--phone { align-items: stretch; gap: 1rem; border: 0; border-radius: 0; background: none; overflow: visible; }
   .ig--phone .ig__media { padding: 1rem; border: 1px solid var(--frame); border-radius: 8px; background: #0B0B0D; }
-  .ig--phone .ig__art img { border-radius: 4px; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08); }
-  .ig--phone .ig__phone { padding: 1rem; border: 1px solid var(--frame); border-radius: 8px; }
+  .ig--phone .ig__art img { height: calc(var(--ph, 30rem) - 2rem - 2px); max-height: none; border-radius: 4px; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08); }
+  .ig--phone .ig__phone { align-self: start; padding: 1rem; border: 1px solid var(--frame); border-radius: 8px; }
 }
