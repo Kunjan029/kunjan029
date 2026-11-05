@@ -113,7 +113,7 @@ export default function ProjectModal({ project, onClose }) {
             </div>
           )}
 
-          <div className="pm__info">
+          {!showCtx && (<div className="pm__info">
             <p className="pm__meta">{[cat, METHODS.find((m) => m.id === project.method)?.label, project.year].filter(Boolean).join(' / ')}</p>
             <h3>{project.title}</h3>
             {(project.description || project.placeholder) && (
@@ -141,7 +141,7 @@ export default function ProjectModal({ project, onClose }) {
               </ul>
             )}
             {project.link && <Button href={project.link} target="_blank" rel="noopener noreferrer">View case study</Button>}
-          </div>
+          </div>)}
         </div>
       )}
     </dialog>

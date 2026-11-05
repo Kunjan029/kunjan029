@@ -79,20 +79,6 @@
   .pm--ctx .pm__facts, .pm--ctx .pm__tags, .pm--ctx .pm__info > .btn { grid-column: 2; }
   .pm--ctx .pm__facts { grid-row: 1 / span 3; border-top: 0; padding-top: 0; }
 }
-/* Wide screens: the details sit beside the preview, so everything is visible without scrolling */
-@media (min-width: 1100px) {
-  .pm--ctx .pm__body { grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr); gap: var(--space-5); align-items: center; }
-  .pm--ctx .pm__info { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); padding: var(--space-3) var(--space-2) var(--space-3) 0; }
-  .pm--ctx .pm__info > * { grid-column: auto; }
-  .pm--ctx .pm__facts { grid-row: auto; border-top: 1px solid var(--color-border); padding-top: var(--space-4); }
-  .pm--ctx .px { --view: clamp(15rem, calc(100dvh - 19rem), 42rem); }
-  .pm--ctx .pm__info h3 { font-size: clamp(1.6rem, 2.3vw, 2.2rem); hyphens: manual; overflow-wrap: normal; }
-  .pm--ctx .pm__story { padding: var(--space-3) var(--space-4); gap: var(--space-2); }
-}
-@media (min-width: 1100px) { @container (max-width: 639px) {
-  .pm--ctx .ig__art img { width: auto; max-width: 100%; max-height: calc(var(--view) - 7rem); margin-inline: auto; }
-} }
-
 /* Panoramic artwork: the stage spans the full popup width, details sit underneath */
 .pm--wide .pm__stage { height: auto; aspect-ratio: 3 / 1; }
 @media (min-width: 900px) {
@@ -100,3 +86,10 @@
   .pm--wide .pm__info { padding: var(--space-3) var(--space-4) var(--space-4); }
 }
 @media (max-width: 899px) { .pm--wide .pm__stage { aspect-ratio: 3 / 1.4; } }
+
+/* Preview mode shows only the artwork, so keep it comfortably inside short screens */
+.pm--ctx .px { --view: min(64dvh, 46rem); }
+@media (min-width: 900px) and (max-height: 860px) {
+  .pm--ctx .pm__context { padding-top: 0; }
+  .pm--ctx .pm__body { padding-block: var(--space-3); }
+}
