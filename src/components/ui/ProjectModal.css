@@ -88,7 +88,7 @@
 @media (max-width: 899px) { .pm--wide .pm__stage { aspect-ratio: 3 / 1.4; } }
 
 /* Preview mode shows only the artwork, so keep it comfortably inside short screens */
-.pm--ctx .px { --view: min(64dvh, 46rem); }
+.pm--ctx .px { --view: min(60dvh, 46rem); }
 @media (min-width: 900px) and (max-height: 860px) {
   .pm--ctx .pm__context { padding-top: 0; }
   .pm--ctx .pm__body { padding-block: var(--space-3); }
