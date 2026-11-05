@@ -10,23 +10,31 @@ function IgShell({ project, media, sponsored = false, phone = null }) {
   const name = project.client || 'Your brand'
   const art = useRef(null)
   const [ph, setPh] = useState(null)
-  // Wide layout: the artwork panel is made exactly as tall as the phone panel, so both sit level with equal padding
+  const [ready, setReady] = useState(!phone)
+  // Wide layout: the artwork panel is made exactly as tall as the phone panel. The panels stay hidden until the
+  // sizes are known, so the post never visibly jumps or grows after the popup opens.
   useLayoutEffect(() => {
     const el = art.current?.querySelector('.ig__phone')
-    if (!el || typeof ResizeObserver === 'undefined') return undefined
-    const read = () => setPh(el.offsetParent ? el.getBoundingClientRect().height : null)
+    if (!el || typeof ResizeObserver === 'undefined') { setReady(true); return undefined }
+    const feed = el.querySelector('img')
+    const read = () => {
+      const shown = Boolean(el.offsetParent)
+      setPh(shown ? el.offsetHeight : null) // offsetHeight ignores the popup's opening scale animation
+      const open = el.closest('dialog')?.open
+      if (shown) setReady(Boolean(feed?.complete && feed.naturalHeight))
+      else if (open) setReady(true) // narrow layout: no phone panel to wait for
+    }
     read()
     const ro = new ResizeObserver(read)
     ro.observe(el)
     const screen = el.querySelector('.ig__screen')
     if (screen) ro.observe(screen)
-    const feed = el.querySelector('img')
     feed?.addEventListener('load', read)
-    const t = window.setTimeout(read, 400)
+    const t = window.setTimeout(() => { read(); setReady(true) }, 700)
     return () => { ro.disconnect(); feed?.removeEventListener('load', read); window.clearTimeout(t) }
   }, [phone?.src])
   return (
-    <article ref={art} className={`ig${phone ? ' ig--phone' : ''}`} style={ph ? { '--ph': `${Math.round(ph)}px` } : undefined}>
+    <article ref={art} className={`ig${phone ? ' ig--phone' : ''}${ready ? '' : ' is-settling'}`} style={ph ? { '--ph': `${Math.round(ph)}px` } : undefined}>
       <div className="ig__media">{media}</div>
       <div className="ig__side">
         <header className="ig__head">

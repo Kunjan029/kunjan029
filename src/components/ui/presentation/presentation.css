@@ -179,3 +179,8 @@
   .ig--phone .ig__art img { height: calc(var(--ph, 30rem) - 2rem - 2px); max-height: none; border-radius: 4px; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08); }
   .ig--phone .ig__phone { align-self: start; padding: 1rem; border: 1px solid var(--frame); border-radius: 8px; }
 }
+
+/* Hidden until measured (see Social.jsx), then a short fade: no visible resize after opening */
+.ig--phone .ig__media, .ig--phone .ig__phone { transition: opacity 0.18s ease; }
+.ig--phone.is-settling .ig__media, .ig--phone.is-settling .ig__phone { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .ig--phone .ig__media, .ig--phone .ig__phone { transition: none; } }
