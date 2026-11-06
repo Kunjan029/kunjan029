@@ -38,7 +38,7 @@ export default async function handler(req, res) {
       if (seen.result !== 'OK') return res.status(204).end()
       const ref = clean(body.ref, 60).toLowerCase() || 'direct'
       const device = DEVICES.has(body.device) ? body.device : 'desktop'
-      const [seenDays] = await redis([['HINCRBY', 'visitors:count', vid, 1], ['HSET', 'visitors:city', vid, place]])
+      const [seenDays] = await redis([['HINCRBY', 'visitors:count', vid, 1], ['HSET', 'visitors:city', vid, place], ['HSETNX', 'visitors:first', vid, day], ['HSET', 'visitors:last', vid, day]])
       const nth = Number(seenDays.result) || 1
       await redis([
         ['INCR', 'visits:total'],

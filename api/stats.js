@@ -2,6 +2,7 @@ import { configured, redis } from './_redis.js'
 
 // Private dashboard: /api/stats?key=YOUR_STATS_KEY  (STATS_KEY is set in Vercel's Environment Variables)
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+const strMap = (a) => { const o = {}; for (let i = 0; i + 1 < (a || []).length; i += 2) o[a[i]] = a[i + 1]; return o } // text values (pairs() turns values into numbers)
 const pairs = (flat) => {
   const out = []
   for (let i = 0; i < (flat || []).length; i += 2) out.push([flat[i], Number(flat[i + 1])])
@@ -36,11 +37,11 @@ export default async function handler(req, res) {
       ['HGETALL', 'visits:ref'], ['HGETALL', 'visits:device'], ['HGETALL', 'clicks:total'], ['HGETALL', 'sections:total'],
       ['LRANGE', 'events', 0, 199], ['GET', 'plays:total'], ['HGETALL', 'plays:city'], ['HGETALL', 'visitors:count'], ['HGETALL', 'visitors:city'],
       ...dayKeys.map((d) => ['HGETALL', `clicks:${d}`]),
-      ['HGET', 'plays:days', sel], ['HGETALL', `vd:${sel}`], ['HGETALL', `cd:${sel}`], ['HGETALL', `pd:${sel}`], ['HGETALL', `hd:${sel}`], ['HGETALL', `clicks:${sel}`], ['HGET', 'visits:days', sel], ['HGETALL', 'games:total'], ['HGETALL', 'games:players'], ['HGETALL', `gd:${sel}`], ['HGETALL', `gu:${sel}`],
+      ['HGET', 'plays:days', sel], ['HGETALL', `vd:${sel}`], ['HGETALL', `cd:${sel}`], ['HGETALL', `pd:${sel}`], ['HGETALL', `hd:${sel}`], ['HGETALL', `clicks:${sel}`], ['HGET', 'visits:days', sel], ['HGETALL', 'games:total'], ['HGETALL', 'games:players'], ['HGETALL', `gd:${sel}`], ['HGETALL', `gu:${sel}`], ['HGETALL', 'visitors:first'], ['HGETALL', 'visitors:last'],
     ])
     const [vt, vd, vc, vcity, vref, vdev, clicks, sections, events, pt, pcity, vcount, vcityMap, ...tail] = r.map((x) => x.result)
     const clicksByDay = tail.slice(0, DAYS)
-    const [selPlays, selVd, selCd, selPd, selHd, selClicks, selVisits, gTotal, gPlayers, gDay, gDayUsers] = tail.slice(DAYS)
+    const [selPlays, selVd, selCd, selPd, selHd, selClicks, selVisits, gTotal, gPlayers, gDay, gDayUsers, vFirst, vLast] = tail.slice(DAYS)
     const visitsByDay = Object.fromEntries(pairs(vd))
     const series = dayKeys.map((d, i) => ({ d, v: visitsByDay[d] || 0, c: pairs(clicksByDay[i]).reduce((a, [, n]) => a + n, 0) }))
     const total = Number(vt) || 0
@@ -68,9 +69,8 @@ export default async function handler(req, res) {
     const legend = dev.map(([k, n], i) => `<li><i style="background:${colors[i % 3]}"></i>${esc(k)}<b>${Math.round((n / devTotal) * 100)}%</b></li>`).join('')
 
     const vis = pairs(vcount)
-    const cityOf = Object.fromEntries(pairs(vcityMap))
+    const cityOf = strMap(vcityMap)
     const repeaters = vis.filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1])
-    const repeatList = repeaters.slice(0, 10).map(([id, n]) => `<li class="click"><i></i><span class="f__t">ID ${esc(id)}</span><span class="f__p">${esc(cityOf[id] || '')}</span><span class="f__w"><b>${num(n)}</b> days visited</span></li>`).join('') || '<li class="empty">No one has come back yet</li>'
 
     // Recent activity, one card per person (anonymous ID): everything that person did, in order
     const evs = (events || []).map((e) => {
@@ -121,6 +121,17 @@ export default async function handler(req, res) {
     const selVisitsN = Number(selVisits) || 0
     const addDay = (d, n) => new Date(new Date(d + 'T00:00:00Z').getTime() + n * 86400000).toISOString().slice(0, 10)
     const href = (d) => `?key=${encodeURIComponent(key)}&date=${d}`
+    // Returning visitors: first day each ID was seen (falls back to the oldest event we still have); the day links to that day's report
+    const firstOf = strMap(vFirst)
+    const lastOf = strMap(vLast)
+    const oldestEv = {}
+    evs.forEach((ev) => { if (ev.kind === 'visit' && ev.id) oldestEv[ev.id] = new Date(Number(ev.t) + 19800000).toISOString().slice(0, 10) })
+    const dayLink = (d) => (d ? `<a class="dlink" href="${href(d)}#daily">${esc(short(d))}</a>` : '<span class="mute">before tracking</span>')
+    const repeatList = repeaters.slice(0, 15).map(([id, n]) => {
+      const first = firstOf[id] || oldestEv[id] || ''
+      const last = lastOf[id] || ''
+      return `<li class="click rv"><i></i><span class="f__t">ID ${esc(id)}</span><span class="f__p">${esc(cityOf[id] || '')}</span><span class="f__w"><b>${num(n)}</b> days · first came ${dayLink(first)}${last && last !== first ? ` · last ${dayLink(last)}` : ''}</span></li>`
+    }).join('') || '<li class="empty">No one has come back yet</li>'
     const selLabel = new Date(sel + 'T00:00:00Z').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
     const daily = `<div class="dpick"><a class="dbtn" href="${href(addDay(sel, -1))}" aria-label="Previous day">‹</a>
 <form method="get" class="dform"><input type="hidden" name="key" value="${esc(key)}"><input type="date" name="date" value="${sel}" max="${today0}" onchange="this.form.submit()"><noscript><button>Go</button></noscript></form>
@@ -165,7 +176,7 @@ h2 small{letter-spacing:0;text-transform:none;font-size:12px}
 .donut{width:120px;height:120px;border-radius:50%;background:${donut};-webkit-mask:radial-gradient(circle 36px,transparent 98%,#000 100%);mask:radial-gradient(circle 36px,transparent 98%,#000 100%);flex:none}
 .dev{display:flex;gap:20px;align-items:center}.dev ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;flex:1}.dev li{display:flex;align-items:center;gap:8px;text-transform:capitalize}.dev li i{width:10px;height:10px;border-radius:3px}.dev li b{margin-left:auto}
 .feed{list-style:none;margin:0;padding:0;max-height:420px;overflow:auto}.feed li{display:grid;grid-template-columns:10px 92px 170px 1fr;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
-.feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}.vg{display:block!important;padding:12px 0!important}.vg__h{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}.vg__h .f__t{min-width:92px}.vg__id{font-size:13px;color:var(--text)}.vg__n{margin-left:auto;font-size:12px;color:var(--mute)}.vg--act .vg__n{color:var(--acc);font-weight:600}.vg__l{list-style:none;margin:8px 0 0 6px;padding:0 0 0 14px;border-left:2px solid var(--line);display:grid;gap:5px}.vg__l li{display:flex;gap:10px;align-items:baseline;padding:0;border:0;font-size:14px;grid-template-columns:none}.vg__l li i{width:7px;height:7px;flex:none;align-self:center;border-radius:50%;background:var(--blue)}.vg__l li.click i{background:var(--acc)}.vg__l .vt{color:var(--mute);font-size:12px;min-width:38px}
+.feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}.dlink{color:var(--acc);font-weight:600;text-decoration:underline;text-underline-offset:3px}.dlink:hover{color:#fff}.rv .f__w{display:block}.mute{color:var(--mute)}.vg{display:block!important;padding:12px 0!important}.vg__h{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}.vg__h .f__t{min-width:92px}.vg__id{font-size:13px;color:var(--text)}.vg__n{margin-left:auto;font-size:12px;color:var(--mute)}.vg--act .vg__n{color:var(--acc);font-weight:600}.vg__l{list-style:none;margin:8px 0 0 6px;padding:0 0 0 14px;border-left:2px solid var(--line);display:grid;gap:5px}.vg__l li{display:flex;gap:10px;align-items:baseline;padding:0;border:0;font-size:14px;grid-template-columns:none}.vg__l li i{width:7px;height:7px;flex:none;align-self:center;border-radius:50%;background:var(--blue)}.vg__l li.click i{background:var(--acc)}.vg__l .vt{color:var(--mute);font-size:12px;min-width:38px}
 .tblw{overflow-x:auto}.gt{width:100%;border-collapse:collapse;font-size:13px}.gt th{color:var(--mute);font-weight:500;text-align:right;padding:6px 10px;white-space:nowrap}.gt th:first-child,.gt td:first-child{text-align:left}.gt td{text-align:right;padding:9px 10px;border-top:1px solid var(--line);font-weight:600}.gt td:first-child{font-weight:500}.gt .gb{width:30%;min-width:80px;padding:0 10px}.gt .gb i{display:block;height:6px;width:var(--w);border-radius:4px;background:var(--acc)}
 .dpick{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px}.dform{margin:0}
 .dpick input[type=date]{background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;color-scheme:dark}
@@ -216,7 +227,7 @@ ${kpi('Clicks today', num(clicksToday), 'all tracked buttons')}
 <section class="card"><h2>Returning visitors <small>same network on different days, by anonymous ID</small></h2><ul class="feed">${repeatList}</ul></section>
 
 ${gamesCard}
-<section class="card"><h2>Daily report · by city <small>pick a day. City and hour data exists from 4 Nov; earlier days show totals only</small></h2>${daily}</section>
+<section class="card" id="daily"><h2>Daily report · by city <small>pick a day. City and hour data exists from 4 Nov; earlier days show totals only</small></h2>${daily}</section>
 
 <section class="card"><h2>Recent activity <small><span style="color:var(--blue)">●</span> visit &nbsp; <span style="color:var(--acc)">●</span> click</small></h2><ul class="feed">${feed}</ul></section>
 </div>`)
