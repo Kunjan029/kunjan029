@@ -84,15 +84,23 @@ export default async function handler(req, res) {
       if (!people.has(ev.id)) people.set(ev.id, { id: ev.id, place: ev.place, last: ev.t, list: [] })
       people.get(ev.id).list.push(ev)
     })
+    const href = (d) => `?key=${encodeURIComponent(key)}&date=${d}`
+    const firstOf = strMap(vFirst)
     const nice = (ev) => {
       if (ev.kind === 'visit') {
-        const m = ev.what.match(/^visit via (.+?) \((\w+)\)(?: · ID \w+)?(?: · day (\d+))?(?: · (returning))?/) || []
-        return `Visited via ${m[1] || 'direct'}${m[2] ? ` (${m[2]})` : ''}${m[3] && m[3] > 1 ? ` · day ${m[3]}, returning` : ''}`
+        const m = ev.what.match(/^visit via (.+?) \((\w+)\)(?: · ID \w+)?(?: · day (\d+))?/) || []
+        return `Visited via ${m[1] || 'direct'}${m[2] ? ` (${m[2]})` : ''}`
       }
       const name = ev.what.replace(/^clicked /, '').replace(/ · ID \w+$/, '')
       return name.startsWith('project: ') ? `Opened project: ${name.slice(9)}` : `Clicked ${name}`
     }
-    const step = (ev) => `<li class="${ev.kind}"><i></i><span class="vt">${esc(ist(ev.t).slice(6))}</span><span>${esc(nice(ev))}</span></li>`
+    // Returning visit: "Visited again · previous visit on 2 Nov" (the day links to that day's report)
+    const again = (ev) => {
+      if (ev.kind !== 'visit' || !/ · returning/.test(ev.what)) return ''
+      const prev = (ev.what.match(/ · prev (\d{4}-\d{2}-\d{2})/) || [])[1] || firstOf[ev.id] || ''
+      return ` <b class="again">↺ Visited again${prev ? ` · previous visit on <a class="dlink" href="${href(prev)}#daily">${esc(short(prev))}</a>` : ''}</b>`
+    }
+    const step = (ev) => `<li class="${ev.kind}"><i></i><span class="vt">${esc(ist(ev.t).slice(6))}</span><span>${esc(nice(ev))}${again(ev)}</span></li>`
     const personCards = [...people.values()].slice(0, 40).map((pp) => {
       const clicks = pp.list.filter((x) => x.kind === 'click').length
       const visits = pp.list.length - clicks
@@ -120,9 +128,7 @@ export default async function handler(req, res) {
     const hourCard = Object.keys(hours).length ? `<div class="kpi dk dk--wide"><span>Visitors by hour (IST) · busiest: ${Object.entries(hours).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([h]) => `${h}:00`).join(', ')}</span><div class="hours">${Array.from({ length: 24 }, (_, h) => `<i title="${h}:00 · ${hours[h] || 0} visitors" style="--h:${((hours[h] || 0) / hmax) * 100}%"></i>`).join('')}</div><div class="hours__l"><span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>11pm</span></div></div>` : ''
     const selVisitsN = Number(selVisits) || 0
     const addDay = (d, n) => new Date(new Date(d + 'T00:00:00Z').getTime() + n * 86400000).toISOString().slice(0, 10)
-    const href = (d) => `?key=${encodeURIComponent(key)}&date=${d}`
     // Returning visitors: first day each ID was seen (falls back to the oldest event we still have); the day links to that day's report
-    const firstOf = strMap(vFirst)
     const lastOf = strMap(vLast)
     const oldestEv = {}
     evs.forEach((ev) => { if (ev.kind === 'visit' && ev.id) oldestEv[ev.id] = new Date(Number(ev.t) + 19800000).toISOString().slice(0, 10) })
@@ -176,7 +182,7 @@ h2 small{letter-spacing:0;text-transform:none;font-size:12px}
 .donut{width:120px;height:120px;border-radius:50%;background:${donut};-webkit-mask:radial-gradient(circle 36px,transparent 98%,#000 100%);mask:radial-gradient(circle 36px,transparent 98%,#000 100%);flex:none}
 .dev{display:flex;gap:20px;align-items:center}.dev ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;flex:1}.dev li{display:flex;align-items:center;gap:8px;text-transform:capitalize}.dev li i{width:10px;height:10px;border-radius:3px}.dev li b{margin-left:auto}
 .feed{list-style:none;margin:0;padding:0;max-height:420px;overflow:auto}.feed li{display:grid;grid-template-columns:10px 92px 170px 1fr;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
-.feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}.dlink{color:var(--acc);font-weight:600;text-decoration:underline;text-underline-offset:3px}.dlink:hover{color:#fff}.rv .f__w{display:block}.mute{color:var(--mute)}.vg{display:block!important;padding:12px 0!important}.vg__h{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}.vg__h .f__t{min-width:92px}.vg__id{font-size:13px;color:var(--text)}.vg__n{margin-left:auto;font-size:12px;color:var(--mute)}.vg--act .vg__n{color:var(--acc);font-weight:600}.vg__l{list-style:none;margin:8px 0 0 6px;padding:0 0 0 14px;border-left:2px solid var(--line);display:grid;gap:5px}.vg__l li{display:flex;gap:10px;align-items:baseline;padding:0;border:0;font-size:14px;grid-template-columns:none}.vg__l li i{width:7px;height:7px;flex:none;align-self:center;border-radius:50%;background:var(--blue)}.vg__l li.click i{background:var(--acc)}.vg__l .vt{color:var(--mute);font-size:12px;min-width:38px}
+.feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}.again{color:var(--acc);font-weight:600;margin-left:6px}.dlink{color:var(--acc);font-weight:600;text-decoration:underline;text-underline-offset:3px}.dlink:hover{color:#fff}.rv .f__w{display:block}.mute{color:var(--mute)}.vg{display:block!important;padding:12px 0!important}.vg__h{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}.vg__h .f__t{min-width:92px}.vg__id{font-size:13px;color:var(--text)}.vg__n{margin-left:auto;font-size:12px;color:var(--mute)}.vg--act .vg__n{color:var(--acc);font-weight:600}.vg__l{list-style:none;margin:8px 0 0 6px;padding:0 0 0 14px;border-left:2px solid var(--line);display:grid;gap:5px}.vg__l li{display:flex;gap:10px;align-items:baseline;padding:0;border:0;font-size:14px;grid-template-columns:none}.vg__l li i{width:7px;height:7px;flex:none;align-self:center;border-radius:50%;background:var(--blue)}.vg__l li.click i{background:var(--acc)}.vg__l .vt{color:var(--mute);font-size:12px;min-width:38px}
 .tblw{overflow-x:auto}.gt{width:100%;border-collapse:collapse;font-size:13px}.gt th{color:var(--mute);font-weight:500;text-align:right;padding:6px 10px;white-space:nowrap}.gt th:first-child,.gt td:first-child{text-align:left}.gt td{text-align:right;padding:9px 10px;border-top:1px solid var(--line);font-weight:600}.gt td:first-child{font-weight:500}.gt .gb{width:30%;min-width:80px;padding:0 10px}.gt .gb i{display:block;height:6px;width:var(--w);border-radius:4px;background:var(--acc)}
 .dpick{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px}.dform{margin:0}
 .dpick input[type=date]{background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;color-scheme:dark}

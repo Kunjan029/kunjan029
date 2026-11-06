@@ -38,7 +38,7 @@ export default async function handler(req, res) {
       if (seen.result !== 'OK') return res.status(204).end()
       const ref = clean(body.ref, 60).toLowerCase() || 'direct'
       const device = DEVICES.has(body.device) ? body.device : 'desktop'
-      const [seenDays] = await redis([['HINCRBY', 'visitors:count', vid, 1], ['HSET', 'visitors:city', vid, place], ['HSETNX', 'visitors:first', vid, day], ['HSET', 'visitors:last', vid, day]])
+      const [seenDays, , , prevRes] = await redis([['HINCRBY', 'visitors:count', vid, 1], ['HSET', 'visitors:city', vid, place], ['HSETNX', 'visitors:first', vid, day], ['HGET', 'visitors:last', vid], ['HSET', 'visitors:last', vid, day]])
       const nth = Number(seenDays.result) || 1
       await redis([
         ['INCR', 'visits:total'],
@@ -51,7 +51,7 @@ export default async function handler(req, res) {
         ['EXPIRE', `vd:${day}`, TTL],
         ['HINCRBY', 'visits:ref', ref, 1],
         ['HINCRBY', 'visits:device', device, 1],
-        event(`visit via ${ref} (${device}) · ID ${vid} · day ${nth}${nth > 1 ? ' · returning' : ''}`),
+        event(`visit via ${ref} (${device}) · ID ${vid} · day ${nth}${nth > 1 ? ' · returning' : ''}${nth > 1 && /^\d{4}-\d{2}-\d{2}$/.test(prevRes?.result || '') ? ` · prev ${prevRes.result}` : ''}`),
         trim,
       ])
     } else if (type === 'click') {
