@@ -28,6 +28,7 @@ const GROUPS = [
 const EVENTS = [
   { file: 'devfest-gandhinagar-2025.webp', title: 'DevFest Gandhinagar', where: 'GDG Gandhinagar · Volunteer', year: '2025' },
   { file: 'gdg-cloud-ahmedabad.webp', title: 'GDG Cloud Ahmedabad', where: 'Volunteer' },
+  { file: 'gdg-cloud-ahmedabad-2.webp', title: 'GDG Cloud Ahmedabad', where: 'Volunteer' },
   { file: 'pixelverse-design-system.webp', title: 'Design System session', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-1.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-2.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
