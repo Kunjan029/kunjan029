@@ -5,6 +5,7 @@ import Work from './components/sections/Work.jsx'
 import Container from './components/ui/Container.jsx'
 import AboutArcade from './components/sections/AboutArcade.jsx'
 import Services from './components/sections/Services.jsx'
+import HowIWork from './components/sections/HowIWork.jsx'
 import Testimonials from './components/sections/Testimonials.jsx'
 import Community from './components/sections/Community.jsx'
 import WhyHire from './components/sections/WhyHire.jsx'
@@ -28,6 +29,7 @@ export default function App() {
         <Work />
         <About />
         <Services />
+        <HowIWork />
         <Testimonials />
         <Community />
         <section id="arcade" className="arcade-section" aria-label="Creative break and creative journey">
