@@ -7,8 +7,8 @@ const GROUPS = [
   {
     heading: 'Currently involved',
     items: [
-      { name: 'GDG Ahmedabad', tag: 'Current' },
-      { name: 'GDG Cloud Ahmedabad', tag: 'Current' },
+      { name: 'GDG Ahmedabad', tag: 'Volunteer' },
+      { name: 'GDG Cloud Ahmedabad', tag: 'Volunteer' },
       { name: 'Echai', tag: 'Volunteer' },
       { name: 'Pixelverse', tag: 'Founder · Design community, Ahmedabad' },
     ],
