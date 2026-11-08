@@ -22,6 +22,8 @@ const GROUPS = [
       { name: 'The Hackers Meetup', tag: 'Former volunteer · Core team' },
       { name: 'GDG Gandhinagar', tag: 'Past volunteer' },
       { name: 'GDG Cloud Gandhinagar', tag: 'Past volunteer' },
+      { name: 'IT Sales Community', tag: 'Past volunteer' },
+      { name: 'HR Professional Community', tag: 'Past volunteer' },
     ],
   },
 ]
@@ -33,6 +35,7 @@ const EVENTS = [
   { file: 'gdg-cloud-ahmedabad.webp', title: 'GDG Cloud Ahmedabad', where: 'Volunteer' },
   { file: 'gdg-cloud-ahmedabad-2.webp', title: 'GDG Cloud Community Day', where: 'GDG Cloud Ahmedabad · Volunteer', year: '2025' },
   { file: 'echai.webp', title: 'Echai', where: 'Volunteer · Behind the camera' },
+  { file: 'echai-2.webp', title: 'Echai', where: 'Volunteer · Behind the camera' },
   { file: 'pixelverse-design-system.webp', title: 'Design System session', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-1.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-2.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
