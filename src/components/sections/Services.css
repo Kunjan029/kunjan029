@@ -154,3 +154,16 @@
 }
 .svc__top { padding-top: 0.35rem; }
 .svc__num { padding-top: 0.15em; }
+
+/* One row of five on desktop */
+@media (min-width: 1000px) {
+  .svs__grid { grid-template-columns: repeat(5, 1fr); gap: var(--space-3); }
+  .svs__grid .svc:nth-child(n) { grid-column: auto; }
+  .svc { padding: 1.1rem; }
+  .svc__num { font-size: 2.6rem; }
+  .svc__go { width: 2.1rem; height: 2.1rem; }
+  .svc__art svg, .svc--social .svc__art svg { max-width: 7.5rem; max-height: 6rem; }
+  .svc__body h3, .svc--social .svc__body h3 { font-size: var(--text-base); line-height: 1.15; }
+  .svc__body p { font-size: var(--text-xs); line-height: 1.55; }
+  .svc__points { display: none; }
+}
