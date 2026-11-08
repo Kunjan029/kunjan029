@@ -26,6 +26,7 @@ const GROUPS = [
 
 // Event photos: put files in src/assets/community/ and list them as { file, title, where, year }.
 const EVENTS = [
+  { file: 'devfest-gandhinagar-2025.webp', title: 'DevFest Gandhinagar', where: 'GDG Gandhinagar', year: '2025' },
   { file: 'pixelverse-design-system.webp', title: 'Design System session', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-1.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-2.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
@@ -62,7 +63,7 @@ export default function Community() {
         </div>
 
         {photos.length > 0 && (
-          <h3 className="cm__ph">Events I organised with Pixelverse</h3>
+          <h3 className="cm__ph">Events & moments</h3>
         )}
         {photos.length > 0 && (
           <ul className="cm__grid" role="list" data-count={photos.length}>
