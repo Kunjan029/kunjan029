@@ -30,6 +30,7 @@ const EVENTS = [
   { file: 'pixelverse-canva-masterclass-1.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-2.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-think-like-user.webp', title: 'Learn to Think Like User', where: 'Pixelverse, Ahmedabad' },
+  { file: 'pixelverse-how-to-design-a-logo.webp', title: 'How to Design a Logo', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-figma-ai-workshop.webp', title: 'Figma AI Workshop', where: 'Pixelverse, Ahmedabad' },
 ]
 const FILES = import.meta.glob('../../assets/community/*.{jpg,jpeg,png,webp}', { eager: true, query: '?url', import: 'default' })
