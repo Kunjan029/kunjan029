@@ -280,7 +280,12 @@ export default function About() {
         <div className="block">
           <h3 className="block__title">My creative journey</h3>
           <div className="tl">
-            <span className="tl__line" aria-hidden="true"><span className="tl__fill" /></span>
+            <span className="tl__line" aria-hidden="true"><span className="tl__fill" /><span className="tl__runner" /></span>
+            <span className="tl__deco tl__deco--ring tl__d1" aria-hidden="true" />
+            <span className="tl__deco tl__deco--plus tl__d2" aria-hidden="true" />
+            <span className="tl__deco tl__deco--plus tl__d3" aria-hidden="true" />
+            <span className="tl__deco tl__deco--dots tl__d4" aria-hidden="true" />
+            <span className="tl__deco tl__deco--ring tl__d5" aria-hidden="true" />
             <ol role="list">
               {MILESTONES.map((m, i) => (
                 <li key={m.when} className={`tl__item${i === MILESTONES.length - 1 ? ' is-today' : ''}`}>

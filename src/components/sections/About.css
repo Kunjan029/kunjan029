@@ -246,6 +246,31 @@
   .tl__item.is-lit::after { background: var(--color-accent); }
 }
 
+/* Journey ambience: drifting shapes in the empty slots, a light that travels the line, cards that lift */
+.tl__deco, .tl__runner { display: none; }
+@media (min-width: 1000px) {
+  .tl { isolation: isolate; }
+  .tl::before { content: ''; position: absolute; inset: -2rem -1rem; z-index: -1; pointer-events: none;
+    background-image: radial-gradient(var(--color-border-strong) 1px, transparent 1px); background-size: 22px 22px; opacity: 0.45;
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 30%, transparent 100%); mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 30%, transparent 100%); }
+  .tl__deco { display: block; position: absolute; z-index: -1; pointer-events: none; opacity: 0.55; animation: tl-float 6s ease-in-out infinite alternate; }
+  .tl__deco--ring { width: 3.2rem; height: 3.2rem; border: 2px solid var(--color-accent); border-radius: 50%; }
+  .tl__deco--plus { width: 2.2rem; height: 2.2rem; color: var(--color-accent);
+    background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat, linear-gradient(currentColor, currentColor) center / 2px 100% no-repeat; animation-name: tl-float, tl-spin; animation-duration: 6s, 14s; animation-timing-function: ease-in-out, linear; animation-iteration-count: infinite; animation-direction: alternate, normal; }
+  .tl__deco--dots { width: 4.5rem; height: 3rem; background-image: radial-gradient(var(--color-accent) 2px, transparent 2.5px); background-size: 14px 14px; }
+  .tl__d1 { left: 28%; top: 6%; } .tl__d2 { left: 69%; top: 8%; animation-delay: -2s; }
+  .tl__d3 { left: 8%; bottom: 8%; animation-delay: -3s; } .tl__d4 { left: 47%; bottom: 9%; animation-delay: -1s; }
+  .tl__d5 { left: 88%; bottom: 7%; animation-delay: -4s; }
+  .tl__runner { display: block; position: absolute; top: -4px; left: 0; width: 10px; height: 10px; border-radius: 50%; background: #fff;
+    box-shadow: 0 0 0 3px rgb(198 255 77 / 0.35), 0 0 18px 4px var(--color-accent); animation: tl-run 7s ease-in-out infinite; }
+  .tl__card { transition: transform 0.4s var(--ease-out), border-color 0.3s ease; }
+  .tl__item:hover .tl__card { transform: translateY(-5px); border-color: var(--color-accent); }
+}
+@keyframes tl-float { from { translate: 0 -8px; } to { translate: 0 8px; } }
+@keyframes tl-spin { from { rotate: 0deg; } to { rotate: 360deg; } }
+@keyframes tl-run { 0% { left: 0; opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } 100% { left: 100%; opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .tl__deco, .tl__runner { animation: none; } }
+
 /* ---------- Block 3: Stats ---------- */
 .stats { display: grid; gap: var(--space-7); }
 .stats__intro p { margin-top: var(--space-3); max-width: 24rem; }
