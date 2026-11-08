@@ -198,10 +198,11 @@ export default function About() {
       gsap.to('.meet__bigk', { yPercent: -18, ease: 'none', scrollTrigger: { trigger: '.meet', scrub: true, start: 'top bottom', end: 'bottom top' } })
       gsap.to('.meet__sticker', { yPercent: 40, rotation: 90, ease: 'none', scrollTrigger: { trigger: '.meet', scrub: true, start: 'top bottom', end: 'bottom top' } })
 
-      gsap.fromTo('.tl__fill', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.tl', start: 'top 65%', end: 'bottom 65%', scrub: 0.4 } })
+      const horiz = window.matchMedia('(min-width: 1000px)').matches // journey runs left to right on wide screens
+      gsap.fromTo('.tl__fill', horiz ? { scaleX: 0 } : { scaleY: 0 }, { ...(horiz ? { scaleX: 1 } : { scaleY: 1 }), ease: 'none', scrollTrigger: { trigger: '.tl', start: horiz ? 'top 75%' : 'top 65%', end: horiz ? 'bottom 55%' : 'bottom 65%', scrub: 0.4 } })
       root.querySelectorAll('.tl__item').forEach((item, i) => {
         gsap.from(item.querySelector('.tl__card'), {
-          x: i % 2 ? 40 : -40, opacity: 0, duration: 0.9, ease: 'power3.out',
+          ...(horiz ? { y: 30 } : { x: i % 2 ? 40 : -40 }), opacity: 0, duration: 0.9, ease: 'power3.out', delay: horiz ? i * 0.08 : 0,
           scrollTrigger: { ...st(item, 'top 80%'), onEnter: () => item.classList.add('is-lit') },
         })
       })

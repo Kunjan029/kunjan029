@@ -209,6 +209,22 @@
   .tl__item:nth-child(odd) .tl__card p { margin-left: auto; }
 }
 
+/* Horizontal journey on wide screens: one row, line across the top */
+@media (min-width: 1000px) {
+  .tl ol { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-4); }
+  .tl__line { top: 0.6rem; bottom: auto; left: 0; right: 0; width: auto; height: 2px; margin-left: 0; }
+  .tl__fill { transform-origin: left; }
+  .tl__item, .tl__item:nth-child(even) { width: auto; margin-left: 0; padding: 2.5rem 0 0; text-align: left; display: flex; }
+  .tl__item:last-child { padding-bottom: 0; }
+  .tl__node, .tl__item:nth-child(even) .tl__node { left: 0; right: auto; top: 0; }
+  .tl__item:nth-child(odd) .tl__tags { justify-content: flex-start; }
+  .tl__item:nth-child(odd) .tl__card p { margin-left: 0; }
+  .tl__card { flex: 1; padding: var(--space-4); }
+  .tl__when { font-size: var(--text-lg); }
+  .tl__card h4 { font-size: var(--text-base); }
+  .tl__tags { display: none; }
+}
+
 /* ---------- Block 3: Stats ---------- */
 .stats { display: grid; gap: var(--space-7); }
 .stats__intro p { margin-top: var(--space-3); max-width: 24rem; }
