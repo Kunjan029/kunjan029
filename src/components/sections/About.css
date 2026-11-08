@@ -216,7 +216,7 @@
   .tl__fill { transform-origin: left; }
   .tl__item, .tl__item:nth-child(even) { width: auto; margin-left: 0; padding: 2.5rem 0 0; text-align: left; display: flex; }
   .tl__item:last-child { padding-bottom: 0; }
-  .tl__node, .tl__item:nth-child(even) .tl__node { left: 0; right: auto; top: 0; }
+  .tl__node, .tl__item:nth-child(even) .tl__node { left: 50%; margin-left: -0.625rem; right: auto; top: 0; }
   .tl__item:nth-child(odd) .tl__tags { justify-content: flex-start; }
   .tl__item:nth-child(odd) .tl__card p { margin-left: 0; }
   .tl__card { flex: 1; padding: var(--space-4); }
