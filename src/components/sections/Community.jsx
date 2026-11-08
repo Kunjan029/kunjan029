@@ -29,6 +29,7 @@ const GROUPS = [
 // Event photos: put files in src/assets/community/ and list them as { file, title, where, year }.
 const EVENTS = [
   { file: 'devfest-gandhinagar-2025.webp', title: 'DevFest Gandhinagar', where: 'GDG Gandhinagar · Volunteer', year: '2025' },
+  { file: 'wtm-break-the-pattern-2026.webp', title: 'Women Techmakers: Break the Pattern', where: 'GDG Ahmedabad · Volunteer', year: '2026' },
   { file: 'gdg-cloud-ahmedabad.webp', title: 'GDG Cloud Ahmedabad', where: 'Volunteer' },
   { file: 'gdg-cloud-ahmedabad-2.webp', title: 'GDG Cloud Community Day', where: 'GDG Cloud Ahmedabad · Volunteer', year: '2025' },
   { file: 'pixelverse-design-system.webp', title: 'Design System session', where: 'Pixelverse, Ahmedabad' },
