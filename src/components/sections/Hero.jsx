@@ -108,7 +108,6 @@ export default function Hero() {
 
       <Container className="hero__inner">
         <div className="hero__statuses">
-          <Availability label="Open to Full-time Opportunities" className="hero__status" />
           <Availability label="Available for Freelance Projects" className="hero__status" />
         </div>
 
@@ -157,7 +156,7 @@ export default function Hero() {
 
         <div className="hero__bottom">
           <p className="hero__text">
-            Hi, I'm Kunjan, a graphic designer from Ahmedabad with 16+ years behind Photoshop. I make social creatives and carousels, e-commerce product visuals and ad creatives. Open to full-time and freelance work.
+            Hi, I'm Kunjan, a graphic designer from Ahmedabad with 16+ years behind Photoshop. I make social creatives and carousels, e-commerce product visuals and ad creatives. Open to freelance projects.
           </p>
           <div className="hero__actions">
             <Button href="#work" size="lg" onClick={go('work')}>Explore My Work</Button>

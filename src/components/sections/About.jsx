@@ -123,7 +123,7 @@ const MILESTONES = [
     text: 'Worked across the kinds of visuals brands use every day.',
     tags: ['Social media creatives', 'E-commerce visuals', 'Product presentations', 'Digital campaigns'],
   },
-  { when: 'Today', title: 'Open to what’s next', text: 'Open to full-time Graphic Designer and Senior Graphic Designer roles, freelance projects and ongoing design collaborations.' },
+  { when: 'Today', title: 'Open to what’s next', text: 'Open to freelance projects and ongoing design collaborations.' },
 ]
 
 const STATS = [
@@ -238,7 +238,7 @@ export default function About() {
             <span className="line"><Reveal text="NOT JUST A DESIGNER." accentDots /></span>
             <span className="line"><Reveal text="A CREATIVE MIND." accentDots /></span>
           </h2>
-          <p className="about__lead">Every pixel has a purpose. Every project has a story. I bring that care, and a strong eye for visual communication, to full-time design teams and freelance client projects alike.</p>
+          <p className="about__lead">Every pixel has a purpose. Every project has a story. I bring that care, and a strong eye for visual communication, to every freelance client project.</p>
           <ul className="about__marks" role="list">
             <li>Photoshop expert, since 2009</li>
           </ul>

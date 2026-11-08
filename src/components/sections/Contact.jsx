@@ -9,7 +9,7 @@ import './Contact.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const TOPICS = ['Full-time job opportunity', 'Freelance project', 'Ongoing collaboration', 'Something else']
+const TOPICS = ['Freelance project', 'Ongoing collaboration', 'Something else']
 const EMPTY = { name: '', email: '', topic: '', message: '', website: '' } // `website` is a hidden honeypot for bots
 
 function validate(f) {
@@ -116,11 +116,11 @@ export default function Contact() {
           <div className="ct__intro">
             <p className="ct__label">Contact</p>
             <h2 className="ct__title">Let’s work together.</h2>
-            <p className="ct__lead">Hiring for a design role or have a project in mind? Send me a note and I’ll reply personally.</p>
+            <p className="ct__lead">Have a design project in mind? Send me a note and I’ll reply personally.</p>
 
             <dl className="ct__facts">
               <div><dt>Based in</dt><dd>Ahmedabad, India · IST (UTC+5:30)</dd></div>
-              <div><dt>Work</dt><dd>Remote-friendly, full-time roles and freelance projects</dd></div>
+              <div><dt>Work</dt><dd>Freelance projects and ongoing collaborations, remote-friendly</dd></div>
               <div><dt>Reach me on</dt><dd>WhatsApp or email</dd></div>
             </dl>
 

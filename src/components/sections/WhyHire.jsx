@@ -11,7 +11,7 @@ const REASONS = [
   { title: 'One designer, many formats', text: 'Social media, advertising, branding, photo editing from a single person, so your visuals feel consistent from post to product page.' },
   { title: 'Experience across industries', text: 'Real estate, perfume, clothing, skincare, events, technology and travel. I learn each audience quickly and adapt the look and tone to it.' },
   { title: 'Strong craft, fast hands', text: 'Deep Photoshop and Illustrator skills mean I can take a rough idea to a polished layout without handing it off or waiting on others.' },
-  { title: 'Flexible way of working', text: 'Open to full-time design roles and freelance projects. Clear communication, honest feedback and work that is ready to use.' },
+  { title: 'Flexible way of working', text: 'Open to freelance projects and ongoing collaborations. Clear communication, honest feedback and work that is ready to use.' },
 ]
 
 const pad = (n) => String(n).padStart(2, '0')
