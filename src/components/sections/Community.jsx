@@ -16,8 +16,8 @@ const GROUPS = [
   {
     heading: 'Also part of',
     items: [
-      { name: 'Open Source Weekend', tag: 'Former Design Lead' },
-      { name: 'The Hackers Meetup', tag: 'Former core team member' },
+      { name: 'Open Source Weekend', tag: 'Former volunteer · Design Lead' },
+      { name: 'The Hackers Meetup', tag: 'Former volunteer · Core team' },
       { name: 'GDG Gandhinagar', tag: 'Past volunteer' },
       { name: 'GDG Cloud Gandhinagar', tag: 'Past volunteer' },
     ],
@@ -26,7 +26,8 @@ const GROUPS = [
 
 // Event photos: put files in src/assets/community/ and list them as { file, title, where, year }.
 const EVENTS = [
-  { file: 'devfest-gandhinagar-2025.webp', title: 'DevFest Gandhinagar', where: 'GDG Gandhinagar', year: '2025' },
+  { file: 'devfest-gandhinagar-2025.webp', title: 'DevFest Gandhinagar', where: 'GDG Gandhinagar · Volunteer', year: '2025' },
+  { file: 'gdg-cloud-ahmedabad.webp', title: 'GDG Cloud Ahmedabad', where: 'Volunteer' },
   { file: 'pixelverse-design-system.webp', title: 'Design System session', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-1.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-2.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
