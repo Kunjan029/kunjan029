@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from 'react'
+import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import Container from '../ui/Container.jsx'
 import Reveal from '../ui/Reveal.jsx'
 import './Community.css'
@@ -28,7 +30,7 @@ const GROUPS = [
 const EVENTS = [
   { file: 'devfest-gandhinagar-2025.webp', title: 'DevFest Gandhinagar', where: 'GDG Gandhinagar · Volunteer', year: '2025' },
   { file: 'gdg-cloud-ahmedabad.webp', title: 'GDG Cloud Ahmedabad', where: 'Volunteer' },
-  { file: 'gdg-cloud-ahmedabad-2.webp', title: 'GDG Cloud Ahmedabad', where: 'Volunteer' },
+  { file: 'gdg-cloud-ahmedabad-2.webp', title: 'GDG Cloud Community Day', where: 'GDG Cloud Ahmedabad · Volunteer', year: '2025' },
   { file: 'pixelverse-design-system.webp', title: 'Design System session', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-1.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-2.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
@@ -41,12 +43,24 @@ const fileUrl = (name) => Object.entries(FILES).find(([p]) => p.endsWith(`/${nam
 
 export default function Community() {
   const photos = EVENTS.map((e) => ({ ...e, url: fileUrl(e.file) })).filter((e) => e.url)
+  const [open, setOpen] = useState(null) // index of the photo shown in the viewer
+  const dlg = useRef(null)
+  const lastBtn = useRef(null)
+  const go = (d) => setOpen((i) => (i + d + photos.length) % photos.length)
+
+  useEffect(() => {
+    const d = dlg.current
+    if (!d) return
+    if (open !== null && !d.open) d.showModal()
+    if (open === null && d.open) d.close()
+  }, [open])
   return (
     <section id="community" className="cm" aria-labelledby="cm-title">
       <Container>
         <p className="cm__label">BEYOND DESIGN</p>
         <h2 id="cm-title" className="cm__title"><span className="line"><Reveal text="COMMUNITY." accentDots /></span></h2>
         <p className="cm__lead">Away from the screen, I’m part of Ahmedabad’s design and tech communities: showing up, volunteering and meeting people who build things.</p>
+        <p className="cm__stat"><b>500+</b><span>I have volunteered in more than 500 events.</span></p>
 
         <div className="cm__groups">
           {GROUPS.map((g) => (
@@ -68,15 +82,30 @@ export default function Community() {
           <h3 className="cm__ph">Events & moments</h3>
         )}
         {photos.length > 0 && (
-          <ul className="cm__grid" role="list" data-count={photos.length}>
-            {photos.map((e) => (
+          <ul className="cm__grid" role="list">
+            {photos.map((e, i) => (
               <li key={e.file} className="cm__item">
-                <img src={e.url} alt={e.title} loading="lazy" decoding="async" />
+                <button type="button" className="cm__thumb" onClick={(ev) => { lastBtn.current = ev.currentTarget; setOpen(i) }} aria-label={`View larger: ${e.title}`} data-cursor>
+                  <img src={e.url} alt={e.title} loading="lazy" decoding="async" />
+                </button>
                 <p><b>{e.title}</b><small>{[e.where, e.year].filter(Boolean).join(' · ')}</small></p>
               </li>
             ))}
           </ul>
         )}
+        <dialog ref={dlg} className="cm__view" aria-label="Photo viewer" onClose={() => { setOpen(null); lastBtn.current?.focus() }}
+          onClick={(e) => { if (e.target === dlg.current) setOpen(null) }}
+          onKeyDown={(e) => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1) }}>
+          {open !== null && photos[open] && (
+            <figure>
+              <img src={photos[open].url} alt={photos[open].title} />
+              <figcaption><b>{photos[open].title}</b><small>{[photos[open].where, photos[open].year].filter(Boolean).join(' · ')}</small></figcaption>
+            </figure>
+          )}
+          <button type="button" className="cm__x" onClick={() => setOpen(null)} aria-label="Close"><X size={20} /></button>
+          <button type="button" className="cm__nav cm__nav--l" onClick={() => go(-1)} aria-label="Previous photo"><ChevronLeft size={24} /></button>
+          <button type="button" className="cm__nav cm__nav--r" onClick={() => go(1)} aria-label="Next photo"><ChevronRight size={24} /></button>
+        </dialog>
       </Container>
     </section>
   )
