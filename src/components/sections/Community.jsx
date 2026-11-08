@@ -10,7 +10,7 @@ const GROUPS = [
       { name: 'GDG Ahmedabad', tag: 'Current' },
       { name: 'GDG Cloud Ahmedabad', tag: 'Current' },
       { name: 'Echai', tag: 'Volunteer' },
-      { name: 'Pixelverse', tag: 'Design community, Ahmedabad' },
+      { name: 'Pixelverse', tag: 'Founder · Design community, Ahmedabad' },
     ],
   },
   {
