@@ -50,3 +50,4 @@
 .cm__item p { margin-top: 0.45rem; }
 .cm__item b { font-size: var(--text-xs); line-height: 1.3; }
 .cm__item small { font-size: 0.7rem; line-height: 1.3; display: block; }
+.cm__note { flex: 1 0 100%; color: var(--color-text-muted); font-size: var(--text-sm); line-height: 1.5; max-width: 38rem; }

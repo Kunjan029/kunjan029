@@ -11,7 +11,7 @@ const GROUPS = [
     items: [
       { name: 'GDG Ahmedabad', tag: 'Volunteer' },
       { name: 'GDG Cloud Ahmedabad', tag: 'Volunteer' },
-      { name: 'Echai', tag: 'Volunteer · Hands-on in nearly everything' },
+      { name: 'Echai', tag: 'Volunteer', note: 'No fixed title, so I do a bit of everything: registration, photography, speaker buddy, food management and the technical side. Everything except finding the venue.' },
       { name: 'The Drift Tour', tag: 'Volunteer · Gujarat Drift Tour, Ahmedabad' },
       { name: 'Pixelverse', tag: 'Founder · Design community, Ahmedabad' },
     ],
@@ -77,6 +77,7 @@ export default function Community() {
                   <li key={i.name}>
                     <span className="cm__name">{i.name}</span>
                     {i.tag && <span className="cm__tag">{i.tag}</span>}
+                    {i.note && <span className="cm__note">{i.note}</span>}
                   </li>
                 ))}
               </ul>
