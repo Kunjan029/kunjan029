@@ -29,6 +29,7 @@ const EVENTS = [
   { file: 'pixelverse-design-system.webp', title: 'Design System session', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-1.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-2.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
+  { file: 'pixelverse-figma-ai-workshop.webp', title: 'Figma AI Workshop', where: 'Pixelverse, Ahmedabad' },
 ]
 const FILES = import.meta.glob('../../assets/community/*.{jpg,jpeg,png,webp}', { eager: true, query: '?url', import: 'default' })
 const fileUrl = (name) => Object.entries(FILES).find(([p]) => p.endsWith(`/${name}`))?.[1]
@@ -62,7 +63,7 @@ export default function Community() {
           <h3 className="cm__ph">Events I organised with Pixelverse</h3>
         )}
         {photos.length > 0 && (
-          <ul className="cm__grid" role="list">
+          <ul className="cm__grid" role="list" data-count={photos.length}>
             {photos.map((e) => (
               <li key={e.file} className="cm__item">
                 <img src={e.url} alt={e.title} loading="lazy" decoding="async" />
