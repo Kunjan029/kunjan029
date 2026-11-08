@@ -121,3 +121,36 @@
 .svs-cta__title { max-width: 14em; font-size: clamp(2rem, 0.9rem + 4.2vw, 4.75rem); line-height: 1; letter-spacing: -0.045em; }
 .svs-cta__text p { margin-top: var(--space-4); font-size: var(--text-lg); }
 @media (min-width: 900px) { .svs-cta { grid-template-columns: 1fr auto; gap: var(--space-8); } }
+
+/* ---------- Compact pass: tighter cards, less empty space ---------- */
+.svs__title { font-size: clamp(2.2rem, 1rem + 5vw, 5.5rem); }
+.svs__lead { margin-top: var(--space-5); }
+.svs__grid { margin-top: clamp(2rem, 5vw, 3.5rem); gap: var(--space-4); }
+.svc { min-height: 0; gap: var(--space-3); padding: clamp(1.1rem, 2vw, 1.6rem); }
+.svc__num { font-size: clamp(2.5rem, 1.8rem + 2.4vw, 4rem); line-height: 0.9; }
+.svc__go { width: 2.5rem; height: 2.5rem; }
+.svc__art { min-height: 0; flex: none; padding-block: var(--space-2); }
+.svc__art svg, .svc--social .svc__art svg { max-width: 11rem; max-height: 8.5rem; }
+.svc--social .svc__art { min-height: 0; }
+.svc__body h3, .svc--social .svc__body h3 { font-size: var(--text-lg); }
+.svc__body p { margin-top: var(--space-2); }
+.svc__points { margin-top: var(--space-3); }
+@media (min-width: 640px) {
+  .svs__grid { grid-template-columns: 1fr 1fr; }
+  .svc:nth-child(1), .svc:nth-child(n) { grid-column: auto; grid-row: auto; }
+  .svc:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+@media (min-width: 1000px) {
+  .svs__grid { grid-template-columns: repeat(6, 1fr); }
+  .svc:nth-child(n) { grid-column: span 2; grid-row: auto; }
+  .svc:nth-child(4), .svc:nth-child(5) { grid-column: span 3; }
+}
+.svs-cta { margin-top: clamp(2rem, 5vw, 3.5rem); padding: clamp(1.25rem, 3.5vw, 2.5rem); gap: var(--space-4); }
+.svs-cta__title { font-size: clamp(1.6rem, 0.8rem + 2.6vw, 3rem); max-width: none; }
+.svs-cta__text p { margin-top: var(--space-2); font-size: var(--text-base); }
+.svs-cta__q { font-size: clamp(8rem, 16vw, 14rem); top: -20%; }
+@media (min-width: 1000px) {
+  .svs__grid .svc:nth-child(4), .svs__grid .svc:nth-child(5) { grid-column: span 3; }
+}
+.svc__top { padding-top: 0.35rem; }
+.svc__num { padding-top: 0.15em; }

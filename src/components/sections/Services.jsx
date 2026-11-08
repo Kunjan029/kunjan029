@@ -201,7 +201,7 @@ export default function Services() {
             <span className="line"><Reveal text="GOOD IDEAS." accentDots /></span>
             <span className="line"><Reveal text="GREAT VISUALS." accentDots /></span>
           </h2>
-          <p className="svs__lead">Five core design capabilities, brought to in-house teams, freelance projects and ongoing collaborations.</p>
+          <p className="svs__lead">Five core design services for freelance projects and ongoing collaborations.</p>
         </div>
 
         <div className="svs__grid">

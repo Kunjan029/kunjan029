@@ -150,3 +150,7 @@ section[id], [id='top'] { scroll-margin-top: 0; }
 
 .header__resume { gap: 0.4rem; }
 @media (min-width: 768px) and (max-width: 979px) { .header__resume { display: none; } }
+
+/* Tablet widths: the bar is too crowded, so drop the status pill */
+@media (min-width: 768px) and (max-width: 1099px) { .header__avail { display: none; } }
+@media (min-width: 768px) and (max-width: 859px) { .header__contact { display: none; } }
