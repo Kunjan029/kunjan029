@@ -173,7 +173,7 @@ export default function Contact() {
                 </label>
                 <input className="f__hp" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" value={form.website} onChange={(e) => update({ website: e.target.value })} />
                 <div className="f__foot">
-                  <button type="submit" className="f__send" disabled={sending} data-cursor>{sending ? 'Sending…' : 'Send message'} {!sending && <ArrowRight size={18} aria-hidden="true" />}</button>
+                  <button type="submit" className="f__send" disabled={sending} data-cursor>{sending ? 'Sending…' : 'Send mail'} {!sending && <ArrowRight size={18} aria-hidden="true" />}</button>
                   <p>I’ll reply to your email. Prefer WhatsApp? Use the links on the left.</p>
                 </div>
               </form>
