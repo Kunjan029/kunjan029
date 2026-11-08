@@ -64,9 +64,18 @@ export default function Work() {
   const [filter, setFilter] = useState('all')
   const [method, setMethod] = useState('all')
   const [selected, setSelected] = useState(null)
+  const [expanded, setExpanded] = useState(false)
 
-  const matches = (p) => (filter === 'all' || p.category === filter) && (method === 'all' || p.method === method)
-  const shown = PROJECTS.filter(matches).length
+  const rawMatches = (p) => (filter === 'all' || p.category === filter) && (method === 'all' || p.method === method)
+  // On the unfiltered view only the first few projects show; the rest open with "Show all work".
+  const filtering = filter !== 'all' || method !== 'all'
+  const PREVIEW = 6
+  const total = PROJECTS.filter(rawMatches).length
+  const limit = expanded || filtering ? Infinity : PREVIEW
+  const visibleIds = new Set(PROJECTS.filter(rawMatches).slice(0, limit).map((p) => p.id))
+  const matches = (p) => visibleIds.has(p.id)
+  const shown = visibleIds.size
+  const hiddenCount = total - shown
 
   // Art direction, computed on the VISIBLE order so every filter keeps its composition:
   //   1st card        -> lead   (full-width featured showcase)
@@ -219,7 +228,7 @@ export default function Work() {
           )}
           </div>
           <p className="work__count" aria-live="polite">
-            <span className="sr-only">Showing </span>{String(shown).padStart(2, '0')} {shown === 1 ? 'project' : 'projects'}
+            <span className="sr-only">Showing </span>{String(shown).padStart(2, '0')} {hiddenCount > 0 ? `of ${String(total).padStart(2, '0')} projects` : shown === 1 ? 'project' : 'projects'}
           </p>
         </div>
 
@@ -269,6 +278,14 @@ export default function Work() {
             )
           })}
         </div>
+
+        {hiddenCount > 0 && (
+          <div className="work__more">
+            <button type="button" className="chip work__morebtn" onClick={() => { capture(); setExpanded(true) }} data-cursor>
+              Show all work ({total}) <ArrowUpRight size={16} aria-hidden="true" />
+            </button>
+          </div>
+        )}
 
         <p className="work__nda">
           A lot of my client work is under NDA and can’t be shown publicly. I’m happy to walk you through relevant projects on a call.{' '}

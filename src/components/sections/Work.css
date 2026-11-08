@@ -191,3 +191,6 @@
 
 .work__nda { margin-top: var(--space-8, 3rem); max-width: 60ch; color: var(--color-text-secondary, #a1a1aa); font-size: var(--text-sm, 0.9375rem); line-height: 1.6; }
 .work__nda a { color: var(--color-accent, #C6FF4D); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+
+.work__more { display: flex; justify-content: center; margin-top: var(--space-8, 3rem); }
+.work__morebtn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.9rem 1.6rem; font-size: var(--text-base, 1rem); }
