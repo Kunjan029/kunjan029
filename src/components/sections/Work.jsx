@@ -1,3 +1,4 @@
+import { scrollToId } from '../../utils/scrollTo.js'
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -268,6 +269,11 @@ export default function Work() {
             )
           })}
         </div>
+
+        <p className="work__nda">
+          A lot of my client work is under NDA and can’t be shown publicly. I’m happy to walk you through relevant projects on a call.{' '}
+          <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToId('contact') }} data-cursor>Get in touch</a>
+        </p>
 
         {shown === 0 && (
           <div className="work__empty">
