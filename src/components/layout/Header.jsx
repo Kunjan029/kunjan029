@@ -12,6 +12,7 @@ const NAV = [
   { label: 'Work', id: 'work' },
   { label: 'About', id: 'about' },
   { label: 'Expertise', id: 'services' },
+  { label: 'Reviews', id: 'testimonials' },
 ]
 
 export default function Header() {
