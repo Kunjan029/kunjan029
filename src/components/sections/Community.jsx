@@ -16,8 +16,8 @@ const GROUPS = [
   {
     heading: 'Also part of',
     items: [
-      { name: 'Open Source Weekend' },
-      { name: 'The Hackers Meetup' },
+      { name: 'Open Source Weekend', tag: 'Former Design Lead' },
+      { name: 'The Hackers Meetup', tag: 'Former core team member' },
       { name: 'GDG Gandhinagar', tag: 'Past volunteer' },
       { name: 'GDG Cloud Gandhinagar', tag: 'Past volunteer' },
     ],
