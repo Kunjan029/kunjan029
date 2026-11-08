@@ -25,7 +25,11 @@ const GROUPS = [
 ]
 
 // Event photos: put files in src/assets/community/ and list them as { file, title, where, year }.
-const EVENTS = []
+const EVENTS = [
+  { file: 'pixelverse-design-system.webp', title: 'Design System session', where: 'Pixelverse, Ahmedabad' },
+  { file: 'pixelverse-canva-masterclass-1.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
+  { file: 'pixelverse-canva-masterclass-2.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
+]
 const FILES = import.meta.glob('../../assets/community/*.{jpg,jpeg,png,webp}', { eager: true, query: '?url', import: 'default' })
 const fileUrl = (name) => Object.entries(FILES).find(([p]) => p.endsWith(`/${name}`))?.[1]
 
@@ -54,6 +58,9 @@ export default function Community() {
           ))}
         </div>
 
+        {photos.length > 0 && (
+          <h3 className="cm__ph">Events I organised with Pixelverse</h3>
+        )}
         {photos.length > 0 && (
           <ul className="cm__grid" role="list">
             {photos.map((e) => (

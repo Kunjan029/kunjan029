@@ -14,3 +14,6 @@
 .cm__name { font-family: var(--font-heading); font-size: clamp(1.15rem, 2.2vw, 1.5rem); letter-spacing: -0.02em; }
 .cm__tag { font-size: var(--text-xs); color: var(--color-text-muted); }
 .cm__grid { margin-top: var(--space-8) !important; }
+.cm__ph { margin-top: var(--space-8); font-size: var(--text-xs); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-muted); font-weight: 500; padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-border-strong); }
+.cm__ph + .cm__grid { margin-top: var(--space-5) !important; }
+@media (min-width: 800px) { .cm__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
