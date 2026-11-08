@@ -43,3 +43,10 @@
 .cm__nav--l { left: 1rem; } .cm__nav--r { right: 1rem; }
 @media (hover: hover) { .cm__x:hover, .cm__nav:hover { border-color: var(--color-accent); color: var(--color-accent); } }
 @media (max-width: 700px) { .cm__nav { top: auto; bottom: 1rem; transform: none; } .cm__nav--l { left: calc(50% - 3.5rem); } .cm__nav--r { right: calc(50% - 3.5rem); } }
+
+/* Compact gallery: 6 across on desktop (12 photos = 2 rows), tap or click to open large */
+@media (min-width: 1000px) { .cm__grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--space-3); } }
+.cm__item img { aspect-ratio: 1 / 1; }
+.cm__item p { margin-top: 0.45rem; }
+.cm__item b { font-size: var(--text-xs); line-height: 1.3; }
+.cm__item small { font-size: 0.7rem; line-height: 1.3; display: block; }
