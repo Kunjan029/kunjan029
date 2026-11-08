@@ -85,6 +85,12 @@ export default function Contact() {
             <h2 className="ct__title">Let’s work together.</h2>
             <p className="ct__lead">Hiring for a design role or have a project in mind? Send me a note and I’ll reply personally.</p>
 
+            <dl className="ct__facts">
+              <div><dt>Based in</dt><dd>Ahmedabad, India · IST (UTC+5:30)</dd></div>
+              <div><dt>Work</dt><dd>Remote-friendly, full-time roles and freelance projects</dd></div>
+              <div><dt>Reach me on</dt><dd>WhatsApp or email</dd></div>
+            </dl>
+
             <ul className="ct__direct" role="list">
               {channels.map((c) => (
                 <li key={c.id}>

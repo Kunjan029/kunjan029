@@ -128,7 +128,7 @@ const MILESTONES = [
 
 const STATS = [
   { name: 'Photoshop', rank: 'EXPERT', fill: 1, quip: 'Home turf.' },
-  { name: 'Illustrator', rank: 'INTERMEDIATE', fill: 0.6, quip: 'Still levelling up.' },
+  { name: 'Illustrator', rank: 'ADVANCED', fill: 0.8, quip: 'Vectors, logos, done.' },
   { name: 'Premiere Pro', rank: 'INTERMEDIATE', fill: 0.5, quip: 'Cutting it together.' },
   { name: 'Figma', rank: 'ADVANCED', fill: 0.7, quip: 'Frames, flows, done.' },
   { name: 'Canva', rank: 'ADVANCED', fill: 0.8, quip: 'Fast, clean, on brand.' },

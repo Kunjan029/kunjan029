@@ -24,15 +24,15 @@ export default function App() {
       <Header />
       <main id="main">
         <Hero />
-        <About />
         <WhyHire />
         <Work />
-        <section id="arcade" className="arcade-section" aria-label="Creative break and creative journey">
-          <Container><AboutArcade /></Container>
-        </section>
+        <About />
         <Services />
         <Testimonials />
         <Community />
+        <section id="arcade" className="arcade-section" aria-label="Creative break and creative journey">
+          <Container><AboutArcade /></Container>
+        </section>
         <Contact />
       </main>
       <Footer />

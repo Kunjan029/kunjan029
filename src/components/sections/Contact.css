@@ -46,3 +46,9 @@
 .done textarea { border: 1px solid var(--color-border-strong); border-radius: 8px; padding: 0.9rem; font-size: var(--text-sm); }
 .done__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
 .f__link { background: none; border: 0; color: var(--color-text-muted); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 0.5rem; }
+
+.ct__facts { margin: var(--space-6) 0 0; display: grid; gap: 0.75rem; max-width: 28rem; }
+.ct__facts div { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 0.75rem; }
+.ct__facts dt { font-size: var(--text-xs); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.1em; padding-top: 0.2rem; }
+.ct__facts dd { margin: 0; }
+.ct__facts + .ct__direct { margin-top: var(--space-6); }
