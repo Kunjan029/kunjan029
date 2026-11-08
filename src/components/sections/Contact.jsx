@@ -30,6 +30,7 @@ export default function Contact() {
   const [sent, setSent] = useState(null)
   const [copied, setCopied] = useState(false)
   const [sending, setSending] = useState(false)
+  const [why, setWhy] = useState('')
 
   const channels = getChannels()
   const hasWa = channels.some((c) => c.id === 'whatsapp')
@@ -78,9 +79,10 @@ export default function Contact() {
         }),
       })
       const data = await res.json().catch(() => ({}))
-      if (!res.ok || data.success === 'false' || data.success === false) throw new Error('send failed')
+      if (!res.ok || data.success === 'false' || data.success === false) throw new Error(data.message || `HTTP ${res.status}`)
       setSent({ ...fallback, delivered: true })
-    } catch {
+    } catch (err) {
+      setWhy(String(err && err.message ? err.message : err).slice(0, 160))
       setSent({ ...fallback, delivered: false }) // never lose the message: offer WhatsApp / email / copy
     } finally {
       setSending(false)
@@ -190,7 +192,7 @@ export default function Contact() {
                 ) : (
                   <>
                     <h3>Couldn’t send it from here.</h3>
-                    <p>No problem, your message is saved below. Send it with one tap instead.</p>
+                    <p>No problem, your message is saved below. Send it with one tap instead.{why ? <small className="done__why"> ({why})</small> : null}</p>
                     <textarea id="c-prepared" rows={7} readOnly value={sent.text} aria-label="Prepared message" />
                     <div className="done__actions">
                       {sent.waUrl && <a className="f__send" href={sent.waUrl} target="_blank" rel="noopener noreferrer" data-cursor>Open WhatsApp</a>}
