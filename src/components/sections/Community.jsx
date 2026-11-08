@@ -11,7 +11,7 @@ const GROUPS = [
     items: [
       { name: 'GDG Ahmedabad', tag: 'Volunteer' },
       { name: 'GDG Cloud Ahmedabad', tag: 'Volunteer' },
-      { name: 'Echai', tag: 'Volunteer', note: 'No fixed title, so I do a bit of everything: registration, photography, speaker buddy, food management and the technical side. Everything except finding the venue.' },
+      { name: 'Echai', tag: 'Volunteer behind everything' },
       { name: 'The Drift Tour', tag: 'Volunteer · Gujarat Drift Tour, Ahmedabad' },
       { name: 'Pixelverse', tag: 'Founder · Design community, Ahmedabad' },
     ],
