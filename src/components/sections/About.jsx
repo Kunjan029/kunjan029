@@ -199,13 +199,32 @@ export default function About() {
       gsap.to('.meet__sticker', { yPercent: 40, rotation: 90, ease: 'none', scrollTrigger: { trigger: '.meet', scrub: true, start: 'top bottom', end: 'bottom top' } })
 
       const horiz = window.matchMedia('(min-width: 1000px)').matches // journey runs left to right on wide screens
-      gsap.fromTo('.tl__fill', horiz ? { scaleX: 0 } : { scaleY: 0 }, { ...(horiz ? { scaleX: 1 } : { scaleY: 1 }), ease: 'none', scrollTrigger: { trigger: '.tl', start: horiz ? 'top 75%' : 'top 65%', end: horiz ? 'bottom 55%' : 'bottom 65%', scrub: 0.4 } })
-      root.querySelectorAll('.tl__item').forEach((item, i) => {
-        gsap.from(item.querySelector('.tl__card'), {
-          ...(horiz ? { y: 30 } : { x: i % 2 ? 40 : -40 }), opacity: 0, duration: 0.9, ease: 'power3.out', delay: horiz ? i * 0.08 : 0,
-          scrollTrigger: { ...st(item, 'top 80%'), onEnter: () => item.classList.add('is-lit') },
+      const tlItems = [...root.querySelectorAll('.tl__item')]
+      if (horiz) {
+        // Plays once, in full, as soon as the journey is in view (never stalls half way)
+        const DUR = 2.4
+        gsap.set('.tl__fill', { scaleX: 0 })
+        gsap.set(tlItems.map((it) => it.querySelector('.tl__card')), { y: 30, opacity: 0 })
+        ScrollTrigger.create({
+          trigger: '.tl', start: 'top 75%', once: true,
+          onEnter: () => {
+            gsap.to('.tl__fill', { scaleX: 1, duration: DUR, ease: 'power1.inOut' })
+            tlItems.forEach((item, i) => {
+              const t = (0.1 + 0.2 * i) * DUR * 0.9 // the light reaches each dot at about this moment
+              gsap.to(item.querySelector('.tl__card'), { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: t })
+              gsap.delayedCall(t, () => item.classList.add('is-lit'))
+            })
+          },
         })
-      })
+      } else {
+        gsap.fromTo('.tl__fill', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.tl', start: 'top 65%', end: 'bottom 65%', scrub: 0.4 } })
+        tlItems.forEach((item, i) => {
+          gsap.from(item.querySelector('.tl__card'), {
+            x: i % 2 ? 40 : -40, opacity: 0, duration: 0.9, ease: 'power3.out',
+            scrollTrigger: { ...st(item, 'top 80%'), onEnter: () => item.classList.add('is-lit') },
+          })
+        })
+      }
 
       gsap.from('.stat', { y: 24, opacity: 0, duration: 0.7, stagger: 0.08, ease: 'power3.out', scrollTrigger: st('.stats__cols') })
       gsap.fromTo('.stat__fill', { scaleX: 0 }, { scaleX: 1, duration: 1.4, ease: 'power3.out', stagger: 0.12, delay: 0.3, scrollTrigger: st('.stats__cols') })
