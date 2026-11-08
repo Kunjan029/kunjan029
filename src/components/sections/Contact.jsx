@@ -10,7 +10,7 @@ import './Contact.css'
 gsap.registerPlugin(ScrollTrigger)
 
 const TOPICS = ['Full-time job opportunity', 'Freelance project', 'Ongoing collaboration', 'Something else']
-const EMPTY = { name: '', email: '', topic: '', message: '' }
+const EMPTY = { name: '', email: '', topic: '', message: '', website: '' } // `website` is a hidden honeypot for bots
 
 function validate(f) {
   const e = {}
@@ -29,6 +29,7 @@ export default function Contact() {
   const [attempted, setAttempted] = useState(false)
   const [sent, setSent] = useState(null)
   const [copied, setCopied] = useState(false)
+  const [sending, setSending] = useState(false)
 
   const channels = getChannels()
   const hasWa = channels.some((c) => c.id === 'whatsapp')
@@ -41,19 +42,49 @@ export default function Contact() {
     if (attempted) setErrors(validate(next))
   }
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault()
+    if (sending) return
     setAttempted(true)
     const errs = validate(form)
     setErrors(errs)
     const first = ['name', 'email', 'message'].find((k) => errs[k])
     if (first) { document.getElementById(`c-${first}`)?.focus(); return }
+
     const text = buildInquiry({ ...form, opportunity: form.topic || 'General enquiry', services: [] })
-    setSent({
+    const fallback = {
       text,
       waUrl: hasWa ? whatsappUrl(CONTACT.whatsapp, text) : '',
       mailUrl: hasMail ? mailtoUrl(CONTACT.email, `Inquiry from ${form.name.trim()}`, text) : '',
-    })
+    }
+
+    // Bots fill the hidden field: pretend success and send nothing
+    if (form.website) { setSent({ ...fallback, delivered: true }); return }
+
+    setSending(true)
+    try {
+      const res = await fetch(`https://formsubmit.co/ajax/${CONTACT.email}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          regarding: form.topic || 'Not specified',
+          message: form.message.trim(),
+          _subject: `Portfolio enquiry from ${form.name.trim()}`,
+          _replyto: form.email.trim(),
+          _template: 'table',
+          _captcha: 'false',
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok || data.success === 'false' || data.success === false) throw new Error('send failed')
+      setSent({ ...fallback, delivered: true })
+    } catch {
+      setSent({ ...fallback, delivered: false }) // never lose the message: offer WhatsApp / email / copy
+    } finally {
+      setSending(false)
+    }
     setTimeout(() => doneRef.current?.focus(), 50)
   }
 
@@ -138,23 +169,37 @@ export default function Contact() {
                   <textarea id="c-message" rows={5} value={form.message} onChange={(e) => update({ message: e.target.value })} aria-invalid={!!errors.message} aria-describedby={errors.message ? 'e-message' : undefined} />
                   {err('message')}
                 </label>
+                <input className="f__hp" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" value={form.website} onChange={(e) => update({ website: e.target.value })} />
                 <div className="f__foot">
-                  <button type="submit" className="f__send" data-cursor>Send message <ArrowRight size={18} aria-hidden="true" /></button>
-                  <p>Your message is prepared for WhatsApp or email. Nothing is sent until you choose.</p>
+                  <button type="submit" className="f__send" disabled={sending} data-cursor>{sending ? 'Sending…' : 'Send message'} {!sending && <ArrowRight size={18} aria-hidden="true" />}</button>
+                  <p>I’ll reply to your email. Prefer WhatsApp? Use the links on the left.</p>
                 </div>
               </form>
             ) : (
               <div className="done" ref={doneRef} tabIndex={-1} role="status">
                 <span className="done__ic" aria-hidden="true"><Check size={20} strokeWidth={3} /></span>
-                <h3>Thanks, {form.name.trim().split(' ')[0]}.</h3>
-                <p>Your message is ready. Choose how you’d like to send it.</p>
-                <textarea id="c-prepared" rows={7} readOnly value={sent.text} aria-label="Prepared message" />
-                <div className="done__actions">
-                  {sent.waUrl && <a className="f__send" href={sent.waUrl} target="_blank" rel="noopener noreferrer" data-cursor>Open WhatsApp</a>}
-                  {sent.mailUrl && <a className="f__alt" href={sent.mailUrl} target="_blank" rel="noopener noreferrer" data-cursor>Send by email</a>}
-                  <button type="button" className="f__alt" onClick={copy} data-cursor><Copy size={15} aria-hidden="true" /> {copied ? 'Copied' : 'Copy'}</button>
-                  <button type="button" className="f__link" onClick={() => setSent(null)} data-cursor>Edit</button>
-                </div>
+                {sent.delivered ? (
+                  <>
+                    <h3>Message sent, {form.name.trim().split(' ')[0]}.</h3>
+                    <p>Thanks for reaching out. I’ll reply to {form.email.trim()} soon.</p>
+                    <div className="done__actions">
+                      {sent.waUrl && <a className="f__alt" href={sent.waUrl} target="_blank" rel="noopener noreferrer" data-cursor>Also message on WhatsApp</a>}
+                      <button type="button" className="f__link" onClick={() => { setSent(null); setForm(EMPTY); setAttempted(false); setErrors({}) }} data-cursor>Send another</button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h3>Couldn’t send it from here.</h3>
+                    <p>No problem, your message is saved below. Send it with one tap instead.</p>
+                    <textarea id="c-prepared" rows={7} readOnly value={sent.text} aria-label="Prepared message" />
+                    <div className="done__actions">
+                      {sent.waUrl && <a className="f__send" href={sent.waUrl} target="_blank" rel="noopener noreferrer" data-cursor>Open WhatsApp</a>}
+                      {sent.mailUrl && <a className="f__alt" href={sent.mailUrl} target="_blank" rel="noopener noreferrer" data-cursor>Send by email</a>}
+                      <button type="button" className="f__alt" onClick={copy} data-cursor><Copy size={15} aria-hidden="true" /> {copied ? 'Copied' : 'Copy'}</button>
+                      <button type="button" className="f__link" onClick={() => setSent(null)} data-cursor>Edit</button>
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>
