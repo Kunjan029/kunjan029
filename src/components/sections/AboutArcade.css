@@ -25,3 +25,7 @@
 
 .arcade__plays { margin-top: var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
 .arcade__plays strong { color: var(--color-text); }
+
+.arcade-section:has(.arcade-cta:only-child) { padding-block: clamp(2rem, 5vw, 3.5rem); }
+.arcade-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-4); margin-top: var(--space-6); color: var(--color-text-muted); }
+.arcade-cta:only-child { margin-top: 0; }

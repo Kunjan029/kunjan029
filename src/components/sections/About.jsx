@@ -157,6 +157,7 @@ export default function About() {
   const burstRef = useRef(null)
   const [active, setActive] = useState(null) // inspected stat (touch-friendly)
   const [flipped, setFlipped] = useState({})
+  const [more, setMore] = useState(false) // fun stuff (stats + fun facts) is collapsed by default
 
   const flip = (i, on) => setFlipped((f) => ({ ...f, [i]: on ?? !f[i] }))
 
@@ -306,6 +307,13 @@ export default function About() {
           </ul>
         </div>
 
+        <div className="about__morewrap">
+          <button type="button" className="chip about__morebtn" aria-expanded={more} aria-controls="about-more" onClick={() => { setMore((v) => !v); setTimeout(() => ScrollTrigger.refresh(), 50) }} data-cursor>
+            {more ? 'Hide the fun stuff' : 'Show the fun stuff: character stats & fun facts'}
+          </button>
+        </div>
+
+        <div id="about-more" hidden={!more}>
         {/* ---------- Block 3: Character stats ---------- */}
         <div className="block stats">
           <div className="stats__intro">
@@ -381,6 +389,7 @@ export default function About() {
               </button>
             ))}
           </div>
+        </div>
         </div>
 
       </Container>

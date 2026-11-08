@@ -12,10 +12,31 @@ import WhyHire from './components/sections/WhyHire.jsx'
 import Contact from './components/sections/Contact.jsx'
 import Footer from './components/layout/Footer.jsx'
 import FloatingWhatsApp from './components/ui/FloatingWhatsApp.jsx'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { installMailtoFallback } from './utils/mailtoFallback.js'
 import Cursor from './components/ui/Cursor.jsx'
 import ZoomLightbox from './components/ui/ZoomLightbox.jsx'
+
+function ArcadeToggle() {
+  const [open, setOpen] = useState(false)
+  return (
+    <section id="arcade" className="arcade-section" aria-label="Creative break">
+      <Container>
+        {!open ? (
+          <div className="arcade-cta">
+            <p>Need a creative break?</p>
+            <button type="button" className="chip" onClick={() => setOpen(true)} data-cursor>Play the mini game</button>
+          </div>
+        ) : (
+          <>
+            <AboutArcade />
+            <div className="arcade-cta"><button type="button" className="chip" onClick={() => setOpen(false)} data-cursor>Close the game</button></div>
+          </>
+        )}
+      </Container>
+    </section>
+  )
+}
 
 export default function App() {
   useEffect(() => installMailtoFallback(), [])
@@ -32,9 +53,7 @@ export default function App() {
         <HowIWork />
         <Testimonials />
         <Community />
-        <section id="arcade" className="arcade-section" aria-label="Creative break and creative journey">
-          <Container><AboutArcade /></Container>
-        </section>
+        <ArcadeToggle />
         <Contact />
       </main>
       <Footer />
