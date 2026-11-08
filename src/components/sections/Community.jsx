@@ -11,7 +11,7 @@ const GROUPS = [
     items: [
       { name: 'GDG Ahmedabad', tag: 'Volunteer' },
       { name: 'GDG Cloud Ahmedabad', tag: 'Volunteer' },
-      { name: 'Echai', tag: 'Volunteer' },
+      { name: 'Echai', tag: 'Volunteer · Behind the camera' },
       { name: 'Pixelverse', tag: 'Founder · Design community, Ahmedabad' },
     ],
   },
@@ -32,6 +32,7 @@ const EVENTS = [
   { file: 'wtm-break-the-pattern-2026.webp', title: 'Women Techmakers: Break the Pattern', where: 'GDG Ahmedabad · Volunteer', year: '2026' },
   { file: 'gdg-cloud-ahmedabad.webp', title: 'GDG Cloud Ahmedabad', where: 'Volunteer' },
   { file: 'gdg-cloud-ahmedabad-2.webp', title: 'GDG Cloud Community Day', where: 'GDG Cloud Ahmedabad · Volunteer', year: '2025' },
+  { file: 'echai.webp', title: 'Echai', where: 'Volunteer · Behind the camera' },
   { file: 'pixelverse-design-system.webp', title: 'Design System session', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-1.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
   { file: 'pixelverse-canva-masterclass-2.webp', title: 'Canva Masterclass', where: 'Pixelverse, Ahmedabad' },
