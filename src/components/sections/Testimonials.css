@@ -14,3 +14,11 @@
 .tm__av { display: grid; place-items: center; flex: none; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: var(--color-accent); color: var(--color-on-accent); font-family: var(--font-heading); font-weight: 700; font-size: var(--text-sm); }
 .tm__who b { display: block; font-family: var(--font-heading); letter-spacing: -0.01em; }
 .tm__who small { display: block; color: var(--color-text-muted); font-size: var(--text-xs); }
+
+.tm__av--img { object-fit: cover; border-radius: 50%; width: 2.75rem; height: 2.75rem; flex: none; border: 1px solid var(--color-border-strong); }
+.tm__videos { margin-top: var(--space-8); }
+.tm__vh { font-size: var(--text-lg); margin-bottom: var(--space-4); }
+.tm__vgrid { list-style: none; padding: 0; display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+.tm__video video { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; background: var(--color-card); border: 1px solid var(--color-border-strong); }
+.tm__video p { margin-top: var(--space-3); }
+.tm__video b { display: block; } .tm__video small { color: var(--color-text-muted); }

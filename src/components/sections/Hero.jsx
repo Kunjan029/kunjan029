@@ -3,7 +3,8 @@ import gsap from 'gsap'
 import Container from '../ui/Container.jsx'
 import Button from '../ui/Button.jsx'
 import Availability from '../ui/Availability.jsx'
-import HeroWorkspace from './HeroWorkspace.jsx'
+import portrait from '../../assets/images/kunjan-portrait.jpg'
+import portraitSm from '../../assets/images/kunjan-portrait-sm.jpg'
 import { scrollToId } from '../../utils/scrollTo.js'
 import './Hero.css'
 
@@ -26,8 +27,7 @@ export default function Hero() {
     const title = root.querySelector('.hero__title')
     const chars = root.querySelectorAll('.char')
     const shapes = root.querySelectorAll('.shape')
-    const ws = root.querySelector('.ws')
-    const path = root.querySelector('.ws__path')
+    const ws = root.querySelector('.hero__portrait')
     const mm = gsap.matchMedia(root)
 
     // Entrance + ambient loops (skipped entirely with reduced motion: everything is visible by default)
@@ -38,8 +38,6 @@ export default function Hero() {
         .from('.hero__text', { y: 24, opacity: 0, duration: 0.8 }, '-=0.6')
         .from('.hero__actions .btn', { y: 20, opacity: 0, duration: 0.7, stagger: 0.1 }, '<0.15')
         .from('.hero__visual', { y: 70, opacity: 0, rotation: 3, scale: 0.94, duration: 1.2 }, 0.6)
-        .fromTo(path, { strokeDashoffset: 100 }, { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut' }, 1.3)
-        .from('.ws__anchor, .ws__handles, .ws__select, .ws__chip', { opacity: 0, scale: 0.6, transformOrigin: '50% 50%', duration: 0.6, stagger: 0.08, ease: 'back.out(2)' }, 1.5)
         .from(shapes, { scale: 0, opacity: 0, duration: 0.8, stagger: 0.08, ease: 'back.out(2)' }, 0.8)
         .from('.hero__badge', { scale: 0, rotation: -90, duration: 0.9, ease: 'back.out(1.6)' }, 1.2)
         .from('.hero__scroll', { opacity: 0, y: 10, duration: 0.6 }, '-=0.4')
@@ -55,13 +53,7 @@ export default function Hero() {
       })
       loops.to('.badge__svg', { rotation: 360, duration: 20, ease: 'none', repeat: -1 }, 0)
       loops.to('.scroll__dot', { y: 34, duration: 1.2, ease: 'power2.inOut', repeat: -1, yoyo: true }, 0)
-      loops.to('.ws', { y: -8, duration: 3.2, ease: 'sine.inOut', yoyo: true, repeat: -1 }, 0)
-
-      const cursor = gsap.timeline({ repeat: -1, delay: 2.2 })
-      ;[['62%', '24%'], ['74%', '60%'], ['34%', '84%'], ['26%', '38%']].forEach(([left, top]) =>
-        cursor.to('.ws__cursor', { left, top, duration: 1.5, ease: 'power2.inOut' }).to({}, { duration: 0.5 }),
-      )
-      loops.add(cursor, 0)
+      loops.to('.hero__portrait', { y: -6, duration: 3.6, ease: 'sine.inOut', yoyo: true, repeat: -1 }, 0)
 
       const io = new IntersectionObserver(([entry]) => loops.paused(!entry.isIntersecting))
       io.observe(root)
@@ -113,23 +105,6 @@ export default function Hero() {
 
   return (
     <section id="top" className="hero" ref={rootRef}>
-      <div className="hero__shapes" aria-hidden="true">
-        <span className="shape shape--ring" data-depth="0.03">
-          <svg className="shape__in" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="3" /></svg>
-        </span>
-        <span className="shape shape--plus" data-depth="0.05">
-          <svg className="shape__in" viewBox="0 0 100 100"><path d="M50 12v76M12 50h76" stroke="currentColor" strokeWidth="8" strokeLinecap="round" /></svg>
-        </span>
-        <span className="shape shape--squiggle" data-depth="0.04">
-          <svg className="shape__in" viewBox="0 0 100 100"><path d="M5 50Q20 10 35 50T65 50T95 50" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" /></svg>
-        </span>
-        <span className="shape shape--triangle" data-depth="0.06">
-          <svg className="shape__in" viewBox="0 0 100 100"><path d="M50 10L92 86H8Z" fill="var(--color-card)" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" /></svg>
-        </span>
-        <span className="shape shape--asterisk" data-depth="0.02">
-          <svg className="shape__in" viewBox="0 0 100 100"><g stroke="currentColor" strokeWidth="8" strokeLinecap="round"><path d="M50 8v84" /><path d="M13.6 29l72.8 42" /><path d="M13.6 71l72.8-42" /></g></svg>
-        </span>
-      </div>
 
       <Container className="hero__inner">
         <div className="hero__statuses">
@@ -156,7 +131,19 @@ export default function Hero() {
           </h1>
 
           <div className="hero__visual">
-            <HeroWorkspace />
+            <figure className="hero__portrait">
+              <img
+                src={portrait}
+                srcSet={`${portraitSm} 450w, ${portrait} 900w`}
+                sizes="(min-width: 1100px) 22rem, 80vw"
+                width="900" height="1200" alt="Kunjan Atara, graphic designer based in Ahmedabad"
+                fetchPriority="high" decoding="async"
+              />
+              <figcaption>
+                <strong>Kunjan Atara</strong>
+                <span>Graphic Designer · Ahmedabad</span>
+              </figcaption>
+            </figure>
             <div className="hero__badge" aria-hidden="true">
               <svg className="badge__svg" viewBox="0 0 120 120">
                 <defs><path id="badge-circle" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1-88 0" /></defs>
@@ -170,7 +157,7 @@ export default function Hero() {
 
         <div className="hero__bottom">
           <p className="hero__text">
-            Freelance graphic and social media designer in Ahmedabad, 16+ years of experience. Social posts, Amazon A+ content, e-commerce and ads. Open to full-time and freelance work.
+            Hi, I'm Kunjan, a graphic designer from Ahmedabad with 16+ years behind Photoshop. I make social creatives and carousels, e-commerce product visuals and ad creatives. Open to full-time and freelance work.
           </p>
           <div className="hero__actions">
             <Button href="#work" size="lg" onClick={go('work')}>Explore My Work</Button>

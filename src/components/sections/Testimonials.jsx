@@ -12,6 +12,14 @@ const ITEMS = [
   { head: 'Delivers even under pressure without losing clarity or calm.', text: 'Kunjan managed multiple tasks smoothly, even under tight deadlines. He stayed calm, focused, and delivered everything on time. His ability to handle pressure helped the team stay organized and move forward confidently.', name: 'Bhavesh Patel', role: 'Founder' },
 ]
 
+// Drop a photo named after the person (e.g. priyanka-challa.jpg) into src/assets/testimonials/ and it appears automatically.
+const PHOTOS = import.meta.glob('../../assets/testimonials/*.{jpg,jpeg,png,webp}', { eager: true, query: '?url', import: 'default' })
+const slug = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+const photoOf = (n) => Object.entries(PHOTOS).find(([path]) => path.split('/').pop().replace(/\.\w+$/, '') === slug(n))?.[1]
+
+// Video testimonials: add { name, role, src (mp4 in public/ or a URL), poster } here. Nothing shows until at least one exists.
+const VIDEOS = []
+
 const initials = (n) => n.split(' ').map((w) => w[0]).slice(0, 2).join('')
 
 export default function Testimonials() {
@@ -27,12 +35,27 @@ export default function Testimonials() {
               <h3>{head}</h3>
               <p>{text}</p>
               <div className="tm__who">
-                <span className="tm__av" aria-hidden="true">{initials(name)}</span>
+                {photoOf(name)
+                  ? <img className="tm__av tm__av--img" src={photoOf(name)} alt={name} width="44" height="44" loading="lazy" />
+                  : <span className="tm__av" aria-hidden="true">{initials(name)}</span>}
                 <span><b>{name}</b><small>{role}</small></span>
               </div>
             </li>
           ))}
         </ul>
+        {VIDEOS.length > 0 && (
+          <div className="tm__videos">
+            <h3 className="tm__vh">In their own words</h3>
+            <ul role="list" className="tm__vgrid">
+              {VIDEOS.map((v) => (
+                <li key={v.name} className="tm__video">
+                  <video controls preload="none" playsInline poster={v.poster} src={v.src} aria-label={`Video testimonial from ${v.name}`} />
+                  <p><b>{v.name}</b><small>{v.role}</small></p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </Container>
     </section>
   )

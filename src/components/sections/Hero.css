@@ -239,3 +239,18 @@
 .scroll__track { position: relative; width: 1px; height: 44px; background: var(--color-border-strong); }
 .scroll__dot { position: absolute; left: -2px; top: 0; width: 5px; height: 5px; border-radius: 50%; background: var(--color-accent); }
 @media (hover: hover) { .hero__scroll:hover { color: var(--color-text); } }
+
+/* ---------- Personal portrait ---------- */
+.hero__portrait { position: relative; margin: 0; border-radius: 1.1rem; overflow: hidden; border: 1px solid var(--color-border-strong); background: var(--color-card); aspect-ratio: 3 / 4; box-shadow: 0 24px 60px rgb(0 0 0 / 0.45); }
+.hero__portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; display: block; }
+.hero__portrait::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgb(11 11 13 / 0.82) 0%, rgb(11 11 13 / 0) 38%); pointer-events: none; }
+.hero__portrait figcaption { position: absolute; left: 1rem; right: 1rem; bottom: 0.9rem; z-index: 1; display: grid; gap: 0.15rem; }
+.hero__portrait strong { font-family: var(--font-heading); font-size: 1.15rem; letter-spacing: 0.01em; color: var(--color-text); }
+.hero__portrait span { font-size: 0.82rem; color: var(--color-text-muted); }
+@media (min-width: 1100px) { .hero__visual { width: calc(var(--hero-fs) * 2.1); } }
+
+.hero__badge { right: auto; left: -2.5rem; bottom: auto; top: -2.5rem; width: 5.5rem; }
+@media (min-width: 1100px) { .hero__visual { width: calc(var(--hero-fs) * 2.4); top: calc(var(--hero-fs) * 0.8); } }
+.hero__badge { left: auto; right: 0.75rem; top: auto; bottom: -2.25rem; width: 5.5rem; }
+@media (min-width: 768px) { .hero__badge { right: -1rem; bottom: -2.5rem; } }
+@media (min-width: 1100px) { .hero__visual { top: calc(var(--hero-fs) * 1.2); width: calc(var(--hero-fs) * 2.3); } }
