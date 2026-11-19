@@ -35,13 +35,13 @@ export default async function handler(req, res) {
     const r = await redis([
       ['GET', 'visits:total'], ['HGETALL', 'visits:days'], ['HGETALL', 'visits:country'], ['HGETALL', 'visits:city'],
       ['HGETALL', 'visits:ref'], ['HGETALL', 'visits:device'], ['HGETALL', 'clicks:total'], ['HGETALL', 'sections:total'],
-      ['LRANGE', 'events', 0, 199], ['GET', 'plays:total'], ['HGETALL', 'plays:city'], ['HGETALL', 'visitors:count'], ['HGETALL', 'visitors:city'],
+      ['LRANGE', 'events', 0, 199], ['HGETALL', 'visitors:count'], ['HGETALL', 'visitors:city'],
       ...dayKeys.map((d) => ['HGETALL', `clicks:${d}`]),
-      ['HGET', 'plays:days', sel], ['HGETALL', `vd:${sel}`], ['HGETALL', `cd:${sel}`], ['HGETALL', `pd:${sel}`], ['HGETALL', `hd:${sel}`], ['HGETALL', `clicks:${sel}`], ['HGET', 'visits:days', sel], ['HGETALL', 'games:total'], ['HGETALL', 'games:players'], ['HGETALL', `gd:${sel}`], ['HGETALL', `gu:${sel}`], ['HGETALL', 'visitors:first'], ['HGETALL', 'visitors:last'],
+      ['HGETALL', `vd:${sel}`], ['HGETALL', `cd:${sel}`], ['HGETALL', `hd:${sel}`], ['HGETALL', `clicks:${sel}`], ['HGET', 'visits:days', sel], ['HGETALL', 'visitors:first'], ['HGETALL', 'visitors:last'],
     ])
-    const [vt, vd, vc, vcity, vref, vdev, clicks, sections, events, pt, pcity, vcount, vcityMap, ...tail] = r.map((x) => x.result)
+    const [vt, vd, vc, vcity, vref, vdev, clicks, sections, events, vcount, vcityMap, ...tail] = r.map((x) => x.result)
     const clicksByDay = tail.slice(0, DAYS)
-    const [selPlays, selVd, selCd, selPd, selHd, selClicks, selVisits, gTotal, gPlayers, gDay, gDayUsers, vFirst, vLast] = tail.slice(DAYS)
+    const [selVd, selCd, selHd, selClicks, selVisits, vFirst, vLast] = tail.slice(DAYS)
     const visitsByDay = Object.fromEntries(pairs(vd))
     const series = dayKeys.map((d, i) => ({ d, v: visitsByDay[d] || 0, c: pairs(clicksByDay[i]).reduce((a, [, n]) => a + n, 0) }))
     const total = Number(vt) || 0
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     const maxV = Math.max(...series.map((s) => s.v), 1)
     const chart = series.map((s) => `<div class="col" title="${short(s.d)}: ${s.v} visitors, ${s.c} clicks"><span class="col__n">${s.v || ''}</span><div class="col__bar"><i style="--h:${(s.v / maxV) * 100}%"></i></div><span class="col__d">${short(s.d).split(' ')[0]}</span></div>`).join('')
 
-    const secOrder = [['about', 'About'], ['why', 'Why hire me'], ['work', 'Work'], ['arcade', 'Creative break'], ['services', 'Services'], ['testimonials', 'Testimonials'], ['contact', 'Contact']]
+    const secOrder = [['about', 'About'], ['why', 'Why hire me'], ['work', 'Work'], ['services', 'Services'], ['testimonials', 'Testimonials'], ['contact', 'Contact']]
     const secMap = Object.fromEntries(pairs(sections))
     const funnel = secOrder.map(([id, label]) => `<li><span>${label}</span><b>${num(secMap[id])}</b><i style="--w:${total ? Math.min(100, ((secMap[id] || 0) / total) * 100) : 0}%"></i></li>`).join('')
 

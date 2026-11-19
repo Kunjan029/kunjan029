@@ -20,12 +20,6 @@ function send(payload) {
   } catch { /* ignore */ }
 }
 
-// A round of a game started (counted every time, so the dashboard shows which games are really played)
-export function trackGame(name) {
-  if (skip()) return
-  send({ type: 'game', name })
-}
-
 function source() {
   const p = new URLSearchParams(window.location.search)
   const utm = p.get('utm_source') || p.get('ref') || p.get('source')
@@ -76,6 +70,6 @@ export function initTrack() {
         if (en.isIntersecting && !seen.has(en.target.id)) { seen.add(en.target.id); send({ type: 'section', name: en.target.id }); io.unobserve(en.target) }
       }
     }, { rootMargin: '-45% 0px -45% 0px' })
-    window.addEventListener('load', () => ['about', 'why', 'work', 'arcade', 'services', 'testimonials', 'contact'].forEach((id) => { const n = document.getElementById(id); if (n) io.observe(n) }))
+    window.addEventListener('load', () => ['about', 'why', 'work', 'services', 'testimonials', 'contact'].forEach((id) => { const n = document.getElementById(id); if (n) io.observe(n) }))
   }
 }
