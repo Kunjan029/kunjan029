@@ -143,15 +143,8 @@ export default async function handler(req, res) {
 <form method="get" class="dform"><input type="hidden" name="key" value="${esc(key)}"><input type="date" name="date" value="${sel}" max="${today0}" onchange="this.form.submit()"><noscript><button>Go</button></noscript></form>
 <a class="dbtn${sel >= today0 ? ' is-off' : ''}" href="${sel >= today0 ? '#' : href(addDay(sel, 1))}" aria-label="Next day">›</a>
 <a class="dbtn dbtn--t" href="${href(today0)}">Today</a><span class="dpick__l">${selLabel}</span></div>
-<div class="grid dcards">${dcard('Visitors', selVisitsN, pairs(selVd))}${dcard('Played a game', Number(selPlays) || 0, pairs(selPd))}${[...CORE, ...extra].map(([k, label]) => dcard(label, cm[k] || sum(clickCity[k]), clickCity[k] || [])).join('')}${dcard('Projects opened', sum(projects), projects)}${hourCard}</div>`
+<div class="grid dcards">${dcard('Visitors', selVisitsN, pairs(selVd))}${[...CORE, ...extra].map(([k, label]) => dcard(label, cm[k] || sum(clickCity[k]), clickCity[k] || [])).join('')}${dcard('Projects opened', sum(projects), projects)}${hourCard}</div>`
 
-    // Which games are actually played (rounds started, and different people per game)
-    const GNAME = { tetris: 'Tetris', snake: 'Snake', racing: 'Racing', tank: 'Tank Battle', bricks: 'Brick Breaker' }
-    const gT = Object.fromEntries(pairs(gTotal)), gP = Object.fromEntries(pairs(gPlayers)), gD = Object.fromEntries(pairs(gDay)), gU = Object.fromEntries(pairs(gDayUsers))
-    const gMax = Math.max(1, ...Object.keys(GNAME).map((k) => gT[k] || 0))
-    const gRows = Object.keys(GNAME).sort((a, b) => (gT[b] || 0) - (gT[a] || 0)).map((k) => `<tr><td>${GNAME[k]}</td><td class="gb"><i style="--w:${Math.max(2, ((gT[k] || 0) / gMax) * 100)}%"></i></td><td>${num(gT[k])}</td><td>${num(gP[k])}</td><td>${num(gD[k])}</td><td>${num(gU[k])}</td></tr>`).join('')
-    const gamesCard = `<section class="card"><h2>Which games are played <small>rounds = every time a game was started · counted from 4 Nov</small></h2><div class="tblw"><table class="gt"><thead><tr><th>Game</th><th></th><th>Rounds</th><th>Players</th><th>Rounds · ${esc(short(sel))}</th><th>Players · ${esc(short(sel))}</th></tr></thead><tbody>${gRows}</tbody></table></div></section>
-`
     const kpi = (label, value, sub) => `<div class="kpi"><span>${label}</span><b>${value}</b><small>${sub || ''}</small></div>`
     res.setHeader('Content-Type', 'text/html; charset=utf-8')
     return res.status(200).send(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="120"><title>Portfolio dashboard</title>
@@ -222,7 +215,7 @@ ${kpi('Clicks today', num(clicksToday), 'all tracked buttons')}
 <div class="grid row3">
 <section class="card"><h2>What they clicked <small>all time</small></h2>${hbars(pairs(clicks), { n: 9 })}</section>
 <section class="card"><h2>How far they scrolled <small>visitors reached</small></h2><ul class="fn">${funnel}</ul></section>
-<section class="card"><h2>Device</h2><div class="dev"><div class="donut"></div><ul>${legend || '<li class="empty">No data yet</li>'}</ul></div><h2 style="margin-top:22px">Game <small>${num(pt)} played</small></h2>${hbars(pairs(pcity), { n: 4 })}</section>
+<section class="card"><h2>Device</h2><div class="dev"><div class="donut"></div><ul>${legend || '<li class="empty">No data yet</li>'}</ul></div></section>
 </div>
 
 <div class="grid row2">
@@ -232,7 +225,6 @@ ${kpi('Clicks today', num(clicksToday), 'all tracked buttons')}
 
 <section class="card"><h2>Returning visitors <small>same network on different days, by anonymous ID</small></h2><ul class="feed">${repeatList}</ul></section>
 
-${gamesCard}
 <section class="card" id="daily"><h2>Daily report · by city <small>pick a day. City and hour data exists from 4 Nov; earlier days show totals only</small></h2>${daily}</section>
 
 <section class="card"><h2>Recent activity <small><span style="color:var(--blue)">●</span> visit &nbsp; <span style="color:var(--acc)">●</span> click</small></h2><ul class="feed">${feed}</ul></section>
