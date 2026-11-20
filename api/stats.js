@@ -1,4 +1,5 @@
 import { configured, redis } from './_redis.js'
+import { isConversion, TIME_BUCKETS, SECTION_ORDER } from './_metrics.js'
 
 // Private dashboard: /api/stats?key=YOUR_STATS_KEY  (STATS_KEY is set in Vercel's Environment Variables)
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
@@ -38,10 +39,12 @@ export default async function handler(req, res) {
       ['LRANGE', 'events', 0, 199], ['HGETALL', 'visitors:count'], ['HGETALL', 'visitors:city'],
       ...dayKeys.map((d) => ['HGETALL', `clicks:${d}`]),
       ['HGETALL', `vd:${sel}`], ['HGETALL', `cd:${sel}`], ['HGETALL', `hd:${sel}`], ['HGETALL', `clicks:${sel}`], ['HGET', 'visits:days', sel], ['HGETALL', 'visitors:first'], ['HGETALL', 'visitors:last'],
+      ['HGETALL', 'clicks:ref'], ['HGETALL', 'conv:visitors'], ['HGETALL', 'conv:ref'], ['GET', 'time:sum'], ['GET', 'time:n'], ['HGETALL', 'time:buckets'], ['HGETALL', 'sections:v2'],
     ])
     const [vt, vd, vc, vcity, vref, vdev, clicks, sections, events, vcount, vcityMap, ...tail] = r.map((x) => x.result)
     const clicksByDay = tail.slice(0, DAYS)
-    const [selVd, selCd, selHd, selClicks, selVisits, vFirst, vLast] = tail.slice(DAYS)
+    const [selVd, selCd, selHd, selClicks, selVisits, vFirst, vLast] = tail.slice(DAYS, DAYS + 7)
+    const [refClicksRaw, convVisRaw, convRefRaw, timeSum, timeN, timeBucketsRaw, secV2Raw] = tail.slice(DAYS + 7)
     const visitsByDay = Object.fromEntries(pairs(vd))
     const series = dayKeys.map((d, i) => ({ d, v: visitsByDay[d] || 0, c: pairs(clicksByDay[i]).reduce((a, [, n]) => a + n, 0) }))
     const total = Number(vt) || 0
@@ -52,12 +55,14 @@ export default async function handler(req, res) {
     const clickMap = Object.fromEntries(pairs(clicks))
     const clicksToday = series[DAYS - 1].c
     const resume = clickMap['resume download'] || 0
-    const contact = (clickMap.whatsapp || 0) + (clickMap.email || 0) + (clickMap["let's talk"] || 0) + (clickMap.linkedin || 0)
+    const sumWhere = (fn) => Object.entries(clickMap).reduce((a, [k, n]) => a + (fn(k) ? n : 0), 0)
+    const waAll = sumWhere((k) => /whatsapp/.test(k) || k.startsWith('project cta:')) // every WhatsApp button, incl. project CTAs
+    const contact = sumWhere(isConversion) // all "reached out" clicks: WhatsApp, email, let's talk, resume, brief
     const delta = (a, b) => (b ? `<em class="${a >= b ? 'up' : 'down'}">${a >= b ? '▲' : '▼'} ${Math.abs(Math.round(((a - b) / b) * 100))}%</em>` : '<em>–</em>')
     const maxV = Math.max(...series.map((s) => s.v), 1)
     const chart = series.map((s) => `<div class="col" title="${short(s.d)}: ${s.v} visitors, ${s.c} clicks"><span class="col__n">${s.v || ''}</span><div class="col__bar"><i style="--h:${(s.v / maxV) * 100}%"></i></div><span class="col__d">${short(s.d).split(' ')[0]}</span></div>`).join('')
 
-    const secOrder = [['about', 'About'], ['why', 'Why hire me'], ['work', 'Work'], ['services', 'Services'], ['testimonials', 'Testimonials'], ['contact', 'Contact']]
+    const secOrder = SECTION_ORDER.filter(([id]) => id !== 'top')
     const secMap = Object.fromEntries(pairs(sections))
     const funnel = secOrder.map(([id, label]) => `<li><span>${label}</span><b>${num(secMap[id])}</b><i style="--w:${total ? Math.min(100, ((secMap[id] || 0) / total) * 100) : 0}%"></i></li>`).join('')
 
@@ -112,11 +117,12 @@ export default async function handler(req, res) {
     const feed = (personCards + strayRows) || '<li class="empty">No activity yet</li>'
 
     // Daily report for one chosen day (?date=YYYY-MM-DD): a card per metric, with the cities behind each number
-    const CORE = [['resume download', 'Resume downloads'], ['whatsapp', 'WhatsApp'], ['linkedin', 'LinkedIn'], ['email', 'Email'], ["let's talk", "Let's talk"], ['why hire me icon', 'Why hire me icon']]
-    const clickCity = {}, projects = []
+    const CORE = [['resume download', 'Resume downloads'], ['whatsapp', 'WhatsApp (contact links)'], ['floating whatsapp', 'WhatsApp (floating button)'], ['sticky whatsapp', 'WhatsApp (mobile sticky bar)'], ['cta strip: whatsapp', 'CTA strip: WhatsApp'], ['cta strip: send a brief', 'CTA strip: Send a brief'], ['brief sent', 'Contact form sent'], ['linkedin', 'LinkedIn'], ['email', 'Email'], ["let's talk", "Let's talk"]]
+    const clickCity = {}, projects = [], projCta = []
     pairs(selCd).forEach(([k, n]) => {
       const [nm, ...pl] = k.split('|'), place = pl.join('|')
       if (nm.startsWith('project: ')) projects.push([`${nm.slice(9)} · ${place}`, n])
+      else if (nm.startsWith('project cta: ')) projCta.push([`${nm.slice(13)} · ${place}`, n])
       else (clickCity[nm] ||= []).push([place, n])
     })
     const cm = Object.fromEntries(pairs(selClicks))
@@ -143,7 +149,52 @@ export default async function handler(req, res) {
 <form method="get" class="dform"><input type="hidden" name="key" value="${esc(key)}"><input type="date" name="date" value="${sel}" max="${today0}" onchange="this.form.submit()"><noscript><button>Go</button></noscript></form>
 <a class="dbtn${sel >= today0 ? ' is-off' : ''}" href="${sel >= today0 ? '#' : href(addDay(sel, 1))}" aria-label="Next day">›</a>
 <a class="dbtn dbtn--t" href="${href(today0)}">Today</a><span class="dpick__l">${selLabel}</span></div>
-<div class="grid dcards">${dcard('Visitors', selVisitsN, pairs(selVd))}${[...CORE, ...extra].map(([k, label]) => dcard(label, cm[k] || sum(clickCity[k]), clickCity[k] || [])).join('')}${dcard('Projects opened', sum(projects), projects)}${hourCard}</div>`
+<div class="grid dcards">${dcard('Visitors', selVisitsN, pairs(selVd))}${[...CORE, ...extra].map(([k, label]) => dcard(label, cm[k] || sum(clickCity[k]), clickCity[k] || [])).join('')}${dcard('Projects opened', sum(projects), projects)}${dcard('Project WhatsApp CTA', sum(projCta), projCta)}${hourCard}</div>`
+
+    // ---------- Conversion rate: unique visitors who clicked WhatsApp / Email / Let's talk / Resume (or sent a brief) ----------
+    const convIds = new Set(Object.keys(strMap(convVisRaw)))
+    evs.forEach((ev) => { if (ev.kind === 'click' && ev.id && isConversion(ev.what.replace(/^clicked /, '').replace(/ · ID \w+$/, ''))) convIds.add(ev.id) }) // older clicks still in the activity log
+    const uniq = vis.length
+    const convRate = uniq ? (convIds.size / uniq) * 100 : 0
+    const pct = (a, b) => (b ? `${(Math.round((a / b) * 1000) / 10).toLocaleString('en-IN')}%` : '–')
+
+    // ---------- Time on page ----------
+    const tN = Number(timeN) || 0
+    const tAvg = tN ? Math.round((Number(timeSum) || 0) / tN) : 0
+    const mmss = (sec) => (sec >= 60 ? `${Math.floor(sec / 60)}m ${String(sec % 60).padStart(2, '0')}s` : `${sec}s`)
+    const tb = Object.fromEntries(pairs(timeBucketsRaw))
+    const tbTotal = TIME_BUCKETS.reduce((a, [, l]) => a + Math.max(0, tb[l] || 0), 0)
+    const tbMax = Math.max(1, ...TIME_BUCKETS.map(([, l]) => tb[l] || 0))
+    const timeDist = TIME_BUCKETS.map(([, l]) => { const n = Math.max(0, tb[l] || 0); return `<li><span class="hb__k">${l}</span><span class="hb__v">${num(n)}<em>${tbTotal ? Math.round((n / tbTotal) * 100) : 0}%</em></span><i style="--w:${Math.max(3, (n / tbMax) * 100)}%"></i></li>` }).join('')
+
+    // ---------- Scroll drop-off between sections (new page order, counted from 20 Nov) ----------
+    const v2 = Object.fromEntries(pairs(secV2Raw))
+    const base = v2.top || Math.max(0, ...Object.values(v2), 0)
+    const dropRows = SECTION_ORDER.map(([id, label], i) => {
+      const n = v2[id] || 0
+      const prev = i ? v2[SECTION_ORDER[i - 1][0]] || 0 : 0
+      const drop = i && prev ? Math.round(((prev - n) / prev) * 100) : null
+      return `<tr><td>${esc(label)}</td><td>${num(n)}</td><td>${base ? Math.round((n / base) * 100) : 0}%</td><td class="${drop >= 30 ? 'bad' : ''}">${drop === null ? '–' : drop === 0 ? '0%' : `${drop > 0 ? '−' : '+'}${Math.abs(drop)}%`}</td><td class="gb"><i style="--w:${base ? Math.min(100, (n / base) * 100) : 0}%"></i></td></tr>`
+    }).join('')
+    const worst = SECTION_ORDER.slice(1).map(([id, label], i) => { const prev = v2[SECTION_ORDER[i][0]] || 0; return { label: `${SECTION_ORDER[i][1]} → ${label}`, d: prev ? (prev - (v2[id] || 0)) / prev : 0 } }).sort((a, b) => b.d - a.d)[0]
+
+    // ---------- Traffic source (?ref=): visits, clicks, converted visitors ----------
+    const refVisits = Object.fromEntries(pairs(vref))
+    const refClicks = {}, refConvClicks = {}
+    pairs(refClicksRaw).forEach(([k, n]) => { const [r, ...nm] = k.split('|'); refClicks[r] = (refClicks[r] || 0) + n; if (isConversion(nm.join('|'))) refConvClicks[r] = (refConvClicks[r] || 0) + n })
+    const refConv = Object.fromEntries(pairs(convRefRaw))
+    const refRows = [...new Set([...Object.keys(refVisits), ...Object.keys(refClicks)])]
+      .sort((a, b) => (refVisits[b] || 0) - (refVisits[a] || 0) || (refClicks[b] || 0) - (refClicks[a] || 0))
+      .slice(0, 15)
+      .map((r) => `<tr><td>${esc(r)}</td><td>${num(refVisits[r])}</td><td>${num(refClicks[r])}</td><td>${num(refConvClicks[r])}</td><td>${num(refConv[r])}</td><td>${pct(refConv[r] || 0, refVisits[r] || 0)}</td></tr>`).join('')
+
+    // ---------- CTA performance ----------
+    const ctaList = [
+      ['CTA strip: WhatsApp', clickMap['cta strip: whatsapp']], ['CTA strip: Send a brief', clickMap['cta strip: send a brief']],
+      ['Mobile sticky bar', clickMap['sticky whatsapp']], ['Floating button (desktop)', clickMap['floating whatsapp']],
+      ['Contact / header WhatsApp links', clickMap.whatsapp], ['Contact form sent', clickMap['brief sent']],
+    ].map(([k, v]) => [k, v || 0])
+    const projCtaAll = pairs(clicks).filter(([k]) => k.startsWith('project cta: ')).map(([k, n]) => [k.slice(13), n])
 
     const kpi = (label, value, sub) => `<div class="kpi"><span>${label}</span><b>${value}</b><small>${sub || ''}</small></div>`
     res.setHeader('Content-Type', 'text/html; charset=utf-8')
@@ -176,7 +227,7 @@ h2 small{letter-spacing:0;text-transform:none;font-size:12px}
 .dev{display:flex;gap:20px;align-items:center}.dev ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;flex:1}.dev li{display:flex;align-items:center;gap:8px;text-transform:capitalize}.dev li i{width:10px;height:10px;border-radius:3px}.dev li b{margin-left:auto}
 .feed{list-style:none;margin:0;padding:0;max-height:420px;overflow:auto}.feed li{display:grid;grid-template-columns:10px 92px 170px 1fr;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
 .feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}.again{color:var(--acc);font-weight:600;margin-left:6px}.dlink{color:var(--acc);font-weight:600;text-decoration:underline;text-underline-offset:3px}.dlink:hover{color:#fff}.rv .f__w{display:block}.mute{color:var(--mute)}.vg{display:block!important;padding:12px 0!important}.vg__h{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}.vg__h .f__t{min-width:92px}.vg__id{font-size:13px;color:var(--text)}.vg__n{margin-left:auto;font-size:12px;color:var(--mute)}.vg--act .vg__n{color:var(--acc);font-weight:600}.vg__l{list-style:none;margin:8px 0 0 6px;padding:0 0 0 14px;border-left:2px solid var(--line);display:grid;gap:5px}.vg__l li{display:flex;gap:10px;align-items:baseline;padding:0;border:0;font-size:14px;grid-template-columns:none}.vg__l li i{width:7px;height:7px;flex:none;align-self:center;border-radius:50%;background:var(--blue)}.vg__l li.click i{background:var(--acc)}.vg__l .vt{color:var(--mute);font-size:12px;min-width:38px}
-.tblw{overflow-x:auto}.gt{width:100%;border-collapse:collapse;font-size:13px}.gt th{color:var(--mute);font-weight:500;text-align:right;padding:6px 10px;white-space:nowrap}.gt th:first-child,.gt td:first-child{text-align:left}.gt td{text-align:right;padding:9px 10px;border-top:1px solid var(--line);font-weight:600}.gt td:first-child{font-weight:500}.gt .gb{width:30%;min-width:80px;padding:0 10px}.gt .gb i{display:block;height:6px;width:var(--w);border-radius:4px;background:var(--acc)}
+.tblw{overflow-x:auto}.gt{width:100%;border-collapse:collapse;font-size:13px}.gt th{color:var(--mute);font-weight:500;text-align:right;padding:6px 10px;white-space:nowrap}.gt th:first-child,.gt td:first-child{text-align:left}.gt td{text-align:right;padding:9px 10px;border-top:1px solid var(--line);font-weight:600}.gt td:first-child{font-weight:500}.gt .gb{width:30%;min-width:80px;padding:0 10px}.gt .gb i{display:block;height:6px;width:var(--w);border-radius:4px;background:var(--acc)}.gt td.bad{color:var(--down)}
 .dpick{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px}.dform{margin:0}
 .dpick input[type=date]{background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;color-scheme:dark}
 .dbtn{display:inline-grid;place-items:center;min-width:36px;height:36px;padding:0 12px;border:1px solid var(--line);border-radius:10px;color:var(--text);text-decoration:none;background:var(--bg)}.dbtn:hover{border-color:var(--acc)}.dbtn.is-off{opacity:.35;pointer-events:none}.dbtn--t{color:var(--acc)}
@@ -198,14 +249,31 @@ ${kpi('Last 7 days', num(week), `${delta(week, prevWeek)} vs previous 7`)}
 ${kpi('Clicks today', num(clicksToday), 'all tracked buttons')}
 <div class="kpi hot"><span>Returning visitors</span><b>${num(repeaters.length)}</b><small>of ${num(vis.length)} unique, came on 2+ days</small></div>
 <div class="kpi hot"><span>Resume downloads</span><b>${num(resume)}</b><small>all time</small></div>
-<div class="kpi hot"><span>Reached out</span><b>${num(contact)}</b><small>total of the 4 below</small></div>
+<div class="kpi hot"><span>Reached out</span><b>${num(contact)}</b><small>WhatsApp, email, let's talk, resume, brief clicks</small></div>
 </div>
 <div class="grid kpis4">
-<div class="kpi"><span>WhatsApp</span><b>${num(clickMap.whatsapp || 0)}</b><small>clicks, all time</small></div>
-<div class="kpi"><span>Email</span><b>${num(clickMap.email || 0)}</b><small>clicks, all time</small></div>
+<div class="kpi"><span>WhatsApp</span><b>${num(waAll)}</b><small>all WhatsApp buttons, all time</small></div>
+<div class="kpi"><span>Email</span><b>${num(clickMap.email || 0)}</b><small>clicks · tracked correctly from 20 Nov</small></div>
 <div class="kpi"><span>LinkedIn</span><b>${num(clickMap.linkedin || 0)}</b><small>clicks, all time</small></div>
 <div class="kpi"><span>Let's talk</span><b>${num(clickMap["let's talk"] || 0)}</b><small>clicks, all time</small></div>
 </div>
+
+<div class="grid kpis4">
+<div class="kpi hot"><span>Conversion rate</span><b>${convRate.toFixed(1)}%</b><small>${num(convIds.size)} of ${num(uniq)} unique visitors clicked WhatsApp, Email, Let's talk, Resume or sent a brief</small></div>
+<div class="kpi"><span>Avg. time on page</span><b>${tN ? mmss(tAvg) : '–'}</b><small>${num(tN)} visitors timed (visible tab only), from 20 Nov</small></div>
+<div class="kpi"><span>Biggest scroll drop</span><b>${worst && worst.d > 0 ? `${Math.round(worst.d * 100)}%` : '–'}</b><small>${worst && worst.d > 0 ? esc(worst.label) : 'needs a few visits on the new layout'}</small></div>
+<div class="kpi"><span>Reached out per 100 visits</span><b>${total ? Math.round((contact / total) * 100) : 0}</b><small>all conversion clicks ÷ all visits</small></div>
+</div>
+
+<div class="grid row3">
+<section class="card"><h2>Time on page <small>avg ${tN ? mmss(tAvg) : '–'}</small></h2>${tN ? `<ul class="hb">${timeDist}</ul>` : '<p class="empty">No timed visits yet (starts with the 20 Nov update)</p>'}</section>
+<section class="card"><h2>CTA buttons <small>clicks, all time</small></h2>${hbars(ctaList.filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]), { n: 8 }).replace('No data yet', 'No CTA clicks yet')}</section>
+<section class="card"><h2>Project WhatsApp CTA <small>per project</small></h2>${hbars(projCtaAll, { n: 8 }).replace('No data yet', 'No project CTA clicks yet')}</section>
+</div>
+
+<section class="card" style="margin-bottom:12px"><h2>Scroll drop-off <small>new page order, counted from 20 Nov · red = 30%+ lost at that step</small></h2>${base ? `<div class="tblw"><table class="gt"><thead><tr><th>Section</th><th>Reached</th><th>% of page loads</th><th>Drop from previous</th><th></th></tr></thead><tbody>${dropRows}</tbody></table></div>` : '<p class="empty">No data on the new layout yet</p>'}</section>
+
+<section class="card" style="margin-bottom:12px"><h2>By traffic source <small>use links like kunjan029.vercel.app/?ref=linkedin · clicks by source counted from 20 Nov</small></h2>${refRows ? `<div class="tblw"><table class="gt"><thead><tr><th>Source</th><th>Visits</th><th>Clicks</th><th>Reached-out clicks</th><th>Converted visitors</th><th>Conversion</th></tr></thead><tbody>${refRows}</tbody></table></div>` : '<p class="empty">No data yet</p>'}</section>
 
 <div class="grid row">
 <section class="card"><h2>Visitors · last ${DAYS} days <small>${num(series.reduce((a, s) => a + s.c, 0))} clicks in this period</small></h2><div class="chart">${chart}</div></section>
@@ -214,7 +282,7 @@ ${kpi('Clicks today', num(clicksToday), 'all tracked buttons')}
 
 <div class="grid row3">
 <section class="card"><h2>What they clicked <small>all time</small></h2>${hbars(pairs(clicks), { n: 9 })}</section>
-<section class="card"><h2>How far they scrolled <small>visitors reached</small></h2><ul class="fn">${funnel}</ul></section>
+<section class="card"><h2>How far they scrolled <small>all time, old + new layout</small></h2><ul class="fn">${funnel}</ul></section>
 <section class="card"><h2>Device</h2><div class="dev"><div class="donut"></div><ul>${legend || '<li class="empty">No data yet</li>'}</ul></div></section>
 </div>
 

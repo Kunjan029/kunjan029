@@ -81,7 +81,6 @@ export default function Work() {
   //   1st card        -> lead   (full-width featured showcase)
   //   then in pairs   -> big (dominant) + sm (supporting), mirrored on every other pair
   //   a lone last one -> wide   (cinematic full-width closer)
-  // One typographic statement sits after the first pair, only if more work follows it.
   const roleOf = {}
   const visible = PROJECTS.filter(matches)
   visible.forEach((p, v) => {
@@ -93,7 +92,6 @@ export default function Work() {
   })
   const last = visible.length - 1
   if (last >= 1 && (last - 1) % 2 === 0) roleOf[visible[last].id] = 'wide'
-  const breakAfterId = visible.length > 3 ? visible[2].id : null
 
   // How many projects each chip would show given the OTHER active filter
   const catCount = (id) => PROJECTS.filter((p) => (id === 'all' || p.category === id) && (method === 'all' || p.method === method)).length
@@ -244,6 +242,7 @@ export default function Work() {
                     {p.cover?.src && <img className="work-card__bg" src={p.cover.src} alt="" aria-hidden="true" draggable={false} loading="lazy" decoding="async" />}
                     <span className="work-card__fill"><ProjectVisual project={p} index={0} number={i + 1} /></span>
                     {role === 'lead' && <span className="work-card__flag">Featured Project</span>}
+                    {p.slot && !p.images.length && <span className="work-card__flag">Slot: add images in projects.js</span>}
                     {n > 1 && <span className="work-card__count"><Images size={14} aria-hidden="true" />{n}</span>}
                     {p.method && <span className={`work-card__method is-${p.method}`}>{METHODS.find((m) => m.id === p.method)?.label}</span>}
                     <span className="work-card__pill">Explore Project <ArrowUpRight size={16} aria-hidden="true" /></span>
@@ -255,8 +254,9 @@ export default function Work() {
                       {p.year ? <span>{p.year}</span> : null}
                     </p>
                     <h3>{p.title}</h3>
+                    {p.line && <p className="work-card__line">{p.line}</p>}
                     <div className="work-card__side">
-                      {(p.description || p.placeholder) && <p className="work-card__desc">{p.description || 'Short description goes here.'}</p>}
+                      {!p.line && (p.description || p.placeholder) && <p className="work-card__desc">{p.description || 'Short description goes here.'}</p>}
                       {p.tags.length > 0 && (
                         <ul className="work-card__tags" role="list">
                           {p.tags.slice(0, 4).map((t) => <li key={t}>{t}</li>)}
@@ -268,12 +268,6 @@ export default function Work() {
                     </div>
                   </div>
                 </article>
-                {p.id === breakAfterId && (
-                  <p className="work__break">
-                    <span className="work__break-a">GOOD DESIGN<i>.</i></span>
-                    <span className="work__break-b">LOUD IDEAS<i>.</i></span>
-                  </p>
-                )}
               </Fragment>
             )
           })}

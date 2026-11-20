@@ -1,129 +1,22 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { MapPin, Layers, Lightbulb, PenTool, Palette, Shapes, Sparkles } from 'lucide-react'
+import { Layers, Palette, Shapes, Sparkles } from 'lucide-react'
 import Container from '../ui/Container.jsx'
 import Availability from '../ui/Availability.jsx'
 import Reveal from '../ui/Reveal.jsx'
-import { PROJECTS } from '../../data/projects.js'
 import './About.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const TILES = [
-  { icon: PenTool, kicker: 'Visual', big: 'Storyteller' },
-  { icon: MapPin, big: 'Ahmedabad', small: 'India' },
-  { icon: Layers, big: '16+', small: 'Years of Graphic Design Experience' },
-  { icon: Lightbulb, big: 'Passionate', small: 'About visual communication and creative problem-solving.' },
-]
+const INDUSTRIES = ['E-commerce', 'Skincare & wellness', 'Fashion & clothing', 'Perfume', 'Real estate', 'Events', 'Tech expos', 'Travel']
 
-// Quiet line-art behind each card (decorative, dark at low opacity)
-const DECO = [
-  // pen tool: a bezier curve with anchors and handles
-  <svg key="d1" viewBox="0 0 140 100" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M12 82C34 8 86 8 128 56" />
-    <path d="M12 82L34 44M128 56L100 22" strokeDasharray="3 4" />
-    <rect x="7" y="77" width="10" height="10" fill="currentColor" stroke="none" />
-    <rect x="123" y="51" width="10" height="10" fill="currentColor" stroke="none" />
-    <circle cx="34" cy="44" r="4" /><circle cx="100" cy="22" r="4" />
-  </svg>,
-  // location: ripples around a point
-  <svg key="d2" viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <circle cx="70" cy="70" r="12" /><circle cx="70" cy="70" r="30" strokeDasharray="2 5" /><circle cx="70" cy="70" r="50" /><circle cx="70" cy="70" r="70" strokeDasharray="2 5" />
-  </svg>,
-  // layers: offset stacked frames
-  <svg key="d3" viewBox="0 0 140 120" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <rect x="52" y="44" width="76" height="62" rx="10" />
-    <rect x="38" y="30" width="76" height="62" rx="10" />
-    <rect x="24" y="16" width="76" height="62" rx="10" />
-  </svg>,
-  // idea: sparks and rays
-  <svg key="d4" viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <path d="M78 14l6 20 20 6-20 6-6 20-6-20-20-6 20-6z" fill="currentColor" stroke="none" />
-    <path d="M34 66l3 10 10 3-10 3-3 10-3-10-10-3 10-3z" fill="currentColor" stroke="none" />
-    <path d="M96 78v12M90 84h12M54 20v8M50 24h8" />
-    <path d="M18 104c24-6 48-24 70-50" strokeDasharray="2 6" />
-  </svg>,
-]
-
-// ---------- Headline hover moments ----------
-// "ideas" lights a bulb; "visuals" flips through random covers from the portfolio.
-// Until real covers exist it shows numbered slots, and swaps to the real work automatically.
-const SLOTS = (() => {
-  const real = PROJECTS.filter((p) => p.cover?.src).map((p) => ({ src: p.cover.src }))
-  return real.length ? real : PROJECTS.slice(0, 6).map((_, i) => ({ slot: i + 1 }))
-})()
-const pick = (prev) => {
-  if (SLOTS.length < 2) return 0
-  let n
-  do { n = Math.floor(Math.random() * SLOTS.length) } while (n === prev)
-  return n
-}
-const isMouse = (e) => e.pointerType === 'mouse' || e.pointerType === 'pen'
-const noHover = () => window.matchMedia('(hover: none)').matches
-
-function IdeasWord() {
-  const [on, setOn] = useState(false)
-  return (
-    <span
-      className={`mt__idea${on ? ' is-on' : ''}`}
-      onPointerEnter={(e) => isMouse(e) && setOn(true)}
-      onPointerLeave={(e) => isMouse(e) && setOn(false)}
-      onClick={() => noHover() && setOn((v) => !v)}
-    >
-      ideas
-      <span className="mt__bulb" aria-hidden="true"><Lightbulb size={22} strokeWidth={1.75} /></span>
-    </span>
-  )
-}
-
-function VisualsWord() {
-  const [on, setOn] = useState(false)
-  const [idx, setIdx] = useState(0)
-
-  // One random cover per hover: it stays put while hovered and changes only on the next hover
-  useEffect(() => {
-    if (on) setIdx((i) => pick(i))
-  }, [on])
-
-  const cur = SLOTS[idx] || SLOTS[0]
-  return (
-    <span
-      className={`mt__vis${on ? ' is-on' : ''}`}
-      onPointerEnter={(e) => isMouse(e) && setOn(true)}
-      onPointerLeave={(e) => isMouse(e) && setOn(false)}
-      onClick={() => noHover() && setOn((v) => !v)}
-    >
-      visuals
-      <span className="mt__peek" aria-hidden="true">
-        {cur.src ? <img key={idx} src={cur.src} alt="" draggable={false} /> : <b key={idx}>{String(cur.slot).padStart(2, '0')}</b>}
-      </span>
-    </span>
-  )
-}
-
-const INDUSTRIES = [
-  'E-commerce & marketplaces',
-  'Skincare & wellness',
-  'Fashion & clothing',
-  'Perfume & fragrance',
-  'Real estate',
-  'Events & entertainment',
-  'Technology & expos',
-  'Travel & tourism',
-]
-
+// Compact journey: one line per milestone
 const MILESTONES = [
-  { when: '2009', title: 'Started exploring Photoshop', text: 'The start of a long relationship with pixels.' },
-  { when: '2011', title: 'Started designing professionally', text: 'Wedding albums, banners and print layouts, all built in Photoshop.' },
-  { when: '2019', title: 'Moved into brand and campaign work', text: 'Joined a graphics-focused IT company and started designing for real brands and campaigns.' },
-  {
-    when: 'Professional journey',
-    title: 'Real briefs, real brands',
-    text: 'Worked across the kinds of visuals brands use every day.',
-    tags: ['Social media creatives', 'E-commerce visuals', 'Product presentations', 'Digital campaigns'],
-  },
-  { when: 'Today', title: 'Open to what’s next', text: 'Open to freelance projects and ongoing design collaborations.' },
+  { when: '2009', title: 'Started with Photoshop' },
+  { when: '2011', title: 'Designing professionally: wedding albums, banners, print' },
+  { when: '2019', title: 'Brand and campaign work at a graphics-focused IT company' },
+  { when: 'Today', title: 'Freelance projects and ongoing collaborations' },
 ]
 
 const STATS = [
@@ -190,41 +83,7 @@ export default function About() {
       gsap.from('.about__lead', { y: 24, opacity: 0, duration: 0.8, delay: 0.3, scrollTrigger: st('.about__title') })
       gsap.from('.about__marks li', { y: 16, opacity: 0, duration: 0.7, delay: 0.5, stagger: 0.1, scrollTrigger: st('.about__title') })
 
-      gsap.from('.meet__hey .rv__in', { yPercent: 110, duration: 0.9, ease: 'power4.out', stagger: 0.025, scrollTrigger: st('.meet') })
-      // Lines are masked only while they slide in, so the hover pop-ups can overflow afterwards
-      gsap.set('.mt__line', { overflow: 'hidden' })
-      gsap.from('.mt__in', { yPercent: 115, duration: 1, ease: 'power4.out', stagger: 0.14, delay: 0.2, scrollTrigger: st('.meet'), onComplete: () => gsap.set('.mt__line', { clearProps: 'overflow' }) })
-      gsap.from('.tile', { y: 50, opacity: 0, duration: 0.9, ease: 'power3.out', stagger: 0.12, clearProps: 'transform,opacity', scrollTrigger: st('.meet__tiles') })
-      gsap.to('.meet__bigk', { yPercent: -18, ease: 'none', scrollTrigger: { trigger: '.meet', scrub: true, start: 'top bottom', end: 'bottom top' } })
-      gsap.to('.meet__sticker', { yPercent: 40, rotation: 90, ease: 'none', scrollTrigger: { trigger: '.meet', scrub: true, start: 'top bottom', end: 'bottom top' } })
-
-      const horiz = window.matchMedia('(min-width: 1000px)').matches // journey runs left to right on wide screens
-      const tlItems = [...root.querySelectorAll('.tl__item')]
-      if (horiz) {
-        // Plays once, in full, as soon as the journey is in view (never stalls half way)
-        const DUR = 2.4
-        gsap.set('.tl__fill', { scaleX: 0 })
-        gsap.set(tlItems.map((it) => it.querySelector('.tl__card')), { y: 30, opacity: 0 })
-        ScrollTrigger.create({
-          trigger: '.tl', start: 'top 75%', once: true,
-          onEnter: () => {
-            gsap.to('.tl__fill', { scaleX: 1, duration: DUR, ease: 'power1.inOut' })
-            tlItems.forEach((item, i) => {
-              const t = (0.1 + 0.2 * i) * DUR * 0.9 // the light reaches each dot at about this moment
-              gsap.to(item.querySelector('.tl__card'), { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: t })
-              gsap.delayedCall(t, () => item.classList.add('is-lit'))
-            })
-          },
-        })
-      } else {
-        gsap.fromTo('.tl__fill', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.tl', start: 'top 65%', end: 'bottom 65%', scrub: 0.4 } })
-        tlItems.forEach((item, i) => {
-          gsap.from(item.querySelector('.tl__card'), {
-            x: i % 2 ? 40 : -40, opacity: 0, duration: 0.9, ease: 'power3.out',
-            scrollTrigger: { ...st(item, 'top 80%'), onEnter: () => item.classList.add('is-lit') },
-          })
-        })
-      }
+      gsap.from('.snap__col', { y: 24, opacity: 0, duration: 0.7, stagger: 0.1, ease: 'power3.out', clearProps: 'transform,opacity', scrollTrigger: st('.snap') })
 
       gsap.from('.stat', { y: 24, opacity: 0, duration: 0.7, stagger: 0.08, ease: 'power3.out', scrollTrigger: st('.stats__cols') })
       gsap.fromTo('.stat__fill', { scaleX: 0 }, { scaleX: 1, duration: 1.4, ease: 'power3.out', stagger: 0.12, delay: 0.3, scrollTrigger: st('.stats__cols') })
@@ -271,65 +130,25 @@ export default function About() {
           </ul>
         </div>
 
-        {/* ---------- Block 1: Meet Kunjan ---------- */}
-        <div className="meet">
-          <span className="meet__bigk" aria-hidden="true">K</span>
-          <span className="meet__sticker" aria-hidden="true" />
-          <p className="meet__text">
-            <span className="meet__hey"><Reveal text="Hey, I’m Kunjan." /></span>{' '}
-            <span className="mt__line"><span className="mt__in">An experienced{' '}</span></span>
-            <span className="mt__line"><span className="mt__in">graphic designer{' '}</span></span>
-            <span className="mt__line"><span className="mt__in">turning <em className="mt__hl"><IdeasWord /> into <VisualsWord /></em>{' '}</span></span>
-            <span className="mt__line"><span className="mt__in">that <em className="mt__out">refuse to be ignored.</em></span></span>
-          </p>
-          <ul className="meet__tiles" role="list">
-            {TILES.map(({ icon: Icon, kicker, big, small }, i) => (
-              <li key={big} className={`tile tile--${i + 1}`} data-cursor>
-                <span className="tile__deco" aria-hidden="true">{DECO[i]}</span>
-                <span className="tile__ic"><Icon size={22} strokeWidth={1.75} aria-hidden="true" /></span>
-                {kicker && <span className="tile__kick">{kicker}</span>}
-                <strong>{big}</strong>
-                {small && <span className="tile__sub">{small}</span>}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* ---------- Block 2: Timeline ---------- */}
-        <div className="block">
-          <h3 className="block__title">My creative journey</h3>
-          <div className="tl">
-            <span className="tl__line" aria-hidden="true"><span className="tl__fill" /><span className="tl__runner" /></span>
-            <span className="tl__deco tl__deco--ring tl__d1" aria-hidden="true" />
-            <span className="tl__deco tl__deco--plus tl__d2" aria-hidden="true" />
-            <span className="tl__deco tl__deco--plus tl__d3" aria-hidden="true" />
-            <span className="tl__deco tl__deco--dots tl__d4" aria-hidden="true" />
-            <span className="tl__deco tl__deco--ring tl__d5" aria-hidden="true" />
-            <ol role="list">
-              {MILESTONES.map((m, i) => (
-                <li key={m.when} className={`tl__item${i === MILESTONES.length - 1 ? ' is-today' : ''}`}>
-                  <span className="tl__node" aria-hidden="true" />
-                  <div className="tl__card">
-                    <span className="tl__when">{m.when}</span>
-                    <h4>{m.title}</h4>
-                    <p>{m.text}</p>
-                    {m.tags && <ul className="tl__tags" role="list">{m.tags.map((t) => <li key={t}>{t}</li>)}</ul>}
-                  </div>
-                </li>
+        {/* ---------- Snapshot: journey + industries, compact ---------- */}
+        <div className="snap">
+          <div className="snap__col">
+            <h3 className="snap__title">My creative journey</h3>
+            <ol className="snap__tl" role="list">
+              {MILESTONES.map((m) => (
+                <li key={m.when}><b>{m.when}</b><span>{m.title}</span></li>
               ))}
             </ol>
           </div>
-        </div>
-
-        {/* ---------- Industries ---------- */}
-        <div className="block ind">
-          <h3 className="block__title">Industries I’ve worked in</h3>
-          <p className="ind__text">
-            Over the years I’ve designed for brands across e-commerce, skincare and wellness, fashion and clothing, perfume and fragrance, real estate, events and entertainment, technology expos and travel. Every industry speaks to a different audience, so I adapt the look, tone and layout to each one while keeping the message clear and the design bold.
-          </p>
-          <ul className="ind__tags" role="list">
-            {INDUSTRIES.map((t) => <li key={t}>{t}</li>)}
-          </ul>
+          <div className="snap__col">
+            <h3 className="snap__title">Industries</h3>
+            <ul className="snap__tags" role="list">
+              {INDUSTRIES.map((t) => <li key={t}>{t}</li>)}
+            </ul>
+            <p className="snap__cm">
+              <b>Community:</b> founder of Pixelverse, a design community in Ahmedabad, and a volunteer with GDG Ahmedabad, GDG Cloud Ahmedabad and Echai. 500+ events volunteered.
+            </p>
+          </div>
         </div>
 
         <div className="about__morewrap">

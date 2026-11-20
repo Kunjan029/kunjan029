@@ -1,28 +1,38 @@
+/* ---------- Desktop / tablet: labelled floating button ---------- */
 .fwa {
   position: fixed; z-index: 90; /* above page content, below the header (100) and modal overlays */
-  right: calc(1rem + env(safe-area-inset-right, 0px)); bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
-  display: grid; place-items: center; width: 3.5rem; height: 3.5rem; border-radius: 50%;
-  background: transparent; color: #fff; border: 1.5px solid #fff;
-  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-  transition: transform 0.4s var(--ease-out), background-color 0.2s ease;
+  right: calc(1.25rem + env(safe-area-inset-right, 0px)); bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  display: inline-flex; align-items: center; gap: 0.55rem; min-height: 3.25rem; padding: 0 1.25rem 0 1rem; border-radius: var(--radius-pill);
+  background: var(--color-accent); color: var(--color-on-accent); border: 1px solid var(--color-accent);
+  font-family: var(--font-heading); font-size: var(--text-sm); font-weight: 600; letter-spacing: -0.01em; white-space: nowrap;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.45);
+  transition: transform 0.4s var(--ease-out), background-color 0.2s ease, border-color 0.2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 .fwa:focus-visible { outline: 2px solid var(--color-text); outline-offset: 3px; }
-.fwa:active { transform: scale(0.93); }
-@media (hover: hover) { .fwa:hover { transform: translateY(-3px) scale(1.05); background: rgb(255 255 255 / 0.14); } }
+.fwa:active { transform: scale(0.96); }
+@media (hover: hover) { .fwa:hover { transform: translateY(-3px); background: var(--color-text); border-color: var(--color-text); } }
 
-.fwa__tip {
-  position: absolute; right: calc(100% + 0.75rem); top: 50%; transform: translate(6px, -50%); opacity: 0; pointer-events: none; white-space: nowrap;
-  padding: 0.45rem 0.8rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius-sm); background: var(--color-card); color: var(--color-text);
-  font-family: var(--font-body); font-size: var(--text-sm); transition: opacity 0.15s ease, transform 0.25s var(--ease-out);
+/* ---------- Phones: sticky bottom bar, shown after the hero ---------- */
+.wbar { display: none; }
+@media (max-width: 767px) {
+  .fwa { display: none; }
+  .wbar {
+    display: block; position: fixed; z-index: 90; left: 0; right: 0; bottom: 0;
+    padding: 0.625rem calc(1rem + env(safe-area-inset-right, 0px)) calc(0.625rem + env(safe-area-inset-bottom, 0px)) calc(1rem + env(safe-area-inset-left, 0px));
+    background: rgb(11 11 13 / 0.92); border-top: 1px solid var(--color-border-strong);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    transform: translateY(110%); transition: transform 0.35s var(--ease-out); pointer-events: none;
+  }
+  .wbar.is-on { transform: none; pointer-events: auto; }
+  .wbar__btn {
+    display: flex; align-items: center; justify-content: center; gap: 0.55rem; min-height: 3rem; border-radius: var(--radius-pill);
+    background: var(--color-accent); color: var(--color-on-accent);
+    font-family: var(--font-heading); font-size: var(--text-base); font-weight: 600; letter-spacing: -0.01em;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wbar__btn:active { transform: scale(0.98); }
+  /* Room at the end of the page so the bar never hides the footer */
+  .foot { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px)); }
 }
-@media (hover: hover) and (pointer: fine) { .fwa:hover .fwa__tip { opacity: 1; transform: translate(0, -50%); } }
-.fwa:focus-visible .fwa__tip { opacity: 1; transform: translate(0, -50%); }
-
-/* Designer icon stacked above the WhatsApp button */
-.fwa--why { bottom: calc(1rem + 3.5rem + 0.75rem + env(safe-area-inset-bottom, 0px)); color: var(--color-accent); border-color: var(--color-accent); }
-@media (hover: hover) { .fwa--why:hover { background: rgb(198 255 77 / 0.14); } }
-
-/* Keep clear of the page's bottom-edge controls on phones */
-@media (max-width: 767px) { .fwa.fwa--why { bottom: calc(0.875rem + 3.25rem + 0.75rem + env(safe-area-inset-bottom, 0px)); } .fwa { width: 3.25rem; height: 3.25rem; right: calc(0.875rem + env(safe-area-inset-right, 0px)); bottom: calc(0.875rem + env(safe-area-inset-bottom, 0px)); } }
-@media (prefers-reduced-motion: reduce) { .fwa, .fwa__tip { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .fwa, .wbar { transition: none; } }

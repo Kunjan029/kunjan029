@@ -254,3 +254,43 @@
 .hero__badge { left: auto; right: 0.75rem; top: auto; bottom: -2.25rem; width: 5.5rem; }
 @media (min-width: 768px) { .hero__badge { right: -1rem; bottom: -2.5rem; } }
 @media (min-width: 1100px) { .hero__visual { top: calc(var(--hero-fs) * 1.2); width: calc(var(--hero-fs) * 2.3); } }
+
+/* ---------- Above-the-fold fit (conversion pass) ----------
+   Goal: headline, subheading, intro and BOTH buttons visible without scrolling on phones and laptops.
+   Below 1100px the portrait moves under the buttons; the headline size is also capped by screen height. */
+.hero { --hero-fs: clamp(2.4rem, 10.6vw, 4.75rem); padding-block: calc(5.25rem + env(safe-area-inset-top, 0px)) var(--space-7); }
+@media (min-width: 768px) { .hero { --hero-fs: clamp(3.25rem, min(8vw, 12svh), 8rem); padding-block: calc(6rem + env(safe-area-inset-top, 0px)) var(--space-8); } }
+
+.hero__inner { display: flex; flex-direction: column; }
+.hero__sub {
+  position: relative; z-index: 2; margin-top: var(--space-4); max-width: 36rem;
+  font-family: var(--font-heading); font-size: clamp(1.125rem, 0.95rem + 0.9vw, 1.6rem); font-weight: 600; line-height: 1.25; letter-spacing: -0.02em;
+  color: var(--color-text); text-wrap: balance;
+}
+.hero__bottom { margin-top: var(--space-5); gap: var(--space-5); }
+.hero__text { font-size: var(--text-base); color: var(--color-text); opacity: 0.85; }
+@media (min-width: 768px) { .hero__text { font-size: var(--text-lg); } }
+
+@media (max-width: 1099px) {
+  .hero__stage { display: contents; }
+  .hero__statuses { order: 1; }
+  .hero__title { order: 2; margin-top: var(--space-4); }
+  .hero__sub { order: 3; }
+  .hero__bottom { order: 4; }
+  .hero__visual { order: 5; width: min(100%, 22rem); margin-top: var(--space-8); }
+}
+
+/* Phones: both buttons on one row */
+@media (max-width: 479px) {
+  .hero__actions { flex-wrap: nowrap; gap: var(--space-2); }
+  .hero__actions .btn { flex: 1 1 0; min-width: 0; min-height: 52px; padding-inline: 0.6rem; font-size: var(--text-sm); }
+}
+
+/* The scroll cue sits beside the buttons, so only show it when there is clear room under them */
+.hero__scrollwrap { display: none; }
+@media (min-width: 768px) and (min-height: 860px) { .hero__scrollwrap { display: block; } }
+@media (min-width: 1100px) {
+  .hero__sub { max-width: 46rem; }
+  .hero__bottom { max-width: 38rem; }
+  .hero__visual { width: calc(var(--hero-fs) * 2.9); top: calc(var(--hero-fs) * 0.35); }
+}

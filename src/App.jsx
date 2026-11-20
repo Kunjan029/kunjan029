@@ -5,7 +5,7 @@ import Work from './components/sections/Work.jsx'
 import Services from './components/sections/Services.jsx'
 import HowIWork from './components/sections/HowIWork.jsx'
 import Testimonials from './components/sections/Testimonials.jsx'
-import Community from './components/sections/Community.jsx'
+import WorkCta from './components/sections/WorkCta.jsx'
 import WhyHire from './components/sections/WhyHire.jsx'
 import Contact from './components/sections/Contact.jsx'
 import Footer from './components/layout/Footer.jsx'
@@ -25,11 +25,11 @@ export default function App() {
         <Hero />
         <WhyHire />
         <Work />
-        <About />
-        <Services />
-        <HowIWork />
+        <WorkCta />
         <Testimonials />
-        <Community />
+        <HowIWork />
+        <Services />
+        <About />
         <Contact />
       </main>
       <Footer />

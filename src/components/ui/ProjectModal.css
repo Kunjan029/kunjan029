@@ -93,3 +93,13 @@
   .pm--ctx .pm__context { padding-top: 0; }
   .pm--ctx .pm__body { padding-block: var(--space-3); }
 }
+
+/* "Need something like this?" closing call to action, full popup width, in both preview and viewer modes */
+.pm__cta {
+  grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-5);
+  padding: var(--space-4) var(--space-5); border: 1px solid rgb(198 255 77 / 0.35); border-radius: var(--radius-md);
+  background: linear-gradient(120deg, rgb(198 255 77 / 0.1), transparent 60%), var(--color-card);
+}
+.pm__cta-text { color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-xl); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+.pm__cta-text span { color: var(--color-accent); }
+@media (max-width: 479px) { .pm__cta .btn { flex: 1 1 100%; } }

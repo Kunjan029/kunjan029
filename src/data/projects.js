@@ -7,7 +7,8 @@
   {
     id: 'my-project',                 // REQUIRED  unique, no spaces
     title: 'Real Project Title',      // REQUIRED
-    category: 'social-media',         // REQUIRED  social-media | carousel | e-commerce | advertising | photo-editing
+    category: 'social-media',         // REQUIRED  social-media | carousel | e-commerce | advertising | photo-editing | ui-ux
+    line: 'What it is, in one line',  // shown under the thumbnail, e.g. 'Amazon A+ content for a skincare brand'
     method: 'non-ai',                 // REQUIRED  non-ai | ai-assisted | ai  (how the work was made)
     size: 'feature',                  // optional, no longer needed: the grid now alternates 7/5 columns by itself
     images: [                         // REQUIRED  gallery shown in the popup, never cropped there
@@ -158,49 +159,59 @@ const STORIES = {
 // `placeholderCount` just shows how many image slots the gallery will have.
 const RAW_PROJECTS = [
   // ---- Real work (migrated from the Framer portfolio). No clients, years or results are claimed. ----
-  { id: 'ecommerce', title: 'E-Commerce', category: 'e-commerce', method: 'non-ai', presentation: 'instagram', fit: 'contain', images: ['velor-1.jpg', 'veera-1.jpg', 'luxor-1.jpg'].map((f) => img(f)) },
+  // Order = order on the page. E-commerce and product visuals lead: they get the most clicks and match the pitch.
+  // `line` is the one-line "what it is" shown under each thumbnail.
+  { id: 'ecommerce', title: 'E-Commerce', line: 'Product visuals for watch, perfume and skincare brand concepts', category: 'e-commerce', method: 'non-ai', presentation: 'instagram', fit: 'contain', images: ['velor-1.webp', 'veera-1.webp', 'luxor-1.webp'].map((f) => img(f)) },
+
+  // SLOT: Amazon A+ content. Add your images (e.g. 'a-plus-1.jpg') to `images` and it goes live automatically.
+  { id: 'amazon-a-plus', slot: true, title: 'Amazon A+ Content', line: 'Amazon A+ content for a skincare brand', category: 'e-commerce', method: 'non-ai', presentation: 'viewer', fit: 'contain', placeholderCount: 5, images: [] },
+
   {
-    id: 'gitex', title: 'GITEX', category: 'advertising', method: 'ai-assisted', presentation: 'instagram', fit: 'contain',
-    images: ['gitex-1.png', 'gitex-2.png', 'gitex-3.png', 'gitex-4.png', 'gitex-5.png', 'gitex-6.png'].map((f) => img(f)),
-  },
-  {
-    id: 'event-posters', title: 'Event Posters', category: 'social-media', method: 'ai-assisted',
-    images: ['event-posters-1.jpg', 'event-posters-2.jpg', 'event-posters-3.jpg'].map((f) => img(f)),
-  },
-  { id: 'republic-day', title: 'Republic Day', category: 'social-media', method: 'non-ai', images: [img('keroluxe-festive-1.jpg')] },
-  { id: 'navratri', title: 'Navratri', category: 'social-media', method: 'non-ai', images: [img('keroluxe-festive-2.jpg')] },
-  { id: 'travel-ad', title: 'Travel Ad', category: 'advertising', method: 'ai', presentation: 'instagram', fit: 'contain', images: [img('travel-ad-1.jpg')] },
-  {
-    id: 'banners', title: 'Banners', category: 'advertising', method: 'non-ai', presentation: 'instagram', format: 'display-ad', fit: 'contain',
-    images: ['banners-1.jpg', 'banners-2.jpg', 'banners-3.jpg'].map((f) => img(f)),
-  },
-  { id: 'ganesh-chaturthi', title: 'Ganesh Chaturthi', category: 'social-media', method: 'non-ai', images: [img('festive-1.jpg')] },
-  { id: 'christmas', title: 'Christmas', category: 'social-media', method: 'non-ai', images: [img('festive-2.jpg')] },
-  { id: 'new-year', title: 'New Year', category: 'social-media', method: 'non-ai', images: [img('festive-3.jpg')] },
-  { id: 'independence-day', title: 'Independence Day', category: 'social-media', method: 'non-ai', images: [img('festive-4.jpg')] },
-  {
-    id: 'product-retouching', title: 'Product Retouching', category: 'photo-editing', method: 'non-ai', presentation: 'viewer', fit: 'contain', wide: true,
+    id: 'product-retouching', title: 'Product Retouching', line: 'Product photo retouching for e-commerce, before and after', category: 'photo-editing', method: 'non-ai', presentation: 'viewer', fit: 'contain', wide: true,
     images: ['retouching-1.jpg', 'retouching-2.jpg', 'retouching-3.jpg', 'retouching-4.jpg', 'retouching-5.jpg'].map((f) => img(f)),
   },
   {
-    id: 'photo-editing', title: 'Photo Editing', category: 'photo-editing', method: 'non-ai', presentation: 'viewer', fit: 'contain',
-    images: ['photo-editing-1.jpg', 'photo-editing-2.jpg', 'photo-editing-3.jpg'].map((f) => img(f)),
+    id: 'gitex', title: 'GITEX', line: 'Campaign creatives for the GITEX tech expo', category: 'advertising', method: 'ai-assisted', presentation: 'instagram', fit: 'contain',
+    images: ['gitex-1.webp', 'gitex-2.webp', 'gitex-3.webp', 'gitex-4.webp', 'gitex-5.webp', 'gitex-6.webp'].map((f) => img(f)),
   },
+  {
+    id: 'event-posters', title: 'Event Posters', line: 'Social media posters for events', category: 'social-media', method: 'ai-assisted',
+    images: ['event-posters-1.webp', 'event-posters-2.webp', 'event-posters-3.webp'].map((f) => img(f)),
+  },
+
+  // SLOT: carousel project. Add the slides in order to `images` and it goes live automatically.
+  { id: 'carousel', slot: true, title: 'Carousel Design', line: 'Instagram carousel for a brand', category: 'carousel', method: 'non-ai', placeholderCount: 5, images: [] },
+
+  {
+    id: 'banners', title: 'Banners', line: 'Sale and promo banners with offers and coupon codes', category: 'advertising', method: 'non-ai', presentation: 'instagram', format: 'display-ad', fit: 'contain',
+    images: ['banners-1.jpg', 'banners-2.jpg', 'banners-3.jpg'].map((f) => img(f)),
+  },
+  { id: 'travel-ad', title: 'Travel Ad', line: 'Ad creative for a travel offer, made with AI', category: 'advertising', method: 'ai', presentation: 'instagram', fit: 'contain', images: [img('travel-ad-1.webp')] },
+  {
+    id: 'photo-editing', title: 'Photo Editing', line: 'Photo editing and colour correction, before and after', category: 'photo-editing', method: 'non-ai', presentation: 'viewer', fit: 'contain',
+    images: ['photo-editing-1.webp', 'photo-editing-2.webp', 'photo-editing-3.webp'].map((f) => img(f)),
+  },
+  { id: 'republic-day', title: 'Republic Day', line: 'Republic Day social media post for a brand', category: 'social-media', method: 'non-ai', images: [img('keroluxe-festive-1.webp')] },
+  { id: 'navratri', title: 'Navratri', line: 'Navratri festive post for a brand', category: 'social-media', method: 'non-ai', images: [img('keroluxe-festive-2.webp')] },
+  { id: 'ganesh-chaturthi', title: 'Ganesh Chaturthi', line: 'Ganesh Chaturthi festive social media post', category: 'social-media', method: 'non-ai', images: [img('festive-1.webp')] },
+  { id: 'christmas', title: 'Christmas', line: 'Christmas festive social media post', category: 'social-media', method: 'non-ai', images: [img('festive-2.webp')] },
+  { id: 'new-year', title: 'New Year', line: 'New Year greeting post', category: 'social-media', method: 'non-ai', images: [img('festive-3.jpg')] },
+  { id: 'independence-day', title: 'Independence Day', line: 'Independence Day social media post', category: 'social-media', method: 'non-ai', images: [img('festive-4.jpg')] },
   // ---- UI/UX (migrated from the Framer portfolio). Long pages: the card shows the top of the design, the popup scrolls the whole page ----
   {
-    id: 'spotify-design-system', title: 'Spotify Design System', category: 'ui-ux', method: 'non-ai', tall: true, fit: 'cover', focus: 'top',
+    id: 'spotify-design-system', title: 'Spotify Design System', line: 'Reusable UI components, inspired by Spotify', category: 'ui-ux', method: 'non-ai', tall: true, fit: 'cover', focus: 'top',
     description: 'Reusable components, inspired by Spotify.',
-    images: [img('uiux-spotify.jpg')],
+    images: [img('uiux-spotify.webp')],
   },
   {
-    id: 'all-veggies', title: 'All Veggies', category: 'ui-ux', method: 'non-ai', tall: true, fit: 'cover', focus: 'top',
+    id: 'all-veggies', title: 'All Veggies', line: 'One-page landing page UI for fresh produce', category: 'ui-ux', method: 'non-ai', tall: true, fit: 'cover', focus: 'top',
     description: 'A vibrant UI experiment inspired by veggies: one-page storytelling with bold structure and clear hierarchy.',
-    images: [img('uiux-all-veggies.jpg')],
+    images: [img('uiux-all-veggies.webp')],
   },
   {
-    id: 'white-label', title: 'White Label', category: 'ui-ux', method: 'non-ai', tall: true, fit: 'cover', focus: 'top',
+    id: 'white-label', title: 'White Label', line: 'E-commerce UI from signup to checkout', category: 'ui-ux', method: 'non-ai', tall: true, fit: 'cover', focus: 'top',
     description: 'A bright, component-driven e-commerce UI covering the full journey from signup to checkout, built to scale across brands.',
-    images: [img('uiux-white-label.jpg')],
+    images: [img('uiux-white-label.webp')],
   },
   // ---- Placeholders (hidden automatically because real projects exist above) ----
   { id: 'placeholder-01', placeholder: true, placeholderCount: 3, title: 'Project Title 01', category: 'social-media', method: 'non-ai', size: 'feature', images: [] },
@@ -267,12 +278,17 @@ function validate(list) {
     if (!p.title) warn('missing title')
     if (!cats.includes(p.category)) warn(`category must be one of: ${cats.join(', ')}`)
     if (!methods.includes(p.method)) warn(`method must be one of: ${methods.join(', ')}`)
-    if (!p.placeholder && !p.images.length) warn('no images found, check the file names in img()')
+    if (!p.placeholder && !p.slot && !p.images.length) warn('no images found, check the file names in img()')
   })
 }
 
+// Empty SLOTS (A+ content, carousel) show as labelled image slots while you run `npm run dev`, and stay hidden on the
+// live site until you add their images. Set this to true if you want the empty slots visible on the live site too.
+const SHOW_EMPTY_SLOTS_LIVE = false
+const showSlot = (p) => p.images.length > 0 || import.meta.env.DEV || SHOW_EMPTY_SLOTS_LIVE
+
 const ALL = RAW_PROJECTS.map(normalize)
-const REAL = ALL.filter((p) => !p.placeholder)
+const REAL = ALL.filter((p) => !p.placeholder && (!p.slot || showSlot(p)))
 
 export const HAS_REAL_WORK = REAL.length > 0
 // As soon as one real project exists, every placeholder disappears automatically.

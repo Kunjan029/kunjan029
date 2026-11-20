@@ -21,10 +21,19 @@ export const getResume = () => CONTACT.resume?.trim() || ''
 
 const digits = (v) => String(v || '').replace(/\D/g, '')
 
+// Default WhatsApp opener, prefilled so the visitor only has to press send
+export const WA_DEFAULT = 'Hi Kunjan, I saw your portfolio and have a project in mind.'
+
+// wa.me link to the number above with a prefilled message ('' if no number is set)
+export const waLink = (text = WA_DEFAULT) => (digits(CONTACT.whatsapp) ? `https://wa.me/${digits(CONTACT.whatsapp)}${text ? `?text=${encodeURIComponent(text)}` : ''}` : '')
+
+// Prefilled message for a project's "Need something like this?" button
+export const waProjectText = (title) => `Hi Kunjan, I saw your ${title} work and need something similar.`
+
 // Channels that are actually configured, ready to render as links
 export function getChannels() {
   const out = []
-  if (digits(CONTACT.whatsapp)) out.push({ id: 'whatsapp', label: 'WhatsApp', hint: 'Chat on WhatsApp', href: `https://wa.me/${digits(CONTACT.whatsapp)}`, external: true })
+  if (digits(CONTACT.whatsapp)) out.push({ id: 'whatsapp', label: 'WhatsApp', hint: 'Chat on WhatsApp', href: waLink(), external: true })
   if (CONTACT.email?.trim()) out.push({ id: 'email', label: 'Email', hint: CONTACT.email.trim(), href: `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT.email.trim())}`, external: true })
   if (CONTACT.linkedin?.trim()) out.push({ id: 'linkedin', label: 'LinkedIn', hint: 'View my profile', href: CONTACT.linkedin.trim(), external: true })
   if (CONTACT.instagram?.trim()) out.push({ id: 'instagram', label: 'Instagram', href: CONTACT.instagram.trim(), external: true })

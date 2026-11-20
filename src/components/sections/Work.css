@@ -20,7 +20,7 @@
 .chip.is-on { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); }
 @media (hover: hover) { .chip:not(.is-on):hover { border-color: var(--color-border-strong); color: var(--color-text); } }
 .work__methods { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
-.work__methods-label { font-family: var(--font-heading); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-text-muted); opacity: 0.7; }
+.work__methods-label { font-family: var(--font-heading); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-text-muted); }
 .seg { display: inline-flex; flex-wrap: wrap; max-width: 100%; padding: 2px; border: 1px solid var(--color-border); border-radius: var(--radius-pill); }
 .seg button {
   min-height: 40px; padding: 0.3rem 0.8rem; border-radius: var(--radius-pill);
@@ -29,7 +29,7 @@
 }
 .seg button.is-on { background: var(--color-text); color: var(--color-bg); }
 @media (hover: hover) { .seg button:not(.is-on):hover { color: var(--color-text); } }
-.work__count { font-family: var(--font-heading); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.08em; color: var(--color-text-muted); opacity: 0.7; font-variant-numeric: tabular-nums; }
+.work__count { font-family: var(--font-heading); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.08em; color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
 
 /* ---------- Editorial composition ---------- */
 .work__grid { display: grid; grid-template-columns: 1fr; gap: var(--space-8) 0; margin-top: var(--space-7); align-items: start; }
@@ -189,8 +189,15 @@
 /* Very long UI/UX pages: the card previews the top of the design; the popup scrolls the full page */
 .work-card__media.is-tall .pv__img--card { object-position: top; }
 
-.work__nda { margin-top: var(--space-8, 3rem); max-width: 60ch; color: var(--color-text-secondary, #a1a1aa); font-size: var(--text-sm, 0.9375rem); line-height: 1.6; }
+/* NDA note: centred under the Show-all button as one compact group, readable grey */
+.work__nda { margin: var(--space-5) auto 0; max-width: 46rem; text-align: center; color: var(--color-text-muted); font-size: var(--text-sm, 0.9375rem); line-height: 1.6; }
 .work__nda a { color: var(--color-accent, #C6FF4D); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
 
-.work__more { display: flex; justify-content: center; margin-top: var(--space-8, 3rem); }
+.work__more { display: flex; justify-content: center; margin-top: var(--space-7); }
 .work__morebtn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.9rem 1.6rem; font-size: var(--text-base, 1rem); }
+.work__more .work__morebtn { border: 1px solid var(--color-border-strong); color: var(--color-text); }
+@media (hover: hover) { .work__more .work__morebtn:hover { border-color: var(--color-accent); color: var(--color-accent); } }
+
+/* One line under each thumbnail: what the project is */
+.work-card__line { font-size: var(--text-base); line-height: 1.45; color: var(--color-text); opacity: 0.88; max-width: 34rem; }
+@media (min-width: 640px) { .work-card--lead .work-card__line { grid-column: 1 / 9; grid-row: 3; } .work-card--lead .work-card__side { grid-row: 2 / span 2; } }

@@ -1,0 +1,15 @@
+.wcta { padding-block: 0 var(--section-space); background: var(--color-bg-secondary); } /* continues the Work section's background */
+.work { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+.wcta__box {
+  display: grid; gap: var(--space-5); align-items: center;
+  padding: clamp(1.5rem, 1rem + 2.5vw, 3rem);
+  border: 1px solid rgb(198 255 77 / 0.35); border-radius: var(--radius-lg);
+  background: linear-gradient(120deg, rgb(198 255 77 / 0.1), rgb(198 255 77 / 0.02) 55%), var(--color-card);
+}
+@media (min-width: 900px) { .wcta__box { grid-template-columns: 1fr auto; gap: var(--space-7); } }
+.wcta__title { font-size: clamp(1.6rem, 1.1rem + 2.4vw, 3rem); font-weight: 700; line-height: 1.02; letter-spacing: -0.04em; text-wrap: balance; }
+.wcta__title span { color: var(--color-accent); }
+.wcta__sub { margin-top: var(--space-3); color: var(--color-text); }
+.wcta__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.wcta__actions .btn { flex: 1 1 14rem; }
+@media (min-width: 900px) { .wcta__actions .btn { flex: 0 0 auto; } }

@@ -18,7 +18,7 @@
 @media (min-width: 560px) { .f__row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .f__field { display: grid; gap: 0.5rem; min-width: 0; }
 .f__field > span:first-child { font-size: var(--text-sm); color: var(--color-text-muted); }
-.f__field em { font-style: normal; opacity: 0.7; }
+.f__field em { font-style: normal; color: var(--color-text-muted); }
 .f input, .f select, .f textarea, .done textarea {
   width: 100%; font: inherit; color: var(--color-text); background: transparent;
   border: 0; border-bottom: 1px solid var(--color-border-strong); border-radius: 0;

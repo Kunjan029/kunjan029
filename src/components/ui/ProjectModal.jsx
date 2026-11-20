@@ -5,6 +5,8 @@ import Button from './Button.jsx'
 import ProjectVisual, { imageCount } from './ProjectVisual.jsx'
 import Presentation, { hasContext } from './presentation/index.jsx'
 import { CATEGORIES, METHODS } from '../../data/projects.js'
+import { waLink, waProjectText } from '../../data/contact.js'
+import { WhatsAppIcon } from './ContactIcons.jsx'
 import './ProjectModal.css'
 
 const SWIPE = 50 // px of horizontal drag that counts as a swipe
@@ -61,6 +63,7 @@ export default function ProjectModal({ project, onClose }) {
       ].filter(Boolean)
     : []
   const paragraphs = project?.details ? project.details.split(/\n\s*\n/) : []
+  const waHref = project ? waLink(waProjectText(project.title)) : ''
 
   return (
     <dialog
@@ -142,6 +145,15 @@ export default function ProjectModal({ project, onClose }) {
             )}
             {project.link && <Button href={project.link} target="_blank" rel="noopener noreferrer">View case study</Button>}
           </div>)}
+
+          {waHref && (
+            <div className="pm__cta">
+              <p className="pm__cta-text">Need something like this<span>?</span></p>
+              <Button href={waHref} target="_blank" rel="noopener noreferrer" data-track={`project cta: ${project.title}`.slice(0, 60)} data-cursor>
+                <WhatsAppIcon size={18} /> Message me
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </dialog>

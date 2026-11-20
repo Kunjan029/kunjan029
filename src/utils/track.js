@@ -20,17 +20,30 @@ function send(payload) {
   } catch { /* ignore */ }
 }
 
+// Traffic source: ?ref=linkedin (also ?utm_source= / ?source=), else the referring site, else 'direct'.
+// Kept for the browser tab session so every click on this visit is credited to the same source.
+const REF_KEY = 'kunjan-portfolio:ref'
 function source() {
   const p = new URLSearchParams(window.location.search)
-  const utm = p.get('utm_source') || p.get('ref') || p.get('source')
-  if (utm) return utm
-  try {
-    const host = new URL(document.referrer).hostname.replace(/^www\./, '')
-    return host && host !== window.location.hostname ? host : 'direct'
-  } catch { return 'direct' }
+  const tag = (p.get('ref') || p.get('utm_source') || p.get('source') || '').trim().toLowerCase().slice(0, 40)
+  let ref = tag
+  if (!ref) {
+    try { ref = window.sessionStorage.getItem(REF_KEY) || '' } catch { /* no storage */ }
+  }
+  if (!ref) {
+    try {
+      const host = new URL(document.referrer).hostname.replace(/^www\./, '')
+      ref = host && host !== window.location.hostname ? host : 'direct'
+    } catch { ref = 'direct' }
+  }
+  try { window.sessionStorage.setItem(REF_KEY, ref) } catch { /* no storage */ }
+  return ref
 }
 
 function clickName(el) {
+  // Buttons that name themselves, e.g. data-track="cta strip: whatsapp"
+  const named = el.closest('[data-track]')
+  if (named) return named.getAttribute('data-track').slice(0, 60)
   const media = el.closest('.work-card__media, .work-card__link')
   if (media) {
     const card = media.closest('article, li, div[class*="work-card"]')
@@ -38,12 +51,12 @@ function clickName(el) {
     const title = label.replace(/^Explore\s+/i, '').trim()
     return title ? `project: ${title}`.slice(0, 60) : 'project'
   }
-  if (el.closest('.fwa--why')) return 'why hire me icon'
   const a = el.closest('a')
   if (a) {
     const h = a.getAttribute('href') || ''
     if (/wa\.me|whatsapp/i.test(h)) return 'whatsapp'
-    if (h.startsWith('mailto:')) return 'email'
+    // Email links open a Gmail compose window (mail.google.com), not mailto:, which is why Email always showed 0
+    if (h.startsWith('mailto:') || /mail\.google\.com/i.test(h)) return 'email'
     if (/linkedin\.com/i.test(h)) return 'linkedin'
     if (/drive\.google\.com|\.pdf/i.test(h) || a.classList.contains('link--resume')) return 'resume download'
     if (h === '#contact') return "let's talk"
@@ -52,16 +65,44 @@ function clickName(el) {
   return ''
 }
 
+let on = false
+let ref = 'direct'
+
+// For events that are not plain link clicks (e.g. the contact form was sent)
+export function trackEvent(name) {
+  if (on && name) send({ type: 'click', name: String(name).slice(0, 60), ref })
+}
+
+// Sections in page order, used for the scroll drop-off funnel on the dashboard (keep in sync with api/track.js)
+export const TRACKED_SECTIONS = ['top', 'why', 'work', 'cta', 'testimonials', 'process', 'services', 'about', 'contact']
+
 export function initTrack() {
   if (skip()) return
+  on = true
+  ref = source()
   const device = window.matchMedia('(max-width: 767px)').matches ? 'phone' : window.matchMedia('(max-width: 1100px)').matches ? 'tablet' : 'desktop'
-  send({ type: 'visit', ref: source(), device })
+  send({ type: 'visit', ref, device })
 
   document.addEventListener('click', (e) => {
     const el = e.target instanceof Element ? e.target : null
     const name = el && clickName(el)
-    if (name) send({ type: 'click', name })
+    if (name) send({ type: 'click', name, ref })
   }, true)
+
+  // Time on page: only time the tab is actually visible counts. Sent whenever the tab is hidden or closed;
+  // the server keeps the highest value per visitor per day, so repeated sends never double count.
+  let visibleSince = document.visibilityState === 'visible' ? Date.now() : 0
+  let total = 0
+  const flush = () => {
+    if (visibleSince) { total += Date.now() - visibleSince; visibleSince = 0 }
+    const s = Math.round(total / 1000)
+    if (s >= 1) send({ type: 'time', s })
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') flush()
+    else if (!visibleSince) visibleSince = Date.now()
+  })
+  window.addEventListener('pagehide', flush)
 
   if ('IntersectionObserver' in window) {
     const seen = new Set()
@@ -70,6 +111,8 @@ export function initTrack() {
         if (en.isIntersecting && !seen.has(en.target.id)) { seen.add(en.target.id); send({ type: 'section', name: en.target.id }); io.unobserve(en.target) }
       }
     }, { rootMargin: '-45% 0px -45% 0px' })
-    window.addEventListener('load', () => ['about', 'why', 'work', 'services', 'testimonials', 'contact'].forEach((id) => { const n = document.getElementById(id); if (n) io.observe(n) }))
+    const watch = () => TRACKED_SECTIONS.forEach((id) => { const n = document.getElementById(id); if (n) io.observe(n) })
+    if (document.readyState === 'complete') watch()
+    else window.addEventListener('load', watch)
   }
 }

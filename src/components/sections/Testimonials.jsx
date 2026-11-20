@@ -26,7 +26,7 @@ export default function Testimonials() {
   return (
     <section id="testimonials" className="tm" aria-labelledby="tm-title">
       <Container>
-        <p className="tm__label">KIND WORDS / 004</p>
+        <p className="tm__label">KIND WORDS / 003</p>
         <h2 id="tm-title" className="tm__title"><span className="line"><Reveal text="WHAT PEOPLE SAY." accentDots /></span></h2>
         <p className="tm__lead">What team members, managers and collaborators have said about working with me.</p>
         <ul className="tm__grid" role="list">

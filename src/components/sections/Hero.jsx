@@ -3,8 +3,8 @@ import gsap from 'gsap'
 import Container from '../ui/Container.jsx'
 import Button from '../ui/Button.jsx'
 import Availability from '../ui/Availability.jsx'
-import portrait from '../../assets/images/kunjan-portrait.jpg'
-import portraitSm from '../../assets/images/kunjan-portrait-sm.jpg'
+import portrait from '../../assets/images/kunjan-portrait.webp'
+import portraitSm from '../../assets/images/kunjan-portrait-sm.webp'
 import { scrollToId } from '../../utils/scrollTo.js'
 import './Hero.css'
 
@@ -35,7 +35,7 @@ export default function Hero() {
       const tl = gsap.timeline({ delay: 0.25, defaults: { ease: 'power4.out' } })
       tl.from('.hero__status', { y: 20, opacity: 0, duration: 0.7 })
         .from(chars, { yPercent: 120, rotation: 7, duration: 1.1, stagger: { amount: 0.8 } }, '<0.1')
-        .from('.hero__text', { y: 24, opacity: 0, duration: 0.8 }, '-=0.6')
+        .from('.hero__sub, .hero__text', { y: 24, opacity: 0, duration: 0.8, stagger: 0.08 }, '-=0.6')
         .from('.hero__actions .btn', { y: 20, opacity: 0, duration: 0.7, stagger: 0.1 }, '<0.15')
         .from('.hero__visual', { y: 70, opacity: 0, rotation: 3, scale: 0.94, duration: 1.2 }, 0.6)
         .from(shapes, { scale: 0, opacity: 0, duration: 0.8, stagger: 0.08, ease: 'back.out(2)' }, 0.8)
@@ -128,15 +128,16 @@ export default function Hero() {
               </span>
             ))}
           </h1>
+          <p className="hero__sub">Social media creatives, carousels and e-commerce visuals for brands</p>
 
           <div className="hero__visual">
             <figure className="hero__portrait">
               <img
                 src={portrait}
                 srcSet={`${portraitSm} 450w, ${portrait} 900w`}
-                sizes="(min-width: 1100px) 22rem, 80vw"
+                sizes="(min-width: 1100px) 22rem, 22rem"
                 width="900" height="1200" alt="Kunjan Atara, graphic designer based in Ahmedabad"
-                fetchPriority="high" decoding="async"
+                loading="lazy" decoding="async"
               />
               <figcaption>
                 <strong>Kunjan Atara</strong>
@@ -156,7 +157,7 @@ export default function Hero() {
 
         <div className="hero__bottom">
           <p className="hero__text">
-            Hi, I'm Kunjan, a graphic designer from Ahmedabad with 16+ years behind Photoshop. I make social creatives and carousels, e-commerce product visuals and ad creatives. Open to freelance projects.
+            Hi, I'm Kunjan, a graphic designer from Ahmedabad with 16+ years behind Photoshop. Open to freelance projects.
           </p>
           <div className="hero__actions">
             <Button href="#work" size="lg" onClick={go('work')}>Explore My Work</Button>

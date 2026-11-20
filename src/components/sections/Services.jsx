@@ -3,7 +3,6 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import Container from '../ui/Container.jsx'
-import Button from '../ui/Button.jsx'
 import Reveal from '../ui/Reveal.jsx'
 import { scrollToId } from '../../utils/scrollTo.js'
 import './Services.css'
@@ -159,9 +158,6 @@ export default function Services() {
         gsap.fromTo(num, { y: 18 }, { y: -18, ease: 'none', scrollTrigger: { trigger: card, scrub: true, start: 'top bottom', end: 'bottom top' } })
       })
 
-      gsap.from('.svs-cta', { y: 60, opacity: 0, duration: 1, ease: 'power3.out', scrollTrigger: st('.svs-cta', 'top 90%') })
-      gsap.from('.svs-cta__title .rv__in', { yPercent: 110, duration: 0.9, ease: 'power4.out', stagger: 0.05, scrollTrigger: st('.svs-cta', 'top 85%') })
-      gsap.to('.svs-cta__q', { yPercent: -25, rotation: 12, ease: 'none', scrollTrigger: { trigger: '.svs-cta', scrub: true, start: 'top bottom', end: 'bottom top' } })
       document.fonts?.ready.then(() => ScrollTrigger.refresh())
     })
 
@@ -172,23 +168,6 @@ export default function Services() {
       })
     })
 
-    // Magnetic CTA (mouse only)
-    mm.add('(prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine)', () => {
-      const wrap = root.querySelector('.svs-cta__btn')
-      const btn = wrap.firstElementChild
-      const x = gsap.quickTo(btn, 'x', { duration: 0.5, ease: 'power3' })
-      const y = gsap.quickTo(btn, 'y', { duration: 0.5, ease: 'power3' })
-      const move = (e) => {
-        const r = wrap.getBoundingClientRect()
-        x((e.clientX - (r.left + r.width / 2)) * 0.25)
-        y((e.clientY - (r.top + r.height / 2)) * 0.35)
-      }
-      const leave = () => { x(0); y(0) }
-      wrap.addEventListener('pointermove', move)
-      wrap.addEventListener('pointerleave', leave)
-      return () => { wrap.removeEventListener('pointermove', move); wrap.removeEventListener('pointerleave', leave) }
-    })
-
     return () => mm.revert()
   }, [])
 
@@ -196,7 +175,7 @@ export default function Services() {
     <section id="services" className="svs" ref={rootRef}>
       <Container>
         <div className="svs__intro">
-          <p className="svs__label">WHAT I DO / 003</p>
+          <p className="svs__label">WHAT I DO / 004</p>
           <h2 className="svs__title">
             <span className="line"><Reveal text="GOOD IDEAS." accentDots /></span>
             <span className="line"><Reveal text="GREAT VISUALS." accentDots /></span>
@@ -227,16 +206,6 @@ export default function Services() {
           ))}
         </div>
 
-        <div className="svs-cta">
-          <span className="svs-cta__q" aria-hidden="true">?</span>
-          <div className="svs-cta__text">
-            <h3 className="svs-cta__title"><Reveal text="Hiring or planning a project?" /></h3>
-            <p>Let’s turn your next idea into something worth noticing.</p>
-          </div>
-          <div className="svs-cta__btn">
-            <Button href="#contact" size="lg" onClick={toContact}>Let’s Connect</Button>
-          </div>
-        </div>
       </Container>
     </section>
   )

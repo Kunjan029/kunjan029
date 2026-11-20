@@ -10,9 +10,9 @@ import './Header.css'
 
 const NAV = [
   { label: 'Work', id: 'work' },
-  { label: 'About', id: 'about' },
-  { label: 'Expertise', id: 'services' },
   { label: 'Reviews', id: 'testimonials' },
+  { label: 'Expertise', id: 'services' },
+  { label: 'About', id: 'about' },
 ]
 
 export default function Header() {
@@ -86,7 +86,6 @@ export default function Header() {
           </nav>
 
           <div className="header__right">
-            <Availability label="Available" className="header__avail" />
             <ContactLinks className="header__contact" tooltips />
             {resume && (
               <Button href={resume} variant="secondary" size="sm" className="header__cta header__resume" target="_blank" rel="noopener noreferrer" data-cursor>

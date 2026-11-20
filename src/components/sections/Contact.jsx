@@ -5,6 +5,7 @@ import { ArrowRight, ArrowUpRight, Check, Copy, Download } from 'lucide-react'
 import Container from '../ui/Container.jsx'
 import { CONTACT, getChannels, getResume } from '../../data/contact.js'
 import { buildInquiry, whatsappUrl, mailtoUrl, EMAIL_RE } from '../../utils/inquiry.js'
+import { trackEvent } from '../../utils/track.js'
 import './Contact.css'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -81,6 +82,7 @@ export default function Contact() {
       const data = await res.json().catch(() => ({}))
       if (!res.ok || data.success === 'false' || data.success === false) throw new Error(data.message || `HTTP ${res.status}`)
       setSent({ ...fallback, delivered: true })
+      trackEvent('brief sent')
     } catch (err) {
       setWhy(String(err && err.message ? err.message : err).slice(0, 160))
       setSent({ ...fallback, delivered: false }) // never lose the message: offer WhatsApp / email / copy

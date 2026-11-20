@@ -4,7 +4,7 @@
   --color-bg-secondary: #111114;
   --color-card: #17171B;
   --color-text: #F2F0EA;
-  --color-text-muted: #A1A1AA;
+  --color-text-muted: #B4B4BC; /* was #A1A1AA: lifted for easier reading of grey text on the dark theme */
   --color-accent: #C6FF4D;
   --color-on-accent: #0B0B0D;
   --color-border: rgb(242 240 234 / 0.1);
