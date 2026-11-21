@@ -145,9 +145,6 @@ export default function About() {
             <ul className="snap__tags" role="list">
               {INDUSTRIES.map((t) => <li key={t}>{t}</li>)}
             </ul>
-            <p className="snap__cm">
-              <b>Community:</b> founder of Pixelverse, a design community in Ahmedabad, and a volunteer with GDG Ahmedabad, GDG Cloud Ahmedabad and Echai. 500+ events volunteered.
-            </p>
           </div>
         </div>
 

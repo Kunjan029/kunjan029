@@ -6,6 +6,7 @@ import Services from './components/sections/Services.jsx'
 import HowIWork from './components/sections/HowIWork.jsx'
 import Testimonials from './components/sections/Testimonials.jsx'
 import WorkCta from './components/sections/WorkCta.jsx'
+import Community from './components/sections/Community.jsx'
 import WhyHire from './components/sections/WhyHire.jsx'
 import Contact from './components/sections/Contact.jsx'
 import Footer from './components/layout/Footer.jsx'
@@ -30,6 +31,7 @@ export default function App() {
         <HowIWork />
         <Services />
         <About />
+        <Community />
         <Contact />
       </main>
       <Footer />
