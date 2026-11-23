@@ -106,12 +106,26 @@ export default async function handler(req, res) {
       return ` <b class="again">↺ Visited again${prev ? ` · previous visit on <a class="dlink" href="${href(prev)}#daily">${esc(short(prev))}</a>` : ''}</b>`
     }
     const step = (ev) => `<li class="${ev.kind}"><i></i><span class="vt">${esc(ist(ev.t).slice(6))}</span><span>${esc(nice(ev))}${again(ev)}</span></li>`
+    // Traffic source pill for each person: the ?ref= tag (eventverse, designcommunity...) or a clean name for the referrer domain
+    const SRC = [
+      [/linkedin|lnkd\.in/, 'LinkedIn', '#7fb3ff'], [/instagram/, 'Instagram', '#ff7ac6'], [/threads/, 'Threads', '#d9d9d9'],
+      [/facebook|^fb$/, 'Facebook', '#6b9bff'], [/android\.gm|gmail|mail/, 'Gmail', '#ff9f6b'], [/google/, 'Google', '#ffd166'],
+      [/reddit/, 'Reddit', '#ff8a5c'], [/whatsapp/, 'WhatsApp', '#5fe08a'], [/behance/, 'Behance', '#7fa6ff'], [/dribbble/, 'Dribbble', '#ff86b5'],
+      [/^direct$/, 'Direct', ''],
+    ]
+    const srcOf = (pp) => {
+      const v = pp.list.filter((x) => x.kind === 'visit').pop() // oldest visit in the log = how they first came in
+      if (!v) return ''
+      const raw = (v.what.match(/^visit via (.+?) \(/) || [])[1] || 'direct'
+      const [, label = raw, color = 'var(--acc)'] = SRC.find(([re]) => re.test(raw)) || []
+      return `<span class="src${label === 'Direct' ? ' src--d' : ''}"${color ? ` style="--c:${color}"` : ''} title="Source: ${esc(raw)}">${esc(label)}</span>`
+    }
     const personCards = [...people.values()].slice(0, 40).map((pp) => {
       const clicks = pp.list.filter((x) => x.kind === 'click').length
       const visits = pp.list.length - clicks
       const chrono = [...pp.list].reverse()
       const sum = [visits ? `${visits} visit${visits > 1 ? 's' : ''}` : '', clicks ? `${clicks} click${clicks > 1 ? 's' : ''}` : 'no clicks'].filter(Boolean).join(' · ')
-      return `<li class="vg${clicks ? ' vg--act' : ''}"><div class="vg__h"><span class="f__t">${esc(ist(pp.last))}</span><span class="f__p">${esc(pp.place)}</span><span class="vg__id">ID ${esc(pp.id)}</span><span class="vg__n">${sum}</span></div><ol class="vg__l">${chrono.map(step).join('')}</ol></li>`
+      return `<li class="vg${clicks ? ' vg--act' : ''}"><div class="vg__h"><span class="f__t">${esc(ist(pp.last))}</span><span class="f__p">${esc(pp.place)}</span><span class="vg__id">ID ${esc(pp.id)}</span>${srcOf(pp)}<span class="vg__n">${sum}</span></div><ol class="vg__l">${chrono.map(step).join('')}</ol></li>`
     }).join('')
     const strayRows = strays.slice(0, 15).map((ev) => `<li class="click"><i></i><span class="f__t">${esc(ist(ev.t))}</span><span class="f__p">${esc(ev.place)}</span><span class="f__w">${esc(nice(ev))} · ID not saved</span></li>`).join('')
     const feed = (personCards + strayRows) || '<li class="empty">No activity yet</li>'
@@ -226,7 +240,7 @@ h2 small{letter-spacing:0;text-transform:none;font-size:12px}
 .donut{width:120px;height:120px;border-radius:50%;background:${donut};-webkit-mask:radial-gradient(circle 36px,transparent 98%,#000 100%);mask:radial-gradient(circle 36px,transparent 98%,#000 100%);flex:none}
 .dev{display:flex;gap:20px;align-items:center}.dev ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;flex:1}.dev li{display:flex;align-items:center;gap:8px;text-transform:capitalize}.dev li i{width:10px;height:10px;border-radius:3px}.dev li b{margin-left:auto}
 .feed{list-style:none;margin:0;padding:0;max-height:420px;overflow:auto}.feed li{display:grid;grid-template-columns:10px 92px 170px 1fr;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
-.feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}.again{color:var(--acc);font-weight:600;margin-left:6px}.dlink{color:var(--acc);font-weight:600;text-decoration:underline;text-underline-offset:3px}.dlink:hover{color:#fff}.rv .f__w{display:block}.mute{color:var(--mute)}.vg{display:block!important;padding:12px 0!important}.vg__h{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}.vg__h .f__t{min-width:92px}.vg__id{font-size:13px;color:var(--text)}.vg__n{margin-left:auto;font-size:12px;color:var(--mute)}.vg--act .vg__n{color:var(--acc);font-weight:600}.vg__l{list-style:none;margin:8px 0 0 6px;padding:0 0 0 14px;border-left:2px solid var(--line);display:grid;gap:5px}.vg__l li{display:flex;gap:10px;align-items:baseline;padding:0;border:0;font-size:14px;grid-template-columns:none}.vg__l li i{width:7px;height:7px;flex:none;align-self:center;border-radius:50%;background:var(--blue)}.vg__l li.click i{background:var(--acc)}.vg__l .vt{color:var(--mute);font-size:12px;min-width:38px}
+.feed li i{width:8px;height:8px;border-radius:50%;background:var(--blue)}.feed li.click i{background:var(--acc)}.f__t,.f__p{color:var(--mute);font-size:13px}.again{color:var(--acc);font-weight:600;margin-left:6px}.dlink{color:var(--acc);font-weight:600;text-decoration:underline;text-underline-offset:3px}.dlink:hover{color:#fff}.rv .f__w{display:block}.mute{color:var(--mute)}.vg{display:block!important;padding:12px 0!important}.vg__h{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}.vg__h .f__t{min-width:92px}.vg__id{font-size:13px;color:var(--text)}.src{--c:var(--acc);align-self:center;font-size:11px;font-weight:600;letter-spacing:.02em;line-height:1;padding:4px 9px;border-radius:999px;color:var(--c);border:1px solid color-mix(in srgb,var(--c) 45%,transparent);background:color-mix(in srgb,var(--c) 12%,transparent)}.src--d{--c:var(--mute)}.vg__n{margin-left:auto;font-size:12px;color:var(--mute)}.vg--act .vg__n{color:var(--acc);font-weight:600}.vg__l{list-style:none;margin:8px 0 0 6px;padding:0 0 0 14px;border-left:2px solid var(--line);display:grid;gap:5px}.vg__l li{display:flex;gap:10px;align-items:baseline;padding:0;border:0;font-size:14px;grid-template-columns:none}.vg__l li i{width:7px;height:7px;flex:none;align-self:center;border-radius:50%;background:var(--blue)}.vg__l li.click i{background:var(--acc)}.vg__l .vt{color:var(--mute);font-size:12px;min-width:38px}
 .tblw{overflow-x:auto}.gt{width:100%;border-collapse:collapse;font-size:13px}.gt th{color:var(--mute);font-weight:500;text-align:right;padding:6px 10px;white-space:nowrap}.gt th:first-child,.gt td:first-child{text-align:left}.gt td{text-align:right;padding:9px 10px;border-top:1px solid var(--line);font-weight:600}.gt td:first-child{font-weight:500}.gt .gb{width:30%;min-width:80px;padding:0 10px}.gt .gb i{display:block;height:6px;width:var(--w);border-radius:4px;background:var(--acc)}.gt td.bad{color:var(--down)}
 .dpick{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px}.dform{margin:0}
 .dpick input[type=date]{background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;color-scheme:dark}
