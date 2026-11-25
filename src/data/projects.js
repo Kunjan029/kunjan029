@@ -88,6 +88,11 @@ const STORIES = {
     approach: 'Led with one dominant visual and a high-contrast headline, kept details in a clear secondary tier, and used AI-assisted imagery to reach the right mood faster before refining it manually.',
     outcome: 'Posters that read instantly at thumbnail size and still hold up when opened full screen.',
   },
+  carousel: {
+    problem: 'Most carousels lose people after the first slide because every slide tries to say everything.',
+    approach: 'Gave each slide one idea and one big line, kept a fixed header, slide counter and progress bar so the series feels like one piece, and used simple UI-style illustrations instead of stock photos. The colour flips on slide 7 to mark the key takeaway before the call to action.',
+    outcome: 'A carousel that reads in seconds per slide, pulls people to the last slide, and ends with one clear ask.',
+  },
   'republic-day': {
     problem: 'Festival posts all look alike; a national day needs to feel respectful and still stand out.',
     approach: 'Used the tricolour as the colour system, one strong central symbol, and generous space around the greeting so the message stays calm and legible.',
@@ -179,8 +184,11 @@ const RAW_PROJECTS = [
     images: ['event-posters-1.webp', 'event-posters-2.webp', 'event-posters-3.webp'].map((f) => img(f)),
   },
 
-  // SLOT: carousel project. Add the slides in order to `images` and it goes live automatically.
-  { id: 'carousel', slot: true, title: 'Carousel Design', line: 'Instagram carousel for a brand', category: 'carousel', method: 'non-ai', placeholderCount: 5, images: [] },
+  {
+    id: 'carousel', title: 'Stop Posting Every Day', line: '8-slide Instagram carousel on social media strategy', category: 'carousel', method: 'non-ai', fit: 'contain',
+    tags: ['Instagram', 'Carousel'],
+    images: Array.from({ length: 8 }, (_, i) => img(`carousel-posting-${i + 1}.webp`)),
+  },
 
   {
     id: 'banners', title: 'Banners', line: 'Sale and promo banners with offers and coupon codes', category: 'advertising', method: 'non-ai', presentation: 'instagram', format: 'display-ad', fit: 'contain',
@@ -224,6 +232,7 @@ const RAW_PROJECTS = [
 
 const ALT_KIND = {
   'social-media': 'social media post design',
+  carousel: 'Instagram carousel design',
   'e-commerce': 'e-commerce and Amazon product visual design',
   advertising: 'advertising creative design',
   'photo-editing': 'photo editing and retouching',
