@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Bookmark, ChevronLeft, ChevronRight, Heart, MessageCircle, Send, User } from 'lucide-react'
 import { Art, Pager } from './shared.jsx'
 
@@ -90,6 +90,8 @@ export function InstagramCarousel({ project, onOpen }) {
   const drag = useRef(null)
   const moved = useRef(false)
   const go = (d) => setI((v) => Math.min(slides.length - 1, Math.max(0, v + d)))
+  // Preload every slide so the phone preview swaps instantly (no fade) when the slide changes
+  useEffect(() => { slides.forEach((s) => { const im = new Image(); im.src = s.src }) }, [slides])
 
   const onPointerDown = (e) => { drag.current = e.clientX; moved.current = false }
   const onPointerMove = (e) => { if (drag.current != null && Math.abs(e.clientX - drag.current) > 8) moved.current = true }
@@ -142,7 +144,7 @@ export function InstagramCarousel({ project, onOpen }) {
   )
   return (
     <>
-      <IgShell project={project} media={media} />
+      <IgShell project={project} media={media} phone={slides[i]} />
       <p className="sr-only" role="status" aria-live="polite">Slide {i + 1} of {slides.length}</p>
     </>
   )
