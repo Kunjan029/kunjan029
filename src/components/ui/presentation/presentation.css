@@ -43,7 +43,8 @@
 }
 
 /* Carousel */
-.igc { --r: 0.8; position: relative; width: min(100%, calc(var(--view) * var(--r))); aspect-ratio: var(--r); touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+/* Definite width (not %): inside the desktop fit-content grid a % width resolves to 0 and the media column collapses */
+.igc { --r: 0.8; position: relative; width: calc(var(--view) * var(--r)); max-width: 100%; aspect-ratio: var(--r); touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .igc__slide { position: absolute; inset: 0; display: grid; place-items: center; padding: 0; border: 0; background: none; cursor: zoom-in; animation: igc-in 0.35s var(--ease-out); }
 .igc__slide img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
 @keyframes igc-in { from { opacity: 0; } }
