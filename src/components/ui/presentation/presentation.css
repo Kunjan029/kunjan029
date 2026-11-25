@@ -44,6 +44,7 @@
 
 /* Carousel */
 /* Definite width (not %): inside the desktop fit-content grid a % width resolves to 0 and the media column collapses */
+@container (max-width: 639px) { .ig__media { grid-template-columns: minmax(0, 1fr); } } /* lets the carousel's max-width: 100% cap it on phones */
 .igc { --r: 0.8; position: relative; width: calc(var(--view) * var(--r)); max-width: 100%; aspect-ratio: var(--r); touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .igc__slide { position: absolute; inset: 0; display: grid; place-items: center; padding: 0; border: 0; background: none; cursor: zoom-in; animation: igc-in 0.35s var(--ease-out); }
 .igc__slide img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
@@ -179,6 +180,8 @@
   .ig--phone .ig__media { padding: 1rem; border: 1px solid var(--frame); border-radius: 8px; background: #0B0B0D; }
   .ig--phone .ig__art img { height: calc(var(--ph, 30rem) - 2rem - 2px); max-height: none; border-radius: 4px; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08); }
   .ig--phone .ig__phone { align-self: start; padding: 1rem; border: 1px solid var(--frame); border-radius: 8px; }
+  .ig--phone .igc { width: calc((var(--ph, 30rem) - 2rem - 2px) * var(--r)); max-width: none; } /* carousel matches the phone panel height */
+  .ig--phone .igc__slide img { border-radius: 4px; }
 }
 
 /* Hidden until measured (see Social.jsx), then a short fade: no visible resize after opening */
