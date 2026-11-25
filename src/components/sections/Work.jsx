@@ -8,6 +8,7 @@ import Container from '../ui/Container.jsx'
 import Reveal from '../ui/Reveal.jsx'
 import ProjectVisual, { imageCount } from '../ui/ProjectVisual.jsx'
 import ProjectModal from '../ui/ProjectModal.jsx'
+import CardPeek from '../ui/CardPeek.jsx'
 import { CATEGORIES, METHODS, PROJECTS, HAS_REAL_WORK } from '../../data/projects.js'
 import './Work.css'
 
@@ -241,6 +242,7 @@ export default function Work() {
                   <button type="button" className={`work-card__media${p.cover?.src && !p.tall ? ' has-img' : ''}${p.tall ? ' is-tall' : ''}`} onClick={() => setSelected(p)} aria-label={`Explore ${p.title}`} data-cursor data-cursor-label="VIEW">
                     {p.cover?.src && <img className="work-card__bg" src={p.cover.src} alt="" aria-hidden="true" draggable={false} loading="lazy" decoding="async" />}
                     <span className="work-card__fill"><ProjectVisual project={p} index={0} number={i + 1} /></span>
+                    {!p.tall && !p.placeholder && <CardPeek project={p} />}
                     {role === 'lead' && <span className="work-card__flag">Featured Project</span>}
                     {p.slot && !p.images.length && <span className="work-card__flag">Slot: add images in projects.js</span>}
                     {n > 1 && <span className="work-card__count"><Images size={14} aria-hidden="true" />{n}</span>}

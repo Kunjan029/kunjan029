@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowRight, ArrowUpRight, Check, Copy, Download } from 'lucide-react'
@@ -6,12 +6,14 @@ import Container from '../ui/Container.jsx'
 import { CONTACT, getChannels, getResume } from '../../data/contact.js'
 import { buildInquiry, whatsappUrl, mailtoUrl, EMAIL_RE } from '../../utils/inquiry.js'
 import { trackEvent } from '../../utils/track.js'
+import { SERVICE_OPTIONS } from '../../utils/brief.js'
+import { scrollToId } from '../../utils/scrollTo.js'
 import './Contact.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const TOPICS = ['Freelance project', 'Ongoing collaboration', 'Something else']
-const EMPTY = { name: '', email: '', topic: '', message: '', website: '' } // `website` is a hidden honeypot for bots
+const EMPTY = { name: '', email: '', topic: '', services: [], message: '', website: '' } // `website` is a hidden honeypot for bots
 
 function validate(f) {
   const e = {}
@@ -38,6 +40,30 @@ export default function Contact() {
   const hasMail = channels.some((c) => c.id === 'email')
   const resume = getResume()
 
+  const [flash, setFlash] = useState(false)
+
+  // A Services card asked for a brief: tick that service, start the message, and bring the form into view
+  useEffect(() => {
+    const onBrief = (e) => {
+      const service = e.detail?.service
+      setSent(null)
+      setForm((f) => ({
+        ...f,
+        topic: f.topic || 'Freelance project',
+        services: service && !f.services.includes(service) ? [...f.services, service] : f.services,
+        message: f.message.trim() ? f.message : `Hi Kunjan, I need help with ${service ? service.toLowerCase() : 'a design project'}. `,
+      }))
+      scrollToId('contact')
+      setFlash(true)
+      setTimeout(() => setFlash(false), 1600)
+      setTimeout(() => document.getElementById('c-name')?.focus({ preventScroll: true }), 900)
+    }
+    window.addEventListener('kd:brief', onBrief)
+    return () => window.removeEventListener('kd:brief', onBrief)
+  }, [])
+
+  const toggleService = (s) => update({ services: form.services.includes(s) ? form.services.filter((x) => x !== s) : [...form.services, s] })
+
   function update(patch) {
     const next = { ...form, ...patch }
     setForm(next)
@@ -53,7 +79,7 @@ export default function Contact() {
     const first = ['name', 'email', 'message'].find((k) => errs[k])
     if (first) { document.getElementById(`c-${first}`)?.focus(); return }
 
-    const text = buildInquiry({ ...form, opportunity: form.topic || 'General enquiry', services: [] })
+    const text = buildInquiry({ ...form, opportunity: form.topic || 'General enquiry', services: form.services })
     const fallback = {
       text,
       waUrl: hasWa ? whatsappUrl(CONTACT.whatsapp, text) : '',
@@ -72,6 +98,7 @@ export default function Contact() {
           name: form.name.trim(),
           email: form.email.trim(),
           regarding: form.topic || 'Not specified',
+          services: form.services.join(', ') || 'Not specified',
           message: form.message.trim(),
           _subject: `Portfolio enquiry from ${form.name.trim()}`,
           _replyto: form.email.trim(),
@@ -146,7 +173,7 @@ export default function Contact() {
             </ul>
           </div>
 
-          <div className="ct__panel" id="brief">
+          <div className={`ct__panel${flash ? ' is-flash' : ''}`} id="brief">
             {!sent ? (
               <form className="f" onSubmit={onSubmit} noValidate>
                 <div className="f__row">
@@ -168,6 +195,19 @@ export default function Contact() {
                     {TOPICS.map((t) => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </label>
+                <fieldset className="f__field f__chips">
+                  <legend>What do you need? <em>(tap all that apply)</em></legend>
+                  <div className="chips">
+                    {SERVICE_OPTIONS.map((s) => {
+                      const on = form.services.includes(s)
+                      return (
+                        <button key={s} type="button" className={`chip${on ? ' is-on' : ''}`} aria-pressed={on} onClick={() => toggleService(s)} data-cursor>
+                          {on && <Check size={14} strokeWidth={3} aria-hidden="true" />}{s}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </fieldset>
                 <label className="f__field" htmlFor="c-message">
                   <span>Message</span>
                   <textarea id="c-message" rows={5} value={form.message} onChange={(e) => update({ message: e.target.value })} aria-invalid={!!errors.message} aria-describedby={errors.message ? 'e-message' : undefined} />

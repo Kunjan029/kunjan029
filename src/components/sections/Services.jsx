@@ -4,13 +4,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import Container from '../ui/Container.jsx'
 import Reveal from '../ui/Reveal.jsx'
-import { scrollToId } from '../../utils/scrollTo.js'
+import { startBrief } from '../../utils/brief.js'
+import { trackEvent } from '../../utils/track.js'
 import './Services.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const pad = (n) => String(n).padStart(2, '0')
-const toContact = (e) => { e.preventDefault(); scrollToId('contact') }
+const toBrief = (title) => (e) => { e.preventDefault(); trackEvent(`service brief: ${title}`); startBrief(title) }
 
 /* ---------- Abstract illustrations (decorative, colours come from the card's CSS variables) ---------- */
 const Star = ({ x, y, s = 1, className }) => (
@@ -188,7 +189,7 @@ export default function Services() {
             <article key={id} className={`svc svc--${id}`}>
               <div className="svc__top">
                 <span className="svc__num" aria-hidden="true">{pad(i + 1)}</span>
-                <a href="#contact" className="svc__go" onClick={toContact} aria-label={`Discuss ${title}`} data-cursor>
+                <a href="#contact" className="svc__go" onClick={toBrief(title)} aria-label={`Start a brief for ${title}`} data-cursor>
                   <ArrowUpRight size={22} strokeWidth={2} />
                 </a>
               </div>
@@ -201,6 +202,7 @@ export default function Services() {
                     {points.map((t) => <li key={t}>{t}</li>)}
                   </ul>
                 )}
+                <a href="#contact" className="svc__brief" onClick={toBrief(title)} data-cursor>I need this <ArrowUpRight size={16} aria-hidden="true" /></a>
               </div>
             </article>
           ))}

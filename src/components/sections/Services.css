@@ -61,6 +61,8 @@
   background-image: linear-gradient(160deg, rgb(198 255 77 / 0.09), transparent 55%); }
 
 .svc__points { list-style: none; display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-4) 0 0; padding: 0; }
+.svc__brief { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: var(--space-4); padding: 0.55rem 1rem; border: 1.5px solid var(--svc-fg); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; color: var(--svc-fg); transition: background-color var(--duration-base) ease, color var(--duration-base) ease, transform 0.3s var(--ease-out); }
+.svc__brief:hover, .svc__brief:focus-visible { background: var(--svc-fg); color: var(--svc-bg); transform: translateY(-2px); }
 .svc__points li { padding: 0.3rem 0.75rem; border: 1px solid var(--svc-border); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: 600; color: var(--svc-muted); }
 
 .svc--carousel .svc__num, .svc--ads .svc__num, .svc--photo .svc__num { color: transparent; -webkit-text-stroke: 2px var(--svc-fg); }
