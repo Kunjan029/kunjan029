@@ -62,6 +62,7 @@ export default function Work() {
   const gridRef = useRef(null)
   const stateRef = useRef(null)
   const flipRef = useRef(null)
+  const ioRef = useRef(null)
   const [filter, setFilter] = useState('all')
   const [method, setMethod] = useState('all')
   const [selected, setSelected] = useState(null)
@@ -122,7 +123,14 @@ export default function Work() {
     const state = stateRef.current
     if (!state) return
     stateRef.current = null
+    // Cards shown by this filter change must end fully visible. Hand them over from the scroll-entrance
+    // observer, otherwise a card that was never scrolled into view (or faded out by onLeave) stays at opacity 0.
+    const shownCards = [...gridRef.current.querySelectorAll('.work-card:not(.is-hidden)')]
+    shownCards.forEach((c) => ioRef.current?.unobserve(c))
+    const settle = () => gsap.to(shownCards, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: 'power2.out', overwrite: 'auto', clearProps: 'transform,opacity' })
     flipRef.current = Flip.from(state, {
+      onComplete: settle,
+      onInterrupt: settle,
       duration: 0.8,
       ease: 'power3.inOut',
       absolute: true,
@@ -131,7 +139,7 @@ export default function Work() {
       onLeave: (els) => gsap.to(els, { opacity: 0, scale: 0.85, duration: 0.35, ease: 'power2.in' }),
     })
     ScrollTrigger.refresh()
-  }, [filter, method])
+  }, [filter, method, expanded])
 
   // A blurred extension of the same artwork fills the side areas, only on cards where the artwork does not already fill its frame
   useLayoutEffect(() => {
@@ -173,8 +181,9 @@ export default function Work() {
         hit.forEach((c) => io.unobserve(c))
         gsap.to(hit, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out', stagger: 0.09, clearProps: 'transform,opacity' })
       }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 })
+      ioRef.current = io
       cards.forEach((c) => io.observe(c))
-      cleanups.push(() => io.disconnect())
+      cleanups.push(() => { io.disconnect(); ioRef.current = null })
       document.fonts?.ready.then(() => ScrollTrigger.refresh())
       return () => cleanups.forEach((f) => f())
     })
